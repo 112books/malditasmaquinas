@@ -1,0 +1,41 @@
+name = "malditasmaquinas-api"
+main = "api/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ── Entorns ───────────────────────────────────────────────────────────────────
+
+[env.dev]
+  name = "malditasmaquinas-api-dev"
+  route = { pattern = "dev.malditasmaquinas.com/api/*", zone_name = "malditasmaquinas.com" }
+
+[env.production]
+  name = "malditasmaquinas-api"
+  route = { pattern = "malditasmaquinas.com/api/*", zone_name = "malditasmaquinas.com" }
+
+# ── D1 (SQLite) ───────────────────────────────────────────────────────────────
+
+[[d1_databases]]
+  binding = "DB"
+  database_name = "malditasmaquinas-db"
+  database_id = "XXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"  # substituir després de crear amb wrangler
+
+# ── KV (sessions / cache) ─────────────────────────────────────────────────────
+
+[[kv_namespaces]]
+  binding = "KV"
+  id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # substituir després de crear amb wrangler
+
+# ── R2 (fitxers adjunts) ──────────────────────────────────────────────────────
+
+[[r2_buckets]]
+  binding = "R2"
+  bucket_name = "malditasmaquinas-files"
+
+# ── Secrets (mai al codi, pujar amb: wrangler secret put NOM) ────────────────
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
+# JWT_SECRET
+# RESEND_API_KEY
+# TELEGRAM_BOT_TOKEN
+# TELEGRAM_CHAT_ID

@@ -1,0 +1,32 @@
+[nav_services]
+other = "serveis"
+
+[nav_how]
+other = "com funciona"
+
+[nav_packages]
+other = "paquets"
+
+[nav_access]
+other = "accés"
+
+[cta_buy]
+other = "compra hores"
+
+[cta_login]
+other = "accedeix"
+
+[cta_contact]
+other = "envia consulta"
+
+[hours_available]
+other = "hores disponibles"
+
+[hours_expires]
+other = "caduquen el"
+
+[package_hours]
+other = "{{ .Hours }} h"
+
+[package_validity]
+other = "{{ .Days }} dies de validesa"

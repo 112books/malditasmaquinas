@@ -1,3 +1,114 @@
-baseURL = 'https://example.org/'
-locale = 'en-us'
-title = 'My New Hugo Project'
+baseURL = "https://malditasmaquinas.com"
+title = "malditas màquines"
+defaultContentLanguage = "ca"
+defaultContentLanguageInSubdir = false
+enableRobotsTXT = true
+enableGitInfo = false
+
+[build]
+  writeStats = true
+
+[minify]
+  disableCSS = false
+  disableHTML = false
+  disableJS = false
+  disableJSON = false
+  disableSVG = false
+  disableXML = false
+
+# ── Idiomes ──────────────────────────────────────────────────────────────────
+
+[languages]
+  [languages.ca]
+    languageName = "Català"
+    languageCode = "ca"
+    weight = 1
+    contentDir = "content/ca"
+    [languages.ca.params]
+      description = "Consultoria tecnològica a demanda per a artistes, autònoms i petites empreses."
+
+  [languages.es]
+    languageName = "Castellano"
+    languageCode = "es"
+    weight = 2
+    contentDir = "content/es"
+    [languages.es.params]
+      description = "Consultoría tecnológica a demanda para artistas, autónomos y pequeñas empresas."
+
+# ── Menú principal ────────────────────────────────────────────────────────────
+
+[[languages.ca.menus.main]]
+  name = "serveis"
+  url = "/serveis/"
+  weight = 1
+
+[[languages.ca.menus.main]]
+  name = "com funciona"
+  url = "/com-funciona/"
+  weight = 2
+
+[[languages.ca.menus.main]]
+  name = "paquets"
+  url = "/paquets/"
+  weight = 3
+
+[[languages.ca.menus.main]]
+  name = "accés"
+  url = "/app/"
+  weight = 4
+
+[[languages.es.menus.main]]
+  name = "servicios"
+  url = "/es/servicios/"
+  weight = 1
+
+[[languages.es.menus.main]]
+  name = "cómo funciona"
+  url = "/es/como-funciona/"
+  weight = 2
+
+[[languages.es.menus.main]]
+  name = "paquetes"
+  url = "/es/paquetes/"
+  weight = 3
+
+[[languages.es.menus.main]]
+  name = "acceso"
+  url = "/es/app/"
+  weight = 4
+
+# ── Paràmetres globals ────────────────────────────────────────────────────────
+
+[params]
+  author = "LinuxBCN"
+  logo = "/svg/logo.svg"
+  accentColor = "#FF6B00"  # taronja
+
+  # Cloudflare Workers API
+  apiBase = "https://malditasmaquinas.com/api"
+
+  # Stripe price IDs (test) — substituir per live abans de producció
+  [params.stripe]
+    publicKey = "pk_test_XXXXXXXXXXXXXXXXXXXXXXXXXX"
+    [params.stripe.prices]
+      minim    = "price_XXXXXXXXXXXXXXXXXX"
+      basic    = "price_XXXXXXXXXXXXXXXXXX"
+      mitja    = "price_XXXXXXXXXXXXXXXXXX"
+      estandard = "price_XXXXXXXXXXXXXXXXXX"
+      pro      = "price_XXXXXXXXXXXXXXXXXX"
+      avançat  = "price_XXXXXXXXXXXXXXXXXX"
+
+# ── Hugo Pipes / assets ───────────────────────────────────────────────────────
+
+[outputs]
+  home = ["HTML", "RSS"]
+  page = ["HTML"]
+  section = ["HTML"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    noClasses = false
+    style = "dracula"
