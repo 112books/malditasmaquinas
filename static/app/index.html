@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accés · MalditasMaquinas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Galindo&family=IBM+Plex+Mono:wght@400;500&family=Bitter:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#0d0c0b;--bg2:#181714;--line:#1e1c1a;
+      --cream:#e2ddd6;--cream2:#9a958e;--cream3:#5a5650;
+      --rust:#bf3d08;--rust2:#e04d10;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--cream);font-family:'Bitter',serif;min-height:100vh;display:flex;flex-direction:column}
+    a{color:inherit;text-decoration:none}
+
+    .app-nav{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:1.2rem 2rem;border-bottom:1px solid var(--line);
+    }
+    .app-brand{font-family:'Galindo',serif;font-size:1.5rem}
+    .app-brand span{color:var(--rust2)}
+    .app-back{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--cream3);letter-spacing:.06em;transition:color .15s}
+    .app-back:hover{color:var(--cream2)}
+
+    .app-main{
+      flex:1;display:flex;align-items:center;justify-content:center;
+      padding:3rem 1rem;
+    }
+    .login-box{width:100%;max-width:400px}
+
+    .login-title{
+      font-family:'Galindo',serif;font-size:2.5rem;
+      color:var(--cream);margin-bottom:.5rem;font-weight:400;
+    }
+    .login-sub{font-size:.9rem;color:var(--cream2);font-style:italic;margin-bottom:2.5rem;line-height:1.6}
+
+    .form-group{margin-bottom:1.25rem}
+    .form-label{
+      display:block;font-family:'IBM Plex Mono',monospace;
+      font-size:.65rem;color:var(--cream3);letter-spacing:.1em;
+      text-transform:uppercase;margin-bottom:.5rem;
+    }
+    .form-input{
+      width:100%;background:var(--bg2);border:1px solid var(--line);
+      color:var(--cream);font-family:'Bitter',serif;font-size:1rem;
+      padding:.75rem 1rem;outline:none;transition:border-color .15s;
+      appearance:none;border-radius:0;
+    }
+    .form-input:focus{border-color:var(--rust)}
+    .form-input::placeholder{color:var(--cream3)}
+
+    .btn-login{
+      width:100%;font-family:'IBM Plex Mono',monospace;
+      font-size:.85rem;letter-spacing:.05em;
+      background:var(--rust2);color:var(--cream);
+      border:none;padding:.85rem;cursor:pointer;
+      transition:background .15s;margin-top:.5rem;
+    }
+    .btn-login:hover{background:var(--rust)}
+
+    .login-links{
+      display:flex;justify-content:space-between;
+      margin-top:1.5rem;
+      font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--cream3);
+    }
+    .login-links a{color:var(--cream3);border-bottom:1px solid var(--cream3);padding-bottom:1px;transition:color .15s}
+    .login-links a:hover{color:var(--cream2)}
+
+    .login-avís{
+      margin-top:2.5rem;padding:1.25rem 1.5rem;
+      background:var(--bg2);border-left:2px solid var(--rust);
+      font-size:.82rem;color:var(--cream2);line-height:1.65;
+    }
+    .login-avís strong{color:var(--cream);font-weight:600}
+    .login-avís a{color:var(--rust2);border-bottom:1px solid var(--rust2)}
+
+    .app-footer{
+      padding:1rem 2rem;border-top:1px solid var(--line);
+      font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--cream3);
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <nav class="app-nav">
+    <a href="/" class="app-brand">Malditas<span>Maquinas</span>.com</a>
+    <a href="/" class="app-back">← tornar al web</a>
+  </nav>
+
+  <main class="app-main">
+    <div class="login-box">
+      <h1 class="login-title">Accedeix.</h1>
+      <p class="login-sub">El teu panell de control: hores disponibles, consultes i historial.</p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="email">Correu electrònic</label>
+          <input class="form-input" type="email" id="email" required placeholder="tu@exemple.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Contrasenya</label>
+          <input class="form-input" type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-login">Accedeix</button>
+        <div class="login-links">
+          <a href="/app/registre/">Crear compte</a>
+          <a href="/app/recuperar/">Has oblidat la contrasenya?</a>
+        </div>
+      </form>
+
+      <div class="login-avís">
+        <strong>Encara no tens compte?</strong> Per accedir al servei de consultes cal primer <a href="/paquets/">comprar un paquet d'hores</a>. El registre és gratuït però les consultes requereixen hores disponibles.
+      </div>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    © {{ now.Year }} malditasmaquinas.com · linuxbcn.com
+  </footer>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Backend pendent de connexió. Torna aviat!');
+    });
+  </script>
+</body>
+</html>

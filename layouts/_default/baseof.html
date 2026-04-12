@@ -1,0 +1,29 @@
+{{ partial "basehead.html" . }}
+  <a class="skip-link" href="#main-content">Salta al contingut principal</a>
+  {{ partial "nav.html" . }}
+  <main id="main-content">
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "footer.html" . }}
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var navLogo = document.getElementById('navLogo');
+    var heroTitle = document.getElementById('heroTitle');
+    if (!navLogo || !heroTitle) return;
+    var scrolled = false;
+    window.addEventListener('scroll', function() {
+      var bottom = heroTitle.getBoundingClientRect().bottom;
+      if (bottom < 80 && !scrolled) {
+        scrolled = true;
+        navLogo.classList.add('visible');
+        heroTitle.style.opacity = '0';
+      } else if (bottom >= 80 && scrolled) {
+        scrolled = false;
+        navLogo.classList.remove('visible');
+        heroTitle.style.opacity = '1';
+      }
+    }, { passive: true });
+  });
+  </script>
+</body>
+</html>

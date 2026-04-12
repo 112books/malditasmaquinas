@@ -8,7 +8,9 @@ Instruccions per a Claude Code. Llegeix aquest fitxer abans de qualsevol acció 
 
 Web de consultoria tecnològica a demanda per a artistes, autònoms i petites empreses. Fusiona les marques MalditasMaquinas.com i MacBCN.com, ambdues subprojectes de LinuxBCN.com.
 
-Model de negoci: el client compra paquets d'hores prepagades i envia consultes tècniques a través del web.
+Model de negoci: el client compra paquets d'hores prepagades i envia consultes tècniques a través del web. **Sense hores contractades no s'atenen consultes tècniques.**
+
+Fundat el 22/10/2003. Més de 20 anys d'experiència.
 
 ---
 
@@ -16,210 +18,269 @@ Model de negoci: el client compra paquets d'hores prepagades i envia consultes t
 
 | Capa | Tecnologia |
 |---|---|
-| Generador estàtic | Hugo |
-| Hosting / CDN | Cloudflare Pages (gratis) |
-| API / lògica backend | Cloudflare Workers (gratis fins 100k req/dia) |
-| Base de dades | Cloudflare D1 (SQLite, gratis fins 5 GB) |
-| Sessions / cache | Cloudflare KV (gratis fins 100k lectures/dia) |
-| Fitxers / adjunts | Cloudflare R2 (gratis fins 10 GB) |
-| Autenticació àrea privada | Cloudflare Access + JWT |
+| Generador estàtic | Hugo 0.159+ |
+| Hosting / CDN | GitHub Pages (actual) → Cloudflare Pages (futur) |
+| CI/CD | GitHub Actions (`.github/workflows/deploy.yml`) |
+| API / lògica backend | Cloudflare Workers |
+| Base de dades | Cloudflare D1 (SQLite) |
+| Sessions / cache | Cloudflare KV |
+| Fitxers / adjunts | Cloudflare R2 |
+| Autenticació | JWT via Workers (cookie HttpOnly) |
 | Pagaments | Stripe Checkout + webhooks |
-| Email transaccional | Resend (gratis fins 3.000 emails/mes) |
+| Email transaccional | Resend |
 | Notificacions | Telegram Bot API (via Worker) |
-| Repositori | GitHub (privat) |
+| Repositori | GitHub públic (112books/malditasmaquinas) |
 
-**Cost actual: 0 €/mes.** Quan creixi i superi els free tiers, Cloudflare cobra ~5 $/mes.
+**Cost actual: 0 €/mes.**
 
 ---
 
 ## Estructura de branques
 
 ```
-main    → producció (malditasmaquinas.com, Cloudflare Pages)
-dev     → preview (URL automàtica de Cloudflare Pages per branch)
+main    → producció (GitHub Pages → malditasmaquinas.com)
+dev     → staging / preview
 local   → desenvolupament (localhost:1313, hugo serve)
 ```
 
-**Regla**: mai fer push directe a `main` sense haver provat a `dev` primer.
-
-El CI/CD és automàtic: Cloudflare Pages fa el build de Hugo en cada push.
+**Regla**: mai fer push directe a `main` sense haver provat abans.
 
 ---
 
 ## Estructura del repositori
 
 ```
-malditasmaquinas.com/
-├── CLAUDE.md                  ← aquest fitxer
-├── hugo.toml                  ← configuració Hugo
+malditasmaquinas/
+├── CLAUDE.md
+├── hugo.toml
 ├── .github/
-│   └── workflows/             ← GitHub Actions (opcional, CF Pages ja fa CI)
+│   └── workflows/
+│       └── deploy.yml          ← Hugo build → GitHub Pages
 ├── content/
-│   ├── ca/                    ← continguts en català (idioma principal)
+│   ├── ca/                     ← català (idioma principal)
 │   │   ├── _index.md
 │   │   ├── serveis/
 │   │   ├── com-funciona/
-│   │   └── paquets/
-│   └── es/                    ← continguts en castellà (idioma secundari)
+│   │   ├── paquets/
+│   │   ├── contacte/
+│   │   ├── avis-legal/
+│   │   ├── privacitat/
+│   │   └── condicions/
+│   └── es/                     ← castellà (idioma secundari)
 │       ├── _index.md
 │       ├── servicios/
 │       ├── como-funciona/
-│       └── paquetes/
+│       ├── paquetes/
+│       ├── contacto/
+│       ├── aviso-legal/
+│       ├── privacidad/
+│       └── condiciones/
 ├── layouts/
 │   ├── _default/
-│   ├── partials/
-│   └── shortcodes/
+│   │   ├── baseof.html
+│   │   ├── list.html
+│   │   ├── single.html
+│   │   ├── legal.html
+│   │   └── contacte.html
+│   ├── home.html
+│   └── partials/
+│       ├── basehead.html
+│       ├── nav.html
+│       └── footer.html
 ├── static/
 │   ├── img/
-│   ├── svg/                   ← logotip i il·lustracions SVG
-│   └── fonts/
+│   │   └── logo/
+│   │       └── mm_03.gif       ← logotip actual (provisional)
+│   ├── svg/
+│   ├── fonts/
+│   └── app/
+│       └── index.html          ← àrea privada (SPA, sense backend encara)
 ├── assets/
-│   ├── css/
-│   └── js/
+│   └── css/
+│       └── main.css
 ├── i18n/
 │   ├── ca.toml
 │   └── es.toml
-├── workers/                   ← Cloudflare Workers (API backend)
+├── workers/
 │   ├── api/
-│   │   ├── auth.js
-│   │   ├── consultations.js
-│   │   ├── hours.js
-│   │   └── stripe-webhook.js
-│   └── wrangler.toml          ← configuració Workers + D1 + KV + R2
-└── public/                    ← output de Hugo (ignorat al .gitignore)
+│   │   └── index.js
+│   ├── migrations/
+│   │   └── 0001_init.sql
+│   └── wrangler.toml
+└── public/                     ← generat per Hugo, ignorat al .gitignore
 ```
 
 ---
 
 ## Convencions
 
-### Idioma
+### Idioma i textos
 
 - Català és l'idioma per defecte (`defaultContentLanguage = "ca"`)
-- Castellà és el segon idioma
-- Els fitxers de contingut porten el codi d'idioma al path: `content/ca/`, `content/es/`
-- Les cadenes d'interfície van als fitxers `i18n/ca.toml` i `i18n/es.toml`
+- Castellà és el segon idioma (`/es/`)
+- Tota nova pàgina cal crear-la en els dos idiomes
+- Les cadenes d'interfície van a `i18n/ca.toml` i `i18n/es.toml`
+- **Majúscula inicial** als paràgrafs i títols de contingut
+- **Minúscula** als elements d'interfície (botons, etiquetes, navegació, stag)
+- Noms de fitxer: minúscules, guió, sense accents: `com-funciona.md`, `avis-legal/`
 
-### Fitxers de contingut
+### Programari i ètica tecnològica
 
-- Format: Markdown amb front matter TOML (`+++`)
-- Noms de fitxer: minúscules, paraules separades per guió, sense accents ni caràcters especials
-  - Correcte: `com-funciona.md`, `paquets-hores.md`
-  - Incorrecte: `ComFunciona.md`, `paquets_hores.md`
+- **Prioritzar sempre programari lliure**: Inkscape, GIMP, Darktable, Kdenlive, Ardour, Affinity, etc.
+- **No recomanar Adobe** ni altres imperis de subscripció tancada
+- **No recomanar WordPress** com a destí — sí com a origen de migracions
+- Drupal i WordPress: suport de migració cap a solucions estàtiques (Hugo), no cap a nous projectes
+- Missatge de marca: sites estàtics cobreixen el 99% de necessitats; és més ètic, econòmic i sostenible
+- Solucions de pagament: justificar molt bé; preferir alternatives lliures quan existeixin
 
-### CSS i JS
+### Estil visual i disseny
 
-- CSS: un sol fitxer compilat per Hugo Pipes, sense frameworks externs llevat que sigui estrictament necessari
-- JS: mínim imprescindible; JS de l'àrea privada consumeix l'API de Workers
-- Cap dependència de jQuery
-
-### Commits
-
-- Missatges en català, en minúscules, imperatiu present
-  - Correcte: `afegeix pàgina de paquets en castellà`
-  - Incorrecte: `Added packages page`, `Afegida pàgina`
-
-### Estil visual
-
-- Estètica fosca: negre/antracita de base, accent taronja o verd fosfòric
-- Mòbil primer: tots els layouts es dissenyen primer per a pantalla petita
+- **Estètica**: negre/antracita de base, accent taronja rovell (`#e04d10`)
+- **Filosofia**: asimetria controlada estil Monk — mides contrastades, res de simetria perfecta
+- **Mòbil primer**: dissenyar sempre des de pantalla petita cap a gran
+- **Cap majúscules forçades** als títols grans — Galindo ja té prou presència
+- **Botons i etiquetes**: minúscula
 
 ### Tipografia
 
-| Rol | Font | Llicència | Origen |
-|---|---|---|---|
-| Títols i display | **Galindo** | SIL OFL — lliure comercial | Google Fonts |
-| Cos de text | a decidir (sans-serif legible) | — | — |
-| Codi / terminal | monospace del sistema | — | — |
+| Rol | Font | Origen |
+|---|---|---|
+| Títols i display | **Galindo** | Google Fonts (SIL OFL) |
+| Cos de text | **Bitter** | Google Fonts (SIL OFL) |
+| Interfície / codi | **IBM Plex Mono** | Google Fonts (SIL OFL) |
 
-**Regla**: Galindo només per a titulars i elements de display. Mai per a cos de text ni interfície.
+- Galindo: **només** per a titulars i elements de display. Mai cos de text ni interfície
+- IBM Plex Mono: etiquetes, botons, nav, stags, dades
+- Bitter: cos de text, subtítols, descripcions
+
+### Colors CSS (variables)
+
+```css
+--bg:     #0d0c0b   /* fons principal */
+--bg2:    #181714   /* fons secundari / hover */
+--line:   #1e1c1a   /* línies divisòries */
+--cream:  #e2ddd6   /* text principal */
+--cream2: #9a958e   /* text secundari */
+--cream3: #5a5650   /* text terciari / UI gran */
+--rust:   #bf3d08   /* accent fosc */
+--rust2:  #e04d10   /* accent principal */
+--rust3:  #ff6425   /* accent hover */
+```
+
+**Contrast WCAG AA**: cream2 sobre bg = ~7.2:1 ✓ · rust2 sobre bg = ~4.6:1 ✓
+
+### Accessibilitat (obligatori)
+
+- Tot el HTML ha de passar validació W3C
+- Tots els `<img>` han de tenir `alt` descriptiu
+- Totes les icones SVG del nav: `aria-hidden="true"` + `aria-label` al `<a>`
+- SVG decoratius: `aria-hidden="true" focusable="false"`
+- `<main id="main-content">` + skip link `.skip-link` visible al focus
+- `<nav aria-label="...">` per a cada nav
+- `<ul role="list">` quan la llista té rol semàntic
+- `lang` correcte a l'element `<html>` i als links de canvi d'idioma
+- `:focus-visible` amb outline visible (2px solid var(--rust2))
+- `@media (prefers-reduced-motion: reduce)` per desactivar animacions
+
+### Animacions
+
+- **Logo al hero**: lletres individuals amb `transform: rotate()` lleuger i aleatori (estil Monk)
+- **Scroll shrink**: quan el hero desapareix del viewport, el títol gran fa fade out i MalditasMaquinas apareix al nav amb animació `translateY`
+- **Hover icones nav**: `translateY(-3px) rotate(-8deg)` suau
+- Totes les animacions respecten `prefers-reduced-motion`
+
+### Commits
+
+- En català, minúscules, imperatiu present
+- Correcte: `afegeix pàgina de contacte en castellà`
+- Incorrecte: `Added contact page`
 
 ---
 
-## Àrea privada (Workers + D1)
+## Paquets d'hores
 
-L'àrea privada és una SPA lleugera en JS vanilla o Alpine.js que consumeix l'API de Workers.
+| Paquet | Hores | Preu | Caducitat |
+|--------|-------|------|-----------|
+| mínim | 0.5h | 35 € + IVA | 1 mes |
+| bàsic | 1h | 60 € + IVA | 3 mesos |
+| mitjà | 3h | 150 € + IVA | 5 mesos |
+| estàndard | 5h | 225 € + IVA | 7 mesos |
+| pro | 10h | 380 € + IVA | 10 mesos |
+| avançat | 20h | 600 € + IVA | 12 mesos |
 
-- Les pàgines de l'àrea privada viuen a `static/app/` com a pàgines Hugo buides que carreguen el JS
-- L'autenticació usa JWT gestionat per Cloudflare Access o per Workers (cookie HttpOnly)
-- El panell d'admin és una ruta protegida per rol (`role: admin`) a la taula `profiles` de D1
-- Les variables d'entorn (secrets Stripe, token Telegram, etc.) van als secrets de Workers (`wrangler secret put`)
+- Mínim per consulta: **0.25h** descomptades automàticament
+- Retorn parcial d'hores no usades en caducar, sense comissions
+- Sense hores: no s'atén consulta tècnica (sí informació general)
 
 ---
 
-## Deploy
+## Serveis (ordre de prioritat)
 
-### Local
+1. Consultoria tecnològica (servei estrella)
+2. Programari a mida
+3. Eines creatives (programari lliure primer)
+4. Webs i servidors
+5. Allibera't del WordPress
+6. Seguretat
+7. Gestió de correu electrònic
+8. Mac i Linux
 
-```bash
-hugo serve -D
-# Disponible a http://localhost:1313
-```
+---
 
-### Workers en local
+## Àrea privada (`/app/`)
 
-```bash
-cd workers
-npx wrangler dev
-# API disponible a http://localhost:8787
-```
+SPA en HTML/JS vanilla a `static/app/index.html`. Sense framework.
 
-### Staging / preview
-
-```bash
-git push origin dev
-# Cloudflare Pages fa el build automàticament i publica a una URL de preview
-```
-
-### Producció
-
-```bash
-git push origin main
-# Cloudflare Pages fa el build i publica a malditasmaquinas.com
-```
-
-No cal script de deploy manual. Tot és CI/CD via Cloudflare Pages.
+- Autenticació: JWT via Cloudflare Workers (cookie HttpOnly)
+- Panell client: saldo d'hores, historial, enviar consultes, adjunts via R2
+- Panell admin: rebre consultes, respondre, gestionar usuaris (rol `admin` a D1)
+- **Backend pendent** — ara mateix és un placeholder
 
 ---
 
 ## D1 — taules principals
 
 ```sql
-profiles        -- dades personals i fiscals de l'usuari
-hour_packages   -- definició dels paquets (nom, hores, preu, caducitat en dies)
-purchases       -- compres (user_id, package_id, stripe_session_id, expires_at, status)
-hour_balance    -- vista calculada: hores disponibles per usuari
-consultations   -- consultes enviades (user_id, pregunta, adjunts_r2_keys, hores_descomptades, estat)
-responses       -- respostes del consultor (consultation_id, text, created_at)
+profiles        -- dades personals i fiscals
+hour_packages   -- catàleg de paquets
+purchases       -- compres (stripe_session_id, expires_at, status)
+hour_balance    -- vista: hores disponibles per usuari
+consultations   -- consultes (adjunts_r2_keys JSON, hores_descomptades, estat)
+responses       -- respostes del consultor
 ```
 
-Les migracions de D1 viuen a `workers/migrations/`.
+Migracions: `workers/migrations/`
 
 ---
 
-## Stripe — productes
+## Stripe
 
-Un producte per paquet. Els IDs de preu de Stripe van com a secrets de Workers (`wrangler secret put STRIPE_PRICE_BASIC`, etc.) i també a `hugo.toml` com a params públics per als CTAs del frontend.
-
-El webhook de Stripe apunta a `https://malditasmaquinas.com/api/stripe-webhook` (Worker) que:
-
-1. Verifica la signatura (`STRIPE_WEBHOOK_SECRET`)
-2. Actualitza `purchases` amb estat `paid`
-3. Recalcula `hour_balance`
-4. Envia notificació per email (Resend) + Telegram
+- Un producte per paquet
+- Webhook → `https://malditasmaquinas.com/api/stripe-webhook` (Worker)
+- Worker: verifica signatura → actualitza `purchases` → recalcula `hour_balance` → notifica (Resend + Telegram)
+- IDs de preu: secrets de Workers (`wrangler secret put`) + `hugo.toml` params per als CTAs
 
 ---
 
-## Telegram
+## Secrets (mai al codi, mai al repo)
 
-El bot s'activa des del Worker del webhook de Stripe. El token i el `chat_id` del consultor van com a secrets de Workers, mai al codi.
+```
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+JWT_SECRET
+RESEND_API_KEY
+TELEGRAM_BOT_TOKEN
+TELEGRAM_CHAT_ID
+```
+
+Gestió: `wrangler secret put NOM`
 
 ---
 
-## Fitxers que no s'han de tocar mai directament
+## Fitxers que no s'han de tocar mai
 
-- `public/` — generat per Hugo, ignorat al `.gitignore`
-- `resources/` — caché de Hugo Pipes, ignorat al `.gitignore`
+- `public/` — generat per Hugo
+- `resources/` — caché de Hugo Pipes
 
 ---
 
@@ -229,5 +290,6 @@ Directe, proper, opinionat. Gurú hacker Linux programari lliure.
 
 - Res de corbata ni tecnicisme repel·lent
 - Res de "estimat client" ni fórmules corporatives
-- Res de majúscules en títols: sempre minúscula inicial (estil Obsidian/LinuxBCN)
-- Els textos de la interfície van sempre en català per defecte
+- Primera lletra en majúscula als textos de contingut
+- Minúscula als elements d'interfície (botons, nav, etiquetes)
+- Contacte per a consultes tècniques: hola@malditasmaquinas.com (només amb hores contractades)

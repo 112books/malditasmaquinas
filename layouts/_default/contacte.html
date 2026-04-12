@@ -1,0 +1,57 @@
+{{ define "main" }}
+<div class="page-wrap">
+  <div class="page-header">
+    <span class="stag">contacte</span>
+    <h1 class="page-title">Parlem.</h1>
+  </div>
+
+  <div class="contacte-grid">
+    <div class="contacte-info">
+      <div class="contacte-avís">
+        <span class="aside-tag">important</span>
+        <p>Les <strong>consultes tècniques</strong> només s'atenen si tens un paquet d'hores contractat. Sense hores, no hi ha consulta.</p>
+        <p style="margin-top:.75rem">Per comprar hores → <a href="/paquets/" style="color:var(--rust2)">paquets d'hores</a></p>
+      </div>
+
+      <div class="contacte-dades">
+        <div class="contacte-fila">
+          <span class="contacte-label">correu</span>
+          <a href="mailto:hola@malditasmaquinas.com" class="contacte-valor">hola@malditasmaquinas.com</a>
+        </div>
+        <div class="contacte-fila">
+          <span class="contacte-label">resposta</span>
+          <span class="contacte-valor">menys de 48h laborables</span>
+        </div>
+        <div class="contacte-fila">
+          <span class="contacte-label">ubicació</span>
+          <span class="contacte-valor">Barcelona</span>
+        </div>
+      </div>
+    </div>
+
+    <form class="contacte-form" action="https://formsubmit.co/hola@malditasmaquinas.com" method="POST">
+      <input type="hidden" name="_subject" value="Contacte MalditasMaquinas">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="https://malditasmaquinas.com/gracies/">
+
+      <div class="form-group">
+        <label class="form-label" for="nom">Nom</label>
+        <input class="form-input" type="text" id="nom" name="nom" required placeholder="El teu nom">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Correu electrònic</label>
+        <input class="form-input" type="email" id="email" name="email" required placeholder="tu@exemple.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="assumpte">Assumpte</label>
+        <input class="form-input" type="text" id="assumpte" name="assumpte" required placeholder="De què es tracta?">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="missatge">Missatge</label>
+        <textarea class="form-input form-textarea" id="missatge" name="missatge" required placeholder="Explica'ns en què podem ajudar-te. Recorda que les consultes tècniques requereixen paquet d'hores."></textarea>
+      </div>
+      <button type="submit" class="btn-p" style="width:100%;text-align:center">Envia el missatge</button>
+    </form>
+  </div>
+</div>
+{{ end }}
