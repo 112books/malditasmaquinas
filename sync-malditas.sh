@@ -82,7 +82,7 @@ do_sync() {
     fi
 
     print_message "Push..."
-    if ! git push $REMOTE $BRANCH; then
+    if ! git push $REMOTE $(git branch --show-current):$BRANCH; then
         print_error "Error en el push."
         exit 1
     fi
@@ -144,7 +144,7 @@ do_publish() {
 # Force push
 do_force() {
     print_warning "Forçarà el repositori remot"
-    git push $REMOTE $BRANCH --force-with-lease
+    git push $REMOTE $(git branch --show-current)
     print_success "Force push completat"
 }
 
