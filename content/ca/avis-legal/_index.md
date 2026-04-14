@@ -6,8 +6,8 @@ layout = "legal"
 ## Titular del lloc web
 
 **LinuxBCN** (MalditasMaquinas.com)
-NIF: [NIF]
-Adreça: [Adreça]
+NIF: 38121766W
+Adreça: Nau Bostik — Carrer de Ferran Turné 1-11, 08027 Barcelona (Catalunya)
 Correu: hola@malditasmaquinas.com
 
 ## Condicions d'ús
