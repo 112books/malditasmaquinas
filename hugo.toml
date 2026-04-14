@@ -91,12 +91,12 @@ enableGitInfo = false
   # Genera els enllaços al dashboard de Stripe i enganxa'ls aquí
   [params.stripe]
     [params.stripe.links]
-      minim     = ""   # https://buy.stripe.com/XXXXXXXX
-      basic     = ""
-      mitja     = ""
-      estandard = ""
-      pro       = ""
-      avancat   = ""
+      minim     = "https://buy.stripe.com/test_bJe9AU6Cx9JscvS2jTao801"
+      basic     = "https://buy.stripe.com/test_8x28wQ2mh3l41RecYxao800"
+      mitja     = "https://buy.stripe.com/test_fZu9AU9OJ1cWeE0f6Fao802"
+      estandard = "https://buy.stripe.com/test_28E7sMd0V7BkgM88Ihao803"
+      pro       = "https://buy.stripe.com/test_dRm14o6Cx6xgcvSgaJao804"
+      avancat   = "https://buy.stripe.com/test_00w5kEf9308S53q0bLao805"
 
 # ── Hugo Pipes / assets ───────────────────────────────────────────────────────
 
