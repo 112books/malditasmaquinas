@@ -18,19 +18,17 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
   binding = "DB"
   database_name = "malditasmaquinas-db"
-  database_id = "XXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"  # substituir després de crear amb wrangler
+  database_id = "898b83eb-2463-4e13-b3ec-08cac3a7c89e"
 
-# ── KV (sessions / cache) ─────────────────────────────────────────────────────
+# ── KV (sessions / cache) — activar quan calgui ──────────────────────────────
+# [[kv_namespaces]]
+#   binding = "KV"
+#   id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
-[[kv_namespaces]]
-  binding = "KV"
-  id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"  # substituir després de crear amb wrangler
-
-# ── R2 (fitxers adjunts) ──────────────────────────────────────────────────────
-
-[[r2_buckets]]
-  binding = "R2"
-  bucket_name = "malditasmaquinas-files"
+# ── R2 (fitxers adjunts) — activar quan calgui ───────────────────────────────
+# [[r2_buckets]]
+#   binding = "R2"
+#   bucket_name = "malditasmaquinas-files"
 
 # ── Secrets (mai al codi, pujar amb: wrangler secret put NOM) ────────────────
 # STRIPE_SECRET_KEY

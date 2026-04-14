@@ -208,10 +208,10 @@ malditasmaquinas/
 |--------|-------|------|-----------|
 | mínim | 0.5h | 35 € + IVA | 1 mes |
 | bàsic | 1h | 60 € + IVA | 3 mesos |
-| mitjà | 3h | 150 € + IVA | 5 mesos |
-| estàndard | 5h | 225 € + IVA | 7 mesos |
-| pro | 10h | 380 € + IVA | 10 mesos |
-| avançat | 20h | 600 € + IVA | 12 mesos |
+| mitjà | 3h | 165 € + IVA | 5 mesos |
+| estàndard | 5h | 260 € + IVA | 7 mesos |
+| pro | 10h | 500 € + IVA | 10 mesos |
+| avançat | 20h | 900 € + IVA | 12 mesos |
 
 - Mínim per consulta: **0.25h** descomptades automàticament
 - Retorn parcial d'hores no usades en caducar, sense comissions
