@@ -87,16 +87,16 @@ enableGitInfo = false
   # Cloudflare Workers API
   apiBase = "https://malditasmaquinas.com/api"
 
-  # Stripe price IDs (test) — substituir per live abans de producció
+  # Stripe — Payment Links (fase 1, sense backend)
+  # Genera els enllaços al dashboard de Stripe i enganxa'ls aquí
   [params.stripe]
-    publicKey = "pk_test_XXXXXXXXXXXXXXXXXXXXXXXXXX"
-    [params.stripe.prices]
-      minim    = "price_XXXXXXXXXXXXXXXXXX"
-      basic    = "price_XXXXXXXXXXXXXXXXXX"
-      mitja    = "price_XXXXXXXXXXXXXXXXXX"
-      estandard = "price_XXXXXXXXXXXXXXXXXX"
-      pro      = "price_XXXXXXXXXXXXXXXXXX"
-      avancat  = "price_XXXXXXXXXXXXXXXXXX"
+    [params.stripe.links]
+      minim     = ""   # https://buy.stripe.com/XXXXXXXX
+      basic     = ""
+      mitja     = ""
+      estandard = ""
+      pro       = ""
+      avancat   = ""
 
 # ── Hugo Pipes / assets ───────────────────────────────────────────────────────
 

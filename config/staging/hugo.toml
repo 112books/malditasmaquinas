@@ -1,0 +1,9 @@
+# config/staging/hugo.toml — entorn staging (GitHub Pages preview)
+# Sobreescriu els valors del hugo.toml arrel per a l'entorn de staging
+
+baseURL = "https://112books.github.io/malditasmaquinas/"
+
+enableRobotsTXT = false
+
+[params]
+  apiBase = "https://malditasmaquinas.com/api"

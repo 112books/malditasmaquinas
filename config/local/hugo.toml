@@ -1,0 +1,9 @@
+# config/local/hugo.toml — entorn local (hugo serve)
+# Sobreescriu els valors del hugo.toml arrel per a desenvolupament local
+
+baseURL = "http://localhost:1313/"
+
+enableRobotsTXT = false
+
+[params]
+  apiBase = "http://localhost:8787/api"   # wrangler dev

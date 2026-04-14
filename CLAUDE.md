@@ -52,10 +52,15 @@ local   → desenvolupament (localhost:1313, hugo serve)
 ```
 malditasmaquinas/
 ├── CLAUDE.md
+├── README.md
 ├── hugo.toml
+├── hugo_stats.json
+├── sync-malditas.sh            ← script de sincronització local → repo
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml          ← Hugo build → GitHub Pages
+├── archetypes/
+│   └── default.md
 ├── content/
 │   ├── ca/                     ← català (idioma principal)
 │   │   ├── _index.md
@@ -66,38 +71,38 @@ malditasmaquinas/
 │   │   ├── avis-legal/
 │   │   ├── privacitat/
 │   │   └── condicions/
-│   └── es/                     ← castellà (idioma secundari)
+│   └── es/                     ← castellà (idioma secundari, parcialment creat)
 │       ├── _index.md
 │       ├── servicios/
 │       ├── como-funciona/
-│       ├── paquetes/
-│       ├── contacto/
-│       ├── aviso-legal/
-│       ├── privacidad/
-│       └── condiciones/
+│       └── paquetes/
 ├── layouts/
 │   ├── _default/
 │   │   ├── baseof.html
 │   │   ├── list.html
-│   │   ├── single.html
 │   │   ├── legal.html
 │   │   └── contacte.html
 │   ├── home.html
+│   ├── shortcodes/
 │   └── partials/
 │       ├── basehead.html
 │       ├── nav.html
 │       └── footer.html
 ├── static/
+│   ├── .htaccess
 │   ├── img/
-│   │   └── logo/
-│   │       └── mm_03.gif       ← logotip actual (provisional)
+│   │   ├── logo/
+│   │   │   └── mm_03.gif           ← logotip actual (provisional)
+│   │   ├── dimoni-roig.png
+│   │   └── dimoni-roig-banyes-blanques.png
 │   ├── svg/
 │   ├── fonts/
 │   └── app/
-│       └── index.html          ← àrea privada (SPA, sense backend encara)
+│       └── index.html              ← àrea privada (SPA, sense backend encara)
 ├── assets/
-│   └── css/
-│       └── main.css
+│   ├── css/
+│   │   └── main.css
+│   └── js/
 ├── i18n/
 │   ├── ca.toml
 │   └── es.toml
@@ -107,7 +112,7 @@ malditasmaquinas/
 │   ├── migrations/
 │   │   └── 0001_init.sql
 │   └── wrangler.toml
-└── public/                     ← generat per Hugo, ignorat al .gitignore
+└── public/                         ← generat per Hugo, ignorat al .gitignore
 ```
 
 ---
@@ -121,7 +126,7 @@ malditasmaquinas/
 - Tota nova pàgina cal crear-la en els dos idiomes
 - Les cadenes d'interfície van a `i18n/ca.toml` i `i18n/es.toml`
 - **Majúscula inicial** als paràgrafs i títols de contingut
-- **Minúscula** als elements d'interfície (botons, etiquetes, navegació, stag)
+- **Minúscula** als elements d'interfície (botons, etiquetes, navegació, tags)
 - Noms de fitxer: minúscules, guió, sense accents: `com-funciona.md`, `avis-legal/`
 
 ### Programari i ètica tecnològica
@@ -150,7 +155,7 @@ malditasmaquinas/
 | Interfície / codi | **IBM Plex Mono** | Google Fonts (SIL OFL) |
 
 - Galindo: **només** per a titulars i elements de display. Mai cos de text ni interfície
-- IBM Plex Mono: etiquetes, botons, nav, stags, dades
+- IBM Plex Mono: etiquetes, botons, nav, tags, dades
 - Bitter: cos de text, subtítols, descripcions
 
 ### Colors CSS (variables)
@@ -281,6 +286,14 @@ Gestió: `wrangler secret put NOM`
 
 - `public/` — generat per Hugo
 - `resources/` — caché de Hugo Pipes
+
+---
+
+## Pendent / deute tècnic
+
+- `layouts/_default/single.html` — no creat encara; les pàgines individuals van per `list.html` o layouts específics
+- `content/es/` — manquen `contacto/`, `aviso-legal/`, `privacidad/`, `condiciones/` (pendent de crear en paral·lel amb les de `ca/`)
+- `static/.htaccess` — no trackat al git; revisar si cal afegir-lo o ignorar-lo
 
 ---
 

@@ -195,9 +195,10 @@ a { color: inherit; }
 .hero-logo-wrap {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   position: relative;
+  padding-top: 3.5rem;
 }
 .hero-logo-wrap img { width: 260px; }
 .big-num {
@@ -522,6 +523,34 @@ a { color: inherit; }
 .pkg-i { color: var(--cream2) !important; font-size: .78rem !important; }
 .pkg-v { color: var(--cream2) !important; font-size: .75rem !important; }
 
+/* ── Paquet: botó compra ──────────────────────────────────────────────────── */
+.pkg-cta {
+  display: block;
+  margin-top: 1.25rem;
+  font-family: var(--f-mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-align: center;
+  text-decoration: none;
+  color: var(--rust2);
+  border: 1px solid var(--rust);
+  padding: .55rem 0;
+  transition: background .15s, color .15s;
+}
+.pkg-cta:hover {
+  background: var(--rust2);
+  color: var(--cream);
+}
+.pkg.feat .pkg-cta {
+  background: var(--rust2);
+  color: var(--cream);
+  border-color: var(--rust2);
+}
+.pkg.feat .pkg-cta:hover {
+  background: var(--rust3);
+  border-color: var(--rust3);
+}
+
 /* ── Com funciona: números color 2003 ────────────────────────────────────── */
 .step-n { color: #2a2724 !important; }
 
@@ -662,6 +691,20 @@ button:focus-visible { outline: 2px solid var(--rust2); outline-offset: 3px; }
 @media (max-width: 400px) {
   .pkg-grid { grid-template-columns: 1fr; }
   .nav-acc span { display: none; }
+}
+
+/* ── Dimoni entrada ───────────────────────────────────────────────────────── */
+@keyframes dimoni-entrada {
+  0%   { transform: translateY(-18px) rotate(-6deg); }
+  25%  { transform: translateY(10px)  rotate(3deg); }
+  45%  { transform: translateY(-8px)  rotate(-2.5deg); }
+  62%  { transform: translateY(5px)   rotate(1.5deg); }
+  76%  { transform: translateY(-3px)  rotate(-.8deg); }
+  88%  { transform: translateY(2px)   rotate(.3deg); }
+  100% { transform: translateY(0)     rotate(0deg); }
+}
+.hero-logo-wrap img {
+  animation: dimoni-entrada 3s cubic-bezier(.22,1,.36,1) .25s both;
 }
 
 /* Motion reduced */
