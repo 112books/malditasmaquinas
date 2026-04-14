@@ -13,7 +13,7 @@
   {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 
-  <link rel="icon" href="/svg/logo.svg" type="image/svg+xml">
+  <link rel="icon" href="{{ "img/dimoni-roig.png" | relURL }}" type="image/png">
 
   {{ range .AlternativeOutputFormats -}}
     {{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}

@@ -24,7 +24,7 @@
   </div>
   <div class="hero-right">
     <div class="hero-logo-wrap">
-      <img src="/img/dimoni-roig-banyes-blanques.png" alt="MalditasMaquinas">
+      <img src="/img/dimoni-roig-banyes-blanques.png" alt="Dimoni vermell, mascota de MalditasMaquinas">
       <span class="big-num" aria-hidden="true">2003</span>
     </div>
     <div class="hero-stats">
@@ -97,6 +97,7 @@
       <span class="pkg-p">35 €</span>
       <span class="pkg-i">+ iva</span>
       <div class="pkg-v">caduca en 1 mes</div>
+      {{ with .Site.Params.stripe.links.minim }}<a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>{{ end }}
     </div>
     <div class="pkg">
       <div class="pkg-n">bàsic</div>
@@ -105,6 +106,7 @@
       <span class="pkg-p">60 €</span>
       <span class="pkg-i">+ iva</span>
       <div class="pkg-v">caduca en 3 mesos</div>
+      {{ with .Site.Params.stripe.links.basic }}<a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>{{ end }}
     </div>
     <div class="pkg">
       <div class="pkg-n">mitjà</div>
@@ -113,6 +115,7 @@
       <span class="pkg-p">150 €</span>
       <span class="pkg-i">+ iva</span>
       <div class="pkg-v">caduca en 5 mesos</div>
+      {{ with .Site.Params.stripe.links.mitja }}<a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>{{ end }}
     </div>
     <div class="pkg feat">
       <div class="pkg-badge">popular</div>
@@ -122,6 +125,7 @@
       <span class="pkg-p">225 €</span>
       <span class="pkg-i">+ iva</span>
       <div class="pkg-v">caduca en 7 mesos</div>
+      {{ with .Site.Params.stripe.links.estandard }}<a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>{{ end }}
     </div>
     <div class="pkg">
       <div class="pkg-n">pro</div>
@@ -130,6 +134,7 @@
       <span class="pkg-p">380 €</span>
       <span class="pkg-i">+ iva</span>
       <div class="pkg-v">caduca en 10 mesos</div>
+      {{ with .Site.Params.stripe.links.pro }}<a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>{{ end }}
     </div>
     <div class="pkg">
       <div class="pkg-n">avançat</div>
@@ -138,6 +143,7 @@
       <span class="pkg-p">600 €</span>
       <span class="pkg-i">+ iva</span>
       <div class="pkg-v">caduca en 12 mesos</div>
+      {{ with .Site.Params.stripe.links.avancat }}<a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>{{ end }}
     </div>
   </div>
 </section>
