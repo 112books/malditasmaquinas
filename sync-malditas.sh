@@ -88,6 +88,19 @@ show_status() {
 }
 
 # ---------------------------------------------------------------------------
+# Pull: baixa els canvis de GitHub (branca actual)
+# ---------------------------------------------------------------------------
+
+do_pull() {
+    print_message "Baixant canvis de GitHub..."
+    if ! git pull origin "$(git branch --show-current)" --rebase; then
+        print_error "Error en el pull. Resol els conflictes i torna a intentar-ho."
+        exit 1
+    fi
+    print_success "Repositori actualitzat"
+}
+
+# ---------------------------------------------------------------------------
 # Entorn 1 — LOCAL: hugo serve (baseURL auto → localhost:1313)
 # ---------------------------------------------------------------------------
 
@@ -223,10 +236,11 @@ interactive_menu() {
     echo "Què vols fer?"
     echo ""
     echo "1) status   → Veure estat del repositori"
-    echo "2) serve    → Servidor local  ($URL_LOCAL)"
-    echo "3) sync     → Pujar codi a GitHub dev"
-    echo "4) preview  → Build local amb baseURL de staging"
-    echo "5) deploy   → Publicar a GitHub Pages (staging + prod via CI/CD)"
+    echo "2) pull     → Baixar canvis de GitHub"
+    echo "3) serve    → Servidor local  ($URL_LOCAL)"
+    echo "4) sync     → Pujar codi a GitHub dev"
+    echo "5) preview  → Build local amb baseURL de staging"
+    echo "6) deploy   → Publicar a GitHub Pages (staging + prod via CI/CD)"
     echo "0) Sortir"
     echo ""
 
@@ -235,10 +249,11 @@ interactive_menu() {
 
     case $opt in
         1) show_status ;;
-        2) do_serve ;;
-        3) do_sync ;;
-        4) do_preview ;;
-        5)
+        2) do_pull ;;
+        3) do_serve ;;
+        4) do_sync ;;
+        5) do_preview ;;
+        6)
             print_warning "Farà push a main → GitHub Actions → GitHub Pages"
             read -p "Segur? (s/N): " confirm
             [[ "$confirm" =~ ^[Ss]$ ]] && do_deploy || print_message "Cancel·lat"
@@ -259,6 +274,7 @@ if [[ -z "$1" ]]; then
 else
     case $1 in
         status)  show_status ;;
+        pull)    do_pull ;;
         serve)   do_serve ;;
         sync)    do_sync ;;
         preview) do_preview ;;
