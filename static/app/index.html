@@ -795,17 +795,24 @@ async function boot() {
 
   // 1. Magic link a la URL
   if (token) {
-    const ok = await verifyToken(token);
-    if (!ok) {
+    try {
+      const ok = await verifyToken(token);
+      if (!ok) {
+        updateNav();
+        setMain('<div class="auth-box"><div class="msg-box err">El link ha caducat o ja s\'ha usat. Sol·licita un de nou.</div><br><button class="btn-primary" onclick="App.logout()">Torna al login</button></div>', true);
+        return;
+      }
+    } catch (err) {
+      console.error('verifyToken error:', err);
       updateNav();
-      setMain('<div class="auth-box"><div class="msg-box err">El link ha caducat o ja s\'ha usat. Sol·licita un de nou.</div><br><button class="btn-primary" onclick="App.logout()">Torna al login</button></div>', true);
+      setMain('<div class="auth-box"><div class="msg-box err">Error de connexió amb el servidor. Torna-ho a provar.</div><br><button class="btn-primary" onclick="location.reload()">Reintenta</button></div>', true);
       return;
     }
   }
 
   // 2. JWT existent
   if (State.jwt && !State.user) {
-    await loadMe();
+    try { await loadMe(); } catch { State.jwt = null; localStorage.removeItem(JWT_KEY); }
   }
 
   updateNav();
