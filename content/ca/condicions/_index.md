@@ -17,10 +17,10 @@ El servei funciona mitjançant la compra prèvia de paquets d'hores prepagades. 
 |--------|-------|------|-----------|
 | Mínim | 0.5h | 35 € + IVA | 1 mes |
 | Bàsic | 1h | 60 € + IVA | 3 mesos |
-| Mitjà | 3h | 150 € + IVA | 5 mesos |
-| Estàndard | 5h | 225 € + IVA | 7 mesos |
-| Pro | 10h | 380 € + IVA | 10 mesos |
-| Avançat | 20h | 600 € + IVA | 12 mesos |
+| Mitjà | 3h | 165 € + IVA | 5 mesos |
+| Estàndard | 5h | 260 € + IVA | 7 mesos |
+| Pro | 10h | 500 € + IVA | 10 mesos |
+| Avançat | 20h | 900 € + IVA | 12 mesos |
 
 ## Descompte d'hores
 
