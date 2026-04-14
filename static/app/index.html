@@ -420,10 +420,17 @@ function showPending(nom) {
 async function showClient() {
   setMain('<div class="loading"><span class="loading-dot">carregant_</span></div>');
 
-  const [balRes, consRes] = await Promise.all([
-    api('GET', '/hours/balance'),
-    api('GET', '/consultations'),
-  ]);
+  let balRes, consRes;
+  try {
+    [balRes, consRes] = await Promise.all([
+      api('GET', '/hours/balance'),
+      api('GET', '/consultations'),
+    ]);
+  } catch (err) {
+    console.error('showClient error:', err);
+    setMain('<div class="auth-box"><div class="msg-box err">Error de connexió. <button class="btn-primary" onclick="location.reload()">Reintenta</button></div></div>', true);
+    return;
+  }
 
   const hores = balRes.ok ? (balRes.data.hores_disponibles ?? 0) : 0;
   const cons  = consRes.ok ? consRes.data : [];
@@ -684,10 +691,17 @@ async function showAdmin(tab) {
   if (tab) State.adminTab = tab;
   setMain('<div class="loading"><span class="loading-dot">carregant_</span></div>');
 
-  const [usersRes, consRes] = await Promise.all([
-    api('GET', '/admin/users'),
-    api('GET', '/consultations'),
-  ]);
+  let usersRes, consRes;
+  try {
+    [usersRes, consRes] = await Promise.all([
+      api('GET', '/admin/users'),
+      api('GET', '/consultations'),
+    ]);
+  } catch (err) {
+    console.error('showAdmin error:', err);
+    setMain('<div class="auth-box"><div class="msg-box err">Error de connexió. <button class="btn-primary" onclick="location.reload()">Reintenta</button></div></div>', true);
+    return;
+  }
 
   const users = usersRes.ok ? usersRes.data : [];
   const cons  = consRes.ok  ? consRes.data  : [];
@@ -836,7 +850,10 @@ async function boot() {
   showClient();
 }
 
-boot();
+boot().catch(err => {
+  console.error('boot error:', err);
+  setMain('<div class="auth-box"><div class="msg-box err">Error inesperat. <button class="btn-primary" onclick="location.reload()">Reintenta</button></div></div>', true);
+});
 </script>
 </body>
 </html>
