@@ -843,9 +843,9 @@ async function boot() {
     return;
   }
 
-  if (State.user.role === 'admin') { showAdmin(); return; }
-
   if (State.pendingPkg) { showBuyPkg(State.pendingPkg); return; }
+
+  if (State.user.role === 'admin') { showAdmin(); return; }
 
   showClient();
 }
