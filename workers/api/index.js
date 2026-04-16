@@ -38,11 +38,11 @@ export default {
 
     try {
       // ── Routes ──────────────────────────────────────────────────────────────
-      if (path.startsWith('/auth'))              return handleAuth(request, env, path);
-      if (path.startsWith('/consultations'))     return handleConsultations(request, env, path);
-      if (path.startsWith('/hours'))             return handleHours(request, env, path);
-      if (path.startsWith('/admin'))             return handleAdmin(request, env, path);
-      if (path === '/stripe-webhook')            return handleStripeWebhook(request, env);
+      if (path.startsWith('/auth'))              return await handleAuth(request, env, path);
+      if (path.startsWith('/consultations'))     return await handleConsultations(request, env, path);
+      if (path.startsWith('/hours'))             return await handleHours(request, env, path);
+      if (path.startsWith('/admin'))             return await handleAdmin(request, env, path);
+      if (path === '/stripe-webhook')            return await handleStripeWebhook(request, env);
 
       return json({ error: 'not found' }, 404);
 

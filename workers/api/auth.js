@@ -192,9 +192,6 @@ async function verifyToken(request, env) {
     return json({ error: 'token_caducat', message: 'El link ha caducat. Sol·licita un de nou.' }, 401);
   }
 
-  // Marca el token com a usat
-  await env.DB.prepare('UPDATE magic_tokens SET used = 1 WHERE token = ?').bind(token).run();
-
   const user = await env.DB.prepare('SELECT * FROM profiles WHERE id = ?').bind(row.user_id).first();
   if (!user || user.status !== 'active') return json({ error: 'compte no actiu' }, 403);
 
@@ -202,6 +199,9 @@ async function verifyToken(request, env) {
     { sub: user.id, email: user.email, role: user.role, exp: Math.floor(Date.now() / 1000) + JWT_TTL_SEC },
     env.JWT_SECRET
   );
+
+  // Marca el token com a usat només si el JWT s'ha generat correctament
+  await env.DB.prepare('UPDATE magic_tokens SET used = 1 WHERE token = ?').bind(token).run();
 
   return json({ ok: true, token: jwt, user: { id: user.id, email: user.email, nom: user.nom, role: user.role } });
 }
