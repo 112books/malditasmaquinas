@@ -12,6 +12,8 @@ import { handleStripeWebhook } from './stripe-webhook.js';
 const ALLOWED_ORIGINS = [
   'https://malditasmaquinas.com',
   'https://112books.github.io',
+  'http://localhost:1313',
+  'http://127.0.0.1:1313',
 ];
 
 function getCorsHeaders(request) {
