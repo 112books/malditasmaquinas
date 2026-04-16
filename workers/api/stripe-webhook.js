@@ -15,8 +15,12 @@ import { json } from './index.js';
 // Mapa Stripe Price ID → package_id de D1
 // Actualitza amb els IDs reals del teu dashboard de Stripe
 const PRICE_TO_PACKAGE = {
-  // Exemples de test — substituir pels IDs de producció
-  // 'price_xxx': 'pkg_minim',
+  'price_1TM3LKJBa9nCGLecpN0mxVUz': 'pkg_minim',
+  'price_1TM3MSJBa9nCGLecsjAphKQx': 'pkg_basic',
+  'price_1TM6cbJBa9nCGLecaypVkTnI': 'pkg_mitja',
+  'price_1TM6bvJBa9nCGLecuP63eCKi': 'pkg_estandard',
+  'price_1TM6b8JBa9nCGLecdvJfvkJU': 'pkg_pro',
+  'price_1TM6ZJJBa9nCGLecuGZl4MxS': 'pkg_avancat',
 };
 
 export async function handleStripeWebhook(request, env) {
