@@ -43,9 +43,19 @@ export async function handleStripeWebhook(request, env) {
 
   const session = event.data.object;
 
-  // Identifica el paquet pel price_id
-  const lineItems = session.line_items?.data || [];
-  const priceId   = lineItems[0]?.price?.id || session.metadata?.price_id;
+  // Recupera line_items via API (no venen al payload per defecte)
+  let priceId;
+  try {
+    const liResp = await fetch(
+      `https://api.stripe.com/v1/checkout/sessions/${session.id}/line_items?limit=1`,
+      { headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } }
+    );
+    const liData = await liResp.json();
+    priceId = liData.data?.[0]?.price?.id;
+  } catch (e) {
+    console.error('Stripe: error recuperant line_items:', e);
+  }
+  priceId = priceId || session.metadata?.price_id;
   const packageId = PRICE_TO_PACKAGE[priceId];
 
   if (!packageId) {
