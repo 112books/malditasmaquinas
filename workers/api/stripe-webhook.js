@@ -12,15 +12,14 @@
 
 import { json } from './index.js';
 
-// Mapa amount_total (cèntims) → package_id de D1
-// Nota: amount_total és sense IVA quan automatic_tax està desactivat
+// Mapa amount_subtotal (cèntims, preu base sense IVA) → package_id de D1
 const AMOUNT_TO_PACKAGE = {
-  3500:  'pkg_minim',     // 35 €
-  6000:  'pkg_basic',     // 60 €
-  16500: 'pkg_mitja',     // 165 €
-  26000: 'pkg_estandard', // 260 €
-  50000: 'pkg_pro',       // 500 €
-  90000: 'pkg_avancat',   // 900 €
+  4235:   'pkg_minim',     // 42,35 € (35 € + 21% IVA)
+  7260:   'pkg_basic',     // 72,60 € (60 € + 21% IVA)
+  19965:  'pkg_mitja',     // 199,65 € (165 € + 21% IVA)
+  31460:  'pkg_estandard', // 314,60 € (260 € + 21% IVA)
+  60500:  'pkg_pro',       // 605,00 € (500 € + 21% IVA)
+  108900: 'pkg_avancat',   // 1.089,00 € (900 € + 21% IVA)
 };
 
 export async function handleStripeWebhook(request, env) {

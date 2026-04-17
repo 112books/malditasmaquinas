@@ -223,12 +223,12 @@ const API = (location.hostname === 'localhost' || location.hostname === '127.0.0
 const JWT_KEY = 'mm_jwt';
 
 const PACKAGES = {
-  minim:     { nom: 'mínim',     hores: 0.5, preu: 35,  caducitat: '1 mes',    link: 'https://buy.stripe.com/bJe7sM8Fzcf212z8R9ao807' },
-  basic:     { nom: 'bàsic',     hores: 1,   preu: 60,  caducitat: '3 mesos',  link: 'https://buy.stripe.com/3cI00kdZT4MA9z55EXao806' },
-  mitja:     { nom: 'mitjà',     hores: 3,   preu: 165, caducitat: '5 mesos',  link: 'https://buy.stripe.com/cNifZig814MA8v11oHao805' },
-  estandard: { nom: 'estàndard', hores: 5,   preu: 260, caducitat: '7 mesos',  link: 'https://buy.stripe.com/dRmcN69JD5QE8v12sLao802' },
-  pro:       { nom: 'pro',       hores: 10,  preu: 500, caducitat: '10 mesos', link: 'https://buy.stripe.com/6oU8wQdZT92Q5iP0kDao803' },
-  avancat:   { nom: 'avançat',   hores: 20,  preu: 900, caducitat: '12 mesos', link: 'https://buy.stripe.com/bJe4gA9JDgvieTpgjBao804' },
+  minim:     { nom: 'mínim',     hores: 0.5, preu: 42.35,  base: 35,  caducitat: '1 mes',    link: 'https://buy.stripe.com/bJeeVeaNH7YMeTpd7pao808' },
+  basic:     { nom: 'bàsic',     hores: 1,   preu: 72.60,  base: 60,  caducitat: '3 mesos',  link: 'https://buy.stripe.com/8x214o5tn1Ao12z9Vdao809' },
+  mitja:     { nom: 'mitjà',     hores: 3,   preu: 199.65, base: 165, caducitat: '5 mesos',  link: 'https://buy.stripe.com/4gMfZiaNHa6UdPl0kDao80a' },
+  estandard: { nom: 'estàndard', hores: 5,   preu: 314.60, base: 260, caducitat: '7 mesos',  link: 'https://buy.stripe.com/bJe3cwg816UI7qXebtao80b' },
+  pro:       { nom: 'pro',       hores: 10,  preu: 605.00, base: 500, caducitat: '10 mesos', link: 'https://buy.stripe.com/cNi00k8Fz7YMbHdd7pao80c' },
+  avancat:   { nom: 'avançat',   hores: 20,  preu: 1089.00,base: 900, caducitat: '12 mesos', link: 'https://buy.stripe.com/8x27sM1d71Ao5iPc3lao80d' },
 };
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -515,7 +515,7 @@ function renderPkgSelector(selectedKey) {
             <div class="pkg-card-name">${escHtml(pkg.nom)}</div>
             <div class="pkg-card-hours">${pkg.hores}</div>
             <div class="pkg-card-unit">${pkg.hores === 1 ? 'hora' : 'hores'}</div>
-            <div class="pkg-card-price">${pkg.preu} €</div>
+            <div class="pkg-card-price">${pkg.base} € <span style="font-size:.7em;color:var(--cream2)">+ IVA</span></div>
           </div>
         `).join('')}
       </div>
@@ -530,7 +530,7 @@ function renderPkgLink(key) {
   return `
     <div style="margin-top:1.25rem;">
       <a href="${escHtml(pkg.link)}" class="btn-stripe" target="_blank" rel="noopener noreferrer">
-        comprar ${escHtml(pkg.nom)} — ${pkg.preu} € + iva →
+        comprar ${escHtml(pkg.nom)} — ${pkg.preu} € (IVA inclòs) →
       </a>
       <p style="margin-top:.75rem;font-family:var(--f-mono);font-size:.65rem;color:var(--cream3);">Caduca en ${escHtml(pkg.caducitat)}. Paga amb Stripe (targeta, Bizum…).</p>
     </div>
@@ -554,7 +554,7 @@ function showBuyPkg(preselect) {
             <div class="pkg-card-name">${escHtml(pkg.nom)}</div>
             <div class="pkg-card-hours">${pkg.hores}</div>
             <div class="pkg-card-unit">${pkg.hores === 1 ? 'hora' : 'hores'}</div>
-            <div class="pkg-card-price">${pkg.preu} €</div>
+            <div class="pkg-card-price">${pkg.base} € <span style="font-size:.7em;color:var(--cream2)">+ IVA</span></div>
             <div style="font-family:var(--f-mono);font-size:.6rem;color:var(--cream3);margin-top:.4rem;">${escHtml(pkg.caducitat)}</div>
           </div>
         `).join('')}
