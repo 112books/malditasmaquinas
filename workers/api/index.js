@@ -8,6 +8,7 @@ import { handleConsultations } from './consultations.js';
 import { handleHours } from './hours.js';
 import { handleAdmin } from './admin.js';
 import { handleStripeWebhook } from './stripe-webhook.js';
+import { handleStats } from './stats.js';
 
 const ALLOWED_ORIGINS = [
   'https://malditasmaquinas.com',
@@ -43,6 +44,7 @@ export default {
       if (path.startsWith('/hours'))             return await handleHours(request, env, path);
       if (path.startsWith('/admin'))             return await handleAdmin(request, env, path);
       if (path === '/stripe-webhook')            return await handleStripeWebhook(request, env);
+      if (path.startsWith('/stats'))             return await handleStats(request, env, path, url);
 
       return json({ error: 'not found' }, 404);
 

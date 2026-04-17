@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Estadístiques · MalditasMaquinas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Bitter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="../img/dimoni-roig.png" type="image/png">
+  <style>
+    :root {
+      --bg:    #0d0c0b;
+      --bg2:   #181714;
+      --line:  #1e1c1a;
+      --cream: #e2ddd6;
+      --cream2:#9a958e;
+      --cream3:#5a5650;
+      --rust:  #bf3d08;
+      --rust2: #e04d10;
+      --rust3: #ff6425;
+      --green: #4aa864;
+      --f-mono:'IBM Plex Mono', monospace;
+      --f-body:'Bitter', serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--cream); font-family: var(--f-body); min-height: 100vh; }
+
+    /* ── Nav ── */
+    .s-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: var(--bg); z-index: 10;
+    }
+    .s-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+    .s-brand img { width: 28px; height: 28px; object-fit: contain; opacity: .85; }
+    .s-brand span { font-family: var(--f-mono); font-size: .78rem; color: var(--cream2); }
+    .s-brand strong { color: var(--rust2); font-weight: 400; }
+    .s-nav-right { display: flex; align-items: center; gap: 1rem; }
+    .period-btn {
+      font-family: var(--f-mono); font-size: .65rem; padding: .3rem .7rem;
+      border: 1px solid var(--cream3); color: var(--cream3); background: none;
+      cursor: pointer; transition: all .15s; letter-spacing: .06em;
+    }
+    .period-btn.active, .period-btn:hover { border-color: var(--rust2); color: var(--rust2); }
+    .back-link { font-family: var(--f-mono); font-size: .7rem; color: var(--cream3); text-decoration: none; }
+    .back-link:hover { color: var(--cream2); }
+
+    /* ── Layout ── */
+    .s-main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+    .s-title { font-family: var(--f-mono); font-size: .7rem; color: var(--rust2); letter-spacing: .12em; margin-bottom: .5rem; }
+    h1 { font-family: var(--f-body); font-size: 2.2rem; font-weight: 400; color: var(--cream); margin-bottom: 3rem; }
+
+    /* ── Grid ── */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .stats-grid.full { grid-template-columns: 1fr; }
+    @media (max-width: 700px) { .stats-grid { grid-template-columns: 1fr; } }
+
+    /* ── Card ── */
+    .card { background: var(--bg2); padding: 2rem; }
+    .card-title {
+      font-family: var(--f-mono); font-size: .6rem; color: var(--rust2);
+      letter-spacing: .1em; margin-bottom: 1.75rem;
+    }
+
+    /* ── Logos visuals (navegadors / SO) ── */
+    .logo-grid { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.5rem 2rem; }
+    .logo-item { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+    .logo-icon {
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 4px; background: var(--bg); font-size: 1rem;
+      color: var(--cream2); font-family: var(--f-mono); font-weight: 500;
+      transition: all .2s; flex-shrink: 0;
+    }
+    .logo-pct { font-family: var(--f-mono); font-size: .65rem; color: var(--cream3); text-align: center; }
+    .logo-name { font-family: var(--f-mono); font-size: .6rem; color: var(--cream3); text-align: center; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Barres horitzontals ── */
+    .bar-list { display: flex; flex-direction: column; gap: .75rem; }
+    .bar-item { display: grid; grid-template-columns: 140px 1fr 45px; align-items: center; gap: .75rem; }
+    .bar-label { font-family: var(--f-mono); font-size: .7rem; color: var(--cream2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bar-track { height: 6px; background: var(--line); border-radius: 2px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--rust2); border-radius: 2px; transition: width .6s ease; }
+    .bar-fill.green { background: var(--green); }
+    .bar-pct { font-family: var(--f-mono); font-size: .65rem; color: var(--cream3); text-align: right; }
+
+    /* ── Top pàgines ── */
+    .pages-list { display: flex; flex-direction: column; gap: 1px; }
+    .page-item {
+      display: grid; grid-template-columns: 1fr 80px 60px;
+      align-items: center; gap: 1rem;
+      padding: .75rem 1rem; background: var(--bg);
+      transition: background .15s;
+    }
+    .page-item:hover { background: #1e1c1a; }
+    .page-path { font-family: var(--f-mono); font-size: .72rem; color: var(--cream2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .page-title-txt { font-size: .78rem; color: var(--cream3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .page-hits { font-family: var(--f-mono); font-size: .7rem; color: var(--rust2); text-align: right; }
+    .page-uniq { font-family: var(--f-mono); font-size: .65rem; color: var(--cream3); text-align: right; }
+
+    /* ── Totals ── */
+    .totals { display: flex; gap: 2px; margin-bottom: 2px; }
+    .total-card { flex: 1; background: var(--bg2); padding: 1.5rem 2rem; }
+    .total-num { font-family: var(--f-mono); font-size: 2.5rem; color: var(--cream); line-height: 1; }
+    .total-label { font-family: var(--f-mono); font-size: .6rem; color: var(--cream3); letter-spacing: .1em; margin-top: .4rem; }
+
+    /* ── Loading / error ── */
+    .loading { font-family: var(--f-mono); font-size: .8rem; color: var(--cream3); padding: 2rem 0; }
+    .loading::after { content: '_'; animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+
+<nav class="s-nav">
+  <a href="../" class="s-brand">
+    <img src="../img/dimoni-roig-banyes-blanques.png" alt="">
+    <span>Malditas<strong>Maquinas</strong>.</span>
+  </a>
+  <div class="s-nav-right">
+    <button class="period-btn active" data-period="week">7 dies</button>
+    <button class="period-btn" data-period="month">30 dies</button>
+    <button class="period-btn" data-period="quarter">3 mesos</button>
+    <button class="period-btn" data-period="half-year">6 mesos</button>
+    <button class="period-btn" data-period="year">any</button>
+    <a href="../" class="back-link">← tornar</a>
+  </div>
+</nav>
+
+<main class="s-main">
+  <p class="s-title">malditasmaquinas.com</p>
+  <h1>Estadístiques.</h1>
+
+  <div class="totals" id="totals">
+    <div class="total-card"><div class="total-num loading" id="totalVisits"></div><div class="total-label">visites</div></div>
+    <div class="total-card"><div class="total-num loading" id="totalUniq"></div><div class="total-label">visitants únics</div></div>
+    <div class="total-card"><div class="total-num loading" id="totalPages"></div><div class="total-label">pàgines vistes</div></div>
+  </div>
+
+  <div class="stats-grid" style="margin-bottom:2px;">
+    <div class="card">
+      <div class="card-title">navegadors</div>
+      <div class="logo-grid" id="browsers"><div class="loading">carregant</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">sistemes operatius</div>
+      <div class="logo-grid" id="systems"><div class="loading">carregant</div></div>
+    </div>
+  </div>
+
+  <div class="stats-grid" style="margin-bottom:2px;">
+    <div class="card">
+      <div class="card-title">països</div>
+      <div class="bar-list" id="locations"><div class="loading">carregant</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">mides de pantalla</div>
+      <div class="bar-list" id="sizes"><div class="loading">carregant</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:2px;">
+    <div class="card-title">pàgines més visitades</div>
+    <div class="pages-list" id="hits"><div class="loading">carregant</div></div>
+  </div>
+
+</main>
+
+<script>
+const API = 'https://malditasmaquinas-api.hola-78f.workers.dev/api/stats';
+let currentPeriod = 'week';
+
+// ── Browser / OS icons ──────────────────────────────────────────────────────
+const BROWSER_ICONS = {
+  'Chrome':  { icon: '🌐', color: '#4285f4' },
+  'Firefox': { icon: '🦊', color: '#ff9500' },
+  'Safari':  { icon: '🧭', color: '#0fb5ee' },
+  'Edge':    { icon: '🌊', color: '#0078d4' },
+  'Opera':   { icon: '🔴', color: '#ff1b2d' },
+  'Samsung Internet': { icon: '📱', color: '#1428a0' },
+};
+const OS_ICONS = {
+  'Windows': { icon: '⊞', color: '#00a4ef' },
+  'macOS':   { icon: '🍎', color: '#555' },
+  'iOS':     { icon: '📱', color: '#555' },
+  'Android': { icon: '🤖', color: '#3ddc84' },
+  'Linux':   { icon: '🐧', color: '#f5b800' },
+  'Ubuntu':  { icon: '🐧', color: '#e95420' },
+};
+
+// ── Fetch ───────────────────────────────────────────────────────────────────
+async function fetchStat(metric) {
+  const r = await fetch(`${API}/${metric}?period=${currentPeriod}&limit=20`);
+  if (!r.ok) throw new Error(`${metric} error ${r.status}`);
+  return r.json();
+}
+
+// ── Render Logo Grid (navegadors / OS) ─────────────────────────────────────
+function renderLogoGrid(items, iconMap, container) {
+  if (!items?.length) { container.innerHTML = '<span style="font-family:var(--f-mono);font-size:.7rem;color:var(--cream3)">sense dades</span>'; return; }
+  const total = items.reduce((s, i) => s + i.count, 0);
+  const max   = items[0].count;
+
+  container.innerHTML = items.slice(0, 8).map(item => {
+    const pct  = total > 0 ? Math.round(item.count / total * 100) : 0;
+    const size = Math.max(32, Math.round(32 + (item.count / max) * 48)); // 32–80px
+    const info = iconMap[item.name] || { icon: '?', color: 'var(--cream3)' };
+    return `
+      <div class="logo-item">
+        <div class="logo-icon" style="width:${size}px;height:${size}px;font-size:${Math.round(size * .5)}px;border:1px solid var(--line);">
+          ${info.icon}
+        </div>
+        <div class="logo-name">${item.name}</div>
+        <div class="logo-pct">${pct}%</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Render Bar List (països / mides) ────────────────────────────────────────
+function renderBarList(items, container, green = false) {
+  if (!items?.length) { container.innerHTML = '<span style="font-family:var(--f-mono);font-size:.7rem;color:var(--cream3)">sense dades</span>'; return; }
+  const max = items[0].count;
+  container.innerHTML = items.slice(0, 12).map(item => {
+    const pct = max > 0 ? Math.round(item.count / max * 100) : 0;
+    const label = item.name || item.id || '—';
+    return `
+      <div class="bar-item">
+        <div class="bar-label" title="${label}">${label}</div>
+        <div class="bar-track"><div class="bar-fill ${green ? 'green' : ''}" style="width:${pct}%"></div></div>
+        <div class="bar-pct">${item.count}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Render Top Pàgines ──────────────────────────────────────────────────────
+function renderHits(data, container) {
+  const items = data?.hits || data?.pages || [];
+  if (!items.length) { container.innerHTML = '<span style="font-family:var(--f-mono);font-size:.7rem;color:var(--cream3)">sense dades</span>'; return; }
+  container.innerHTML = items.slice(0, 15).map((item, i) => `
+    <div class="page-item">
+      <div>
+        <div class="page-path">${item.path || item.name || '/'}</div>
+        ${item.title ? `<div class="page-title-txt">${item.title}</div>` : ''}
+      </div>
+      <div class="page-hits">${item.count_unique ?? '—'} únics</div>
+      <div class="page-hits">${item.count} visites</div>
+    </div>`).join('');
+}
+
+// ── Totals ──────────────────────────────────────────────────────────────────
+function updateTotals(hits) {
+  const items = hits?.hits || hits?.pages || [];
+  const totalV = items.reduce((s, i) => s + i.count, 0);
+  const totalU = items.reduce((s, i) => s + (i.count_unique || 0), 0);
+  document.getElementById('totalVisits').textContent = totalV.toLocaleString('ca');
+  document.getElementById('totalUniq').textContent   = totalU.toLocaleString('ca');
+  document.getElementById('totalPages').textContent  = items.length;
+}
+
+// ── Load all ────────────────────────────────────────────────────────────────
+async function loadAll() {
+  ['browsers','systems','locations','sizes','hits'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '<div class="loading">carregant</div>';
+  });
+  ['totalVisits','totalUniq','totalPages'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.classList.add('loading'); }
+  });
+
+  const [hits, browsers, systems, sizes, locations] = await Promise.allSettled([
+    fetchStat('hits'),
+    fetchStat('browsers'),
+    fetchStat('systems'),
+    fetchStat('sizes'),
+    fetchStat('locations'),
+  ]);
+
+  if (hits.status === 'fulfilled') {
+    updateTotals(hits.value);
+    renderHits(hits.value, document.getElementById('hits'));
+    ['totalVisits','totalUniq','totalPages'].forEach(id => document.getElementById(id)?.classList.remove('loading'));
+  }
+  if (browsers.status === 'fulfilled') renderLogoGrid(browsers.value?.browsers || browsers.value?.stats, BROWSER_ICONS, document.getElementById('browsers'));
+  if (systems.status  === 'fulfilled') renderLogoGrid(systems.value?.systems   || systems.value?.stats,  OS_ICONS,      document.getElementById('systems'));
+  if (locations.status === 'fulfilled') renderBarList(locations.value?.locations || locations.value?.stats, document.getElementById('locations'));
+  if (sizes.status     === 'fulfilled') renderBarList(sizes.value?.sizes        || sizes.value?.stats,     document.getElementById('sizes'), true);
+}
+
+// ── Period buttons ──────────────────────────────────────────────────────────
+document.querySelectorAll('.period-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentPeriod = btn.dataset.period;
+    loadAll();
+  });
+});
+
+loadAll();
+</script>
+</body>
+</html>
