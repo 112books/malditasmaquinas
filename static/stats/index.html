@@ -101,16 +101,14 @@
     /* ── Top pàgines ── */
     .pages-list { display: flex; flex-direction: column; gap: 1px; }
     .page-item {
-      display: grid; grid-template-columns: 1fr 80px 60px;
-      align-items: center; gap: 1rem;
-      padding: .75rem 1rem; background: var(--bg);
+      display: grid; grid-template-columns: 180px 1fr 55px;
+      align-items: center; gap: .75rem;
+      padding: .65rem 1rem; background: var(--bg);
       transition: background .15s;
     }
     .page-item:hover { background: #1e1c1a; }
-    .page-path { font-family: var(--f-mono); font-size: .72rem; color: var(--cream2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .page-title-txt { font-size: .78rem; color: var(--cream3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .page-path { font-family: var(--f-mono); font-size: .7rem; color: var(--cream2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .page-hits { font-family: var(--f-mono); font-size: .7rem; color: var(--rust2); text-align: right; }
-    .page-uniq { font-family: var(--f-mono); font-size: .65rem; color: var(--cream3); text-align: right; }
 
     /* ── Totals ── */
     .totals { display: flex; gap: 2px; margin-bottom: 2px; }
@@ -148,9 +146,8 @@
   <h1>Estadístiques.</h1>
 
   <div class="totals" id="totals">
-    <div class="total-card"><div class="total-num loading" id="totalVisits"></div><div class="total-label">visites</div></div>
-    <div class="total-card"><div class="total-num loading" id="totalUniq"></div><div class="total-label">visitants únics</div></div>
-    <div class="total-card"><div class="total-num loading" id="totalPages"></div><div class="total-label">pàgines vistes</div></div>
+    <div class="total-card"><div class="total-num loading" id="totalVisits"></div><div class="total-label">pàgines vistes</div></div>
+    <div class="total-card"><div class="total-num loading" id="totalEvents"></div><div class="total-label">esdeveniments</div></div>
   </div>
 
   <div class="stats-grid" style="margin-bottom:2px;">
@@ -250,27 +247,26 @@ function renderBarList(items, container, green = false) {
 
 // ── Render Top Pàgines ──────────────────────────────────────────────────────
 function renderHits(data, container) {
-  const items = data?.hits || data?.pages || [];
+  // GoatCounter /stats/hits retorna {hits: [{path, path_id, count, max, event, stats}]}
+  const items = data?.hits || [];
   if (!items.length) { container.innerHTML = '<span style="font-family:var(--f-mono);font-size:.7rem;color:var(--cream3)">sense dades</span>'; return; }
-  container.innerHTML = items.slice(0, 15).map((item, i) => `
+  const max = items[0]?.count || 1;
+  container.innerHTML = items.slice(0, 20).map(item => {
+    const pct = Math.round(item.count / max * 100);
+    return `
     <div class="page-item">
-      <div>
-        <div class="page-path">${item.path || item.name || '/'}</div>
-        ${item.title ? `<div class="page-title-txt">${item.title}</div>` : ''}
-      </div>
-      <div class="page-hits">${item.count_unique ?? '—'} únics</div>
-      <div class="page-hits">${item.count} visites</div>
-    </div>`).join('');
+      <div class="page-path" title="${item.path}">${item.path || '/'}</div>
+      <div class="bar-track" style="align-self:center"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="page-hits">${item.count.toLocaleString('ca')}</div>
+    </div>`;
+  }).join('');
 }
 
 // ── Totals ──────────────────────────────────────────────────────────────────
-function updateTotals(hits) {
-  const items = hits?.hits || hits?.pages || [];
-  const totalV = items.reduce((s, i) => s + i.count, 0);
-  const totalU = items.reduce((s, i) => s + (i.count_unique || 0), 0);
-  document.getElementById('totalVisits').textContent = totalV.toLocaleString('ca');
-  document.getElementById('totalUniq').textContent   = totalU.toLocaleString('ca');
-  document.getElementById('totalPages').textContent  = items.length;
+function updateTotals(total) {
+  // GoatCounter /stats/total retorna {total: N, total_utc: N, total_events: N}
+  document.getElementById('totalVisits').textContent = (total?.total || 0).toLocaleString('ca');
+  document.getElementById('totalEvents').textContent = (total?.total_events || 0).toLocaleString('ca');
 }
 
 // ── Load all ────────────────────────────────────────────────────────────────
@@ -279,12 +275,13 @@ async function loadAll() {
     const el = document.getElementById(id);
     if (el) el.innerHTML = '<div class="loading">carregant</div>';
   });
-  ['totalVisits','totalUniq','totalPages'].forEach(id => {
+  ['totalVisits','totalEvents'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.textContent = ''; el.classList.add('loading'); }
   });
 
-  const [hits, browsers, systems, sizes, locations] = await Promise.allSettled([
+  const [total, hits, browsers, systems, sizes, locations] = await Promise.allSettled([
+    fetchStat('total'),
     fetchStat('hits'),
     fetchStat('browsers'),
     fetchStat('systems'),
@@ -292,13 +289,13 @@ async function loadAll() {
     fetchStat('locations'),
   ]);
 
-  if (hits.status === 'fulfilled') {
-    updateTotals(hits.value);
-    renderHits(hits.value, document.getElementById('hits'));
-    ['totalVisits','totalUniq','totalPages'].forEach(id => document.getElementById(id)?.classList.remove('loading'));
+  if (total.status === 'fulfilled') {
+    updateTotals(total.value);
+    ['totalVisits','totalEvents'].forEach(id => document.getElementById(id)?.classList.remove('loading'));
   }
-  if (browsers.status === 'fulfilled') renderLogoGrid(browsers.value?.browsers || browsers.value?.stats, BROWSER_ICONS, document.getElementById('browsers'));
-  if (systems.status  === 'fulfilled') renderLogoGrid(systems.value?.systems   || systems.value?.stats,  OS_ICONS,      document.getElementById('systems'));
+  if (hits.status      === 'fulfilled') renderHits(hits.value, document.getElementById('hits'));
+  if (browsers.status  === 'fulfilled') renderLogoGrid(browsers.value?.browsers || browsers.value?.stats, BROWSER_ICONS, document.getElementById('browsers'));
+  if (systems.status   === 'fulfilled') renderLogoGrid(systems.value?.systems   || systems.value?.stats,  OS_ICONS,      document.getElementById('systems'));
   if (locations.status === 'fulfilled') renderBarList(locations.value?.locations || locations.value?.stats, document.getElementById('locations'));
   if (sizes.status     === 'fulfilled') renderBarList(sizes.value?.sizes        || sizes.value?.stats,     document.getElementById('sizes'), true);
 }
