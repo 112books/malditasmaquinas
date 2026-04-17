@@ -28,24 +28,37 @@
     body { background: var(--bg); color: var(--cream); font-family: var(--f-body); min-height: 100vh; }
 
     /* ── Nav ── */
+    .s-header {
+      position: sticky; top: 0; background: var(--bg); z-index: 10;
+      border-bottom: 1px solid var(--line);
+    }
     .s-nav {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 1.2rem 2.5rem; border-bottom: 1px solid var(--line);
-      position: sticky; top: 0; background: var(--bg); z-index: 10;
+      padding: 1rem 2.5rem; flex-wrap: wrap; gap: .5rem;
     }
-    .s-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
-    .s-brand img { width: 28px; height: 28px; object-fit: contain; opacity: .85; }
-    .s-brand span { font-family: var(--f-mono); font-size: .78rem; color: var(--cream2); }
+    .s-brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; flex-shrink: 0; }
+    .s-brand img { width: 42px; height: 42px; object-fit: contain; opacity: .85; transition: opacity .2s, transform .2s; }
+    .s-brand:hover img { opacity: 1; transform: translateY(-2px) rotate(-8deg); }
+    .s-brand span { font-family: var(--f-mono); font-size: 1.05rem; color: var(--cream2); transition: color .2s; }
     .s-brand strong { color: var(--rust2); font-weight: 400; }
-    .s-nav-right { display: flex; align-items: center; gap: 1rem; }
+    .s-brand:hover span { color: var(--cream); }
+    .s-nav-right {
+      display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+    }
     .period-btn {
-      font-family: var(--f-mono); font-size: .65rem; padding: .3rem .7rem;
+      font-family: var(--f-mono); font-size: .65rem; padding: .3rem .65rem;
       border: 1px solid var(--cream3); color: var(--cream3); background: none;
       cursor: pointer; transition: all .15s; letter-spacing: .06em;
     }
     .period-btn.active, .period-btn:hover { border-color: var(--rust2); color: var(--rust2); }
     .back-link { font-family: var(--f-mono); font-size: .7rem; color: var(--cream3); text-decoration: none; }
     .back-link:hover { color: var(--cream2); }
+    @media (max-width: 600px) {
+      .s-nav { padding: .75rem 1.25rem; }
+      .s-brand { flex: 0 0 100%; }
+      .s-nav-right { gap: .4rem; }
+      .period-btn { font-size: .6rem; padding: .25rem .5rem; }
+    }
 
     /* ── Layout ── */
     .s-main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
@@ -113,9 +126,10 @@
 </head>
 <body>
 
-<nav class="s-nav">
-  <a href="../" class="s-brand">
-    <img src="../img/dimoni-roig-banyes-blanques.png" alt="">
+<header class="s-header">
+<nav class="s-nav" aria-label="Navegació estadístiques">
+  <a href="../" class="s-brand" aria-label="MalditasMaquinas — inici">
+    <img src="../img/dimoni-roig-banyes-blanques.png" alt="" aria-hidden="true">
     <span>Malditas<strong>Maquinas</strong>.</span>
   </a>
   <div class="s-nav-right">
@@ -127,6 +141,7 @@
     <a href="../" class="back-link">← tornar</a>
   </div>
 </nav>
+</header>
 
 <main class="s-main">
   <p class="s-title">malditasmaquinas.com</p>
