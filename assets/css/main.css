@@ -482,6 +482,8 @@ a { color: inherit; }
 
 /* ── Nav right (lang + acc) ───────────────────────────────────────────────── */
 .nav-right { display: flex; align-items: center; gap: 1rem; }
+.nav-dimoni img { display: block; width: 28px; height: 28px; object-fit: contain; opacity: .75; transition: opacity .2s, transform .2s; }
+.nav-dimoni:hover img { opacity: 1; transform: translateY(-2px) rotate(-8deg); }
 .nav-lang {
   font-family: var(--f-mono);
   font-size: .75rem;

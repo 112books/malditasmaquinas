@@ -35,6 +35,9 @@
   </ul>
 
   <div class="nav-right">
+    <a href="{{ .Site.Home.RelPermalink }}" class="nav-dimoni" aria-label="Inici">
+      <img src="{{ "img/dimoni-roig-banyes-blanques.png" | relURL }}" alt="" aria-hidden="true" width="28" height="28">
+    </a>
     {{ range .Site.Languages }}
       {{ if ne .Lang $.Site.Language.Lang }}
         <a href="{{ .Lang | printf "%s/" | relURL }}" class="nav-lang" lang="{{ .Lang }}" aria-label="Canvia a {{ .LanguageName }}">{{ .Lang | upper }}</a>
