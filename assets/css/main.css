@@ -623,8 +623,11 @@ a { color: inherit; }
 
 /* ── Footer signatura dreta ───────────────────────────────────────────────── */
 .footer-col--right {
-  align-items: flex-end;
-  text-align: right;
+  background: var(--bg2);
+  border-left: 2px solid var(--rust);
+  padding: 1rem 1.25rem;
+  align-items: flex-start;
+  text-align: left;
   font-family: var(--f-mono);
   font-size: .78rem;
   color: var(--cream3);
@@ -690,7 +693,6 @@ button:focus-visible { outline: 2px solid var(--rust2); outline-offset: 3px; }
   .pkg-grid { grid-template-columns: repeat(2, 1fr); }
   .how-grid { grid-template-columns: 1fr; gap: 2rem; }
   .footer-top { grid-template-columns: 1fr; }
-  .footer-col--right { align-items: flex-start; text-align: left; }
 }
 @media (max-width: 600px) {
   /* Nav dues files en mòbil */
