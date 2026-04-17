@@ -727,7 +727,7 @@ async function showAdmin(tab) {
   setMain(`
     <div class="dash-header">
       <h1 class="dash-title">Admin.</h1>
-      <p class="dash-sub">${users.length} usuaris · ${cons.filter(c => c.estat === 'pendent').length} consultes pendents</p>
+      <p class="dash-sub">${users.length} usuaris · ${cons.filter(c => c.estat === 'pendent').length} consultes pendents · <a href="#" onclick="event.preventDefault();showClient()" style="color:var(--rust2);font-family:var(--f-mono);font-size:.8rem;">veure panell client →</a></p>
     </div>
 
     <div class="tabs">
