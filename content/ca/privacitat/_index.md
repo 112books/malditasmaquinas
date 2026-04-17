@@ -75,3 +75,30 @@ Tens dret a accedir, rectificar, suprimir, limitar el tractament i la portabilit
 ### Resum
 
 Aquest lloc web **no utilitza cookies de seguiment ni publicitat**. L'única cookie pròpia és la de sessió de l'àrea privada, que és estrictament necessària per al funcionament del servei autenticat. No cal cap consentiment per a cookies de tercers perquè no n'instal·lem cap al teu dispositiu.
+
+## Transparència tècnica
+
+Aquest lloc compleix els estàndards i pràctiques següents:
+
+| Estàndard | Detall |
+|-----------|--------|
+| **HTML5** | Marcat semàntic vàlid (W3C) |
+| **WCAG 2.1 AA** | Accessibilitat web: contrastos, navegació per teclat, ARIA, skip link |
+| **RGPD** | Sense cookies de seguiment, base legal documentada per a cada tractament |
+| **HTTPS / HSTS** | Connexió sempre xifrada, amb preload HSTS |
+| **CSP** | Content Security Policy: restricció de fonts de scripts i recursos |
+| **SRI** | Subresource Integrity: verificació d'integritat del CSS carregat |
+| **robots.txt** | Indexació controlada; àrea privada i estadístiques excloses |
+| **sitemap.xml** | Generat automàticament per a tots els idiomes |
+| **humans.txt** | Crèdits i tecnologia en format llegible: [/humans.txt](/humans.txt) |
+| **Open Graph** | Meta tags per a compartir correctament a xarxes socials |
+| **JSON-LD** | Dades estructurades schema.org per a motors de cerca |
+| **hreflang** | SEO multilingüe correcte (ca / es / x-default) |
+
+### Programari lliure i ètica digital
+
+El lloc és un **site estàtic** generat amb [Hugo](https://gohugo.io) (codi obert, llicència Apache 2.0). No hi ha base de dades accessible des del navegador, no hi ha JavaScript de tercers de seguiment i no hi ha publicitat.
+
+Les analítiques utilitzen [GoatCounter](https://goatcounter.com), una alternativa de codi obert a Google Analytics que no recull dades personals i no utilitza cookies.
+
+El codi font del lloc és públic a GitHub.

@@ -75,3 +75,30 @@ Tienes derecho a acceder, rectificar, suprimir, limitar el tratamiento y la port
 ### Resumen
 
 Este sitio web **no utiliza cookies de seguimiento ni publicidad**. La única cookie propia es la de sesión del área privada, estrictamente necesaria para el funcionamiento del servicio autenticado. No es necesario ningún consentimiento para cookies de terceros porque no instalamos ninguna en tu dispositivo.
+
+## Transparencia técnica
+
+Este sitio cumple los siguientes estándares y prácticas:
+
+| Estándar | Detalle |
+|----------|---------|
+| **HTML5** | Marcado semántico válido (W3C) |
+| **WCAG 2.1 AA** | Accesibilidad web: contrastes, navegación por teclado, ARIA, skip link |
+| **RGPD** | Sin cookies de seguimiento, base legal documentada para cada tratamiento |
+| **HTTPS / HSTS** | Conexión siempre cifrada, con preload HSTS |
+| **CSP** | Content Security Policy: restricción de fuentes de scripts y recursos |
+| **SRI** | Subresource Integrity: verificación de integridad del CSS cargado |
+| **robots.txt** | Indexación controlada; área privada y estadísticas excluidas |
+| **sitemap.xml** | Generado automáticamente para todos los idiomas |
+| **humans.txt** | Créditos y tecnología en formato legible: [/humans.txt](/humans.txt) |
+| **Open Graph** | Meta tags para compartir correctamente en redes sociales |
+| **JSON-LD** | Datos estructurados schema.org para motores de búsqueda |
+| **hreflang** | SEO multilingüe correcto (ca / es / x-default) |
+
+### Software libre y ética digital
+
+El sitio es un **site estático** generado con [Hugo](https://gohugo.io) (código abierto, licencia Apache 2.0). No hay base de datos accesible desde el navegador, no hay JavaScript de terceros de seguimiento y no hay publicidad.
+
+Las analíticas utilizan [GoatCounter](https://goatcounter.com), una alternativa de código abierto a Google Analytics que no recoge datos personales y no utiliza cookies.
+
+El código fuente del sitio es público en GitHub.

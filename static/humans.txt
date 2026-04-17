@@ -1,0 +1,32 @@
+/* TEAM */
+Author: Joan Martínez Serres
+Site: linuxbcn.com
+Location: Barcelona, Catalunya
+
+/* TECHNOLOGY */
+Generator: Hugo (gohugo.io)
+Hosting: GitHub Pages → Cloudflare Pages
+Backend: Cloudflare Workers + D1 + KV + R2
+Payments: Stripe
+Analytics: GoatCounter (privacy-friendly, no cookies)
+Email: Resend
+Fonts: Galindo, Bitter, IBM Plex Mono (Google Fonts, SIL OFL)
+
+/* STANDARDS */
+HTML5
+CSS3
+WCAG 2.1 AA
+RGPD / GDPR
+No tracking cookies
+Subresource Integrity (SRI)
+Content Security Policy (CSP)
+
+/* NOTE */
+Built with free software. No Adobe. No WordPress. No subscriptions.
+Static sites cover 99% of needs — more ethical, cheaper, faster.
+
+/* SITE */
+Last update: 2026/04/17
+Language: ca, es
+Doctype: HTML5
+IDE: Neovim + Claude Code

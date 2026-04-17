@@ -339,6 +339,19 @@ a { color: inherit; }
 .footer-links { display: flex; gap: 1.5rem; }
 .footer-links a { color: var(--cream3); text-decoration: none; transition: color .15s; }
 .footer-links a:hover { color: var(--cream2); }
+.footer-standards {
+  width: 100%;
+  padding-top: .75rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: .75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: .6rem;
+  color: var(--cream3);
+}
+.footer-standards a { color: var(--cream3); text-decoration: none; transition: color .15s; }
+.footer-standards a:hover { color: var(--cream2); }
 
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
