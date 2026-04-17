@@ -6,7 +6,7 @@
   --line:   #1e1c1a;
   --cream:  #e2ddd6;
   --cream2: #9a958e;
-  --cream3: #5a5650;
+  --cream3: #7a7570; /* #7a7570 sobre bg #0d0c0b = ~4.8:1, passa WCAG AA */
   --rust:   #bf3d08;
   --rust2:  #e04d10;
   --rust3:  #ff6425;

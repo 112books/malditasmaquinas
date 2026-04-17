@@ -3,13 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
-  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
 
+  {{- $title := cond .IsHome .Site.Title (printf "%s · %s" .Title .Site.Title) }}
+  {{- $desc  := or .Description .Site.Params.description }}
+  {{- $img   := printf "%simg/dimoni-roig.png" .Site.BaseURL }}
+
+  <title>{{ $title }}</title>
+  <meta name="description" content="{{ $desc }}">
+  <link rel="canonical" href="{{ .Permalink }}">
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="{{ $title }}">
+  <meta property="og:description" content="{{ $desc }}">
+  <meta property="og:image"       content="{{ $img }}">
+  <meta property="og:url"         content="{{ .Permalink }}">
+  <meta property="og:type"        content="{{ if .IsHome }}website{{ else }}article{{ end }}">
+  <meta property="og:site_name"   content="{{ .Site.Title }}">
+  <meta property="og:locale"      content="{{ .Site.Language.Lang }}">
+  <meta name="twitter:card"       content="summary_large_image">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Galindo&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Bitter:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
 
+  <!-- CSS (fingerprinted + SRI) -->
   {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 
@@ -18,6 +36,32 @@
   {{ range .AlternativeOutputFormats -}}
     {{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
   {{ end }}
-  <script data-goatcounter="https://malditasmaquinas.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+
+  <!-- Structured data (home only) -->
+  {{- if .IsHome }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "MalditasMaquinas",
+    "url": "{{ .Site.BaseURL }}",
+    "logo": "{{ $img }}",
+    "description": "{{ $desc }}",
+    "foundingDate": "2003",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Carrer Ferran Turné 1-11",
+      "addressLocality": "Barcelona",
+      "postalCode": "08027",
+      "addressCountry": "ES"
+    },
+    "email": "hola@malditasmaquinas.com",
+    "sameAs": ["https://linuxbcn.com", "https://macbcn.com"]
+  }
+  </script>
+  {{- end }}
+
+  <!-- Analytics (privacy-friendly, async) -->
+  <script data-goatcounter="https://malditasmaquinas.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
