@@ -28,16 +28,18 @@ img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; }
 
 /* ── Nav ──────────────────────────────────────────────────────────────────── */
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.2rem 2.5rem;
-  border-bottom: 1px solid var(--line);
+.site-header {
   position: sticky;
   top: 0;
   background: var(--bg);
   z-index: 100;
+  border-bottom: 1px solid var(--line);
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
 }
 .nav-logo-slot {
   overflow: hidden;
@@ -482,10 +484,10 @@ a { color: inherit; }
 
 /* ── Nav right (lang + acc) ───────────────────────────────────────────────── */
 .nav-right { display: flex; align-items: center; gap: 1rem; }
-.nav-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
-.nav-brand img { display: block; width: 30px; height: 30px; object-fit: contain; opacity: .85; transition: opacity .2s, transform .2s; }
+.nav-brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; }
+.nav-brand img { display: block; width: 42px; height: 42px; object-fit: contain; opacity: .85; transition: opacity .2s, transform .2s; }
 .nav-brand:hover img { opacity: 1; transform: translateY(-2px) rotate(-8deg); }
-.nav-brand-text { font-family: var(--f-mono); font-size: .78rem; color: var(--cream2); letter-spacing: .02em; transition: color .2s; }
+.nav-brand-text { font-family: var(--f-mono); font-size: 1.05rem; color: var(--cream2); letter-spacing: .02em; transition: color .2s; }
 .nav-brand-text strong { color: var(--rust2); font-weight: 400; }
 .nav-brand:hover .nav-brand-text { color: var(--cream); }
 .nav-lang {
@@ -678,7 +680,24 @@ button:focus-visible { outline: 2px solid var(--rust2); outline-offset: 3px; }
   .footer-col--right { align-items: flex-start; text-align: left; }
 }
 @media (max-width: 600px) {
-  .nav-icons { gap: 1.2rem; }
+  /* Nav dues files en mòbil */
+  .nav {
+    flex-wrap: wrap;
+    padding: .75rem 1.25rem .6rem;
+    row-gap: .5rem;
+    column-gap: .5rem;
+  }
+  .nav-brand {
+    flex: 0 0 100%;          /* fila 1 sencera */
+  }
+  .nav-icons {
+    flex: 1;
+    justify-content: flex-start;
+    gap: 1.4rem;
+  }
+  .nav-right {
+    flex-shrink: 0;          /* fila 2 dreta */
+  }
   .nav-icon svg { width: 20px; height: 20px; }
   .logo-word.w1 { font-size: clamp(3.5rem, 16vw, 5rem); }
   .logo-word.w2 { font-size: clamp(1rem, 4vw, 1.4rem); margin-left: 3rem; }
@@ -696,7 +715,6 @@ button:focus-visible { outline: 2px solid var(--rust2); outline-offset: 3px; }
 }
 @media (max-width: 400px) {
   .pkg-grid { grid-template-columns: 1fr; }
-  .nav-acc span { display: none; }
 }
 
 /* ── Paquets: guia i regles ───────────────────────────────────────────────── */
