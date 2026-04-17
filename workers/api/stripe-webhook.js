@@ -12,15 +12,15 @@
 
 import { json } from './index.js';
 
-// Mapa Stripe Price ID → package_id de D1
-// Actualitza amb els IDs reals del teu dashboard de Stripe
-const PRICE_TO_PACKAGE = {
-  'price_1TM3LKJBa9nCGLecpN0mxVUz': 'pkg_minim',
-  'price_1TM3MSJBa9nCGLecsjAphKQx': 'pkg_basic',
-  'price_1TM6cbJBa9nCGLecaypVkTnI': 'pkg_mitja',
-  'price_1TM6bvJBa9nCGLecuP63eCKi': 'pkg_estandard',
-  'price_1TM6b8JBa9nCGLecdvJfvkJU': 'pkg_pro',
-  'price_1TM6ZJJBa9nCGLecuGZl4MxS': 'pkg_avancat',
+// Mapa amount_total (cèntims) → package_id de D1
+// Nota: amount_total és sense IVA quan automatic_tax està desactivat
+const AMOUNT_TO_PACKAGE = {
+  3500:  'pkg_minim',     // 35 €
+  6000:  'pkg_basic',     // 60 €
+  16500: 'pkg_mitja',     // 165 €
+  26000: 'pkg_estandard', // 260 €
+  50000: 'pkg_pro',       // 500 €
+  90000: 'pkg_avancat',   // 900 €
 };
 
 export async function handleStripeWebhook(request, env) {
@@ -43,24 +43,13 @@ export async function handleStripeWebhook(request, env) {
 
   const session = event.data.object;
 
-  // Recupera line_items via API (no venen al payload per defecte)
-  let priceId;
-  try {
-    const liResp = await fetch(
-      `https://api.stripe.com/v1/checkout/sessions/${session.id}/line_items?limit=1`,
-      { headers: { Authorization: `Bearer ${env.STRIPE_SECRET_KEY}` } }
-    );
-    const liData = await liResp.json();
-    priceId = liData.data?.[0]?.price?.id;
-  } catch (e) {
-    console.error('Stripe: error recuperant line_items:', e);
-  }
-  priceId = priceId || session.metadata?.price_id;
-  const packageId = PRICE_TO_PACKAGE[priceId];
+  // Identifica el paquet per amount_total (cèntims, present al payload)
+  const amountTotal = session.amount_total;
+  const packageId   = AMOUNT_TO_PACKAGE[amountTotal];
 
   if (!packageId) {
-    console.error('Stripe: price_id desconegut:', priceId);
-    return json({ ok: true, warning: 'price_id no mapejat' });
+    console.error('Stripe: amount_total no mapejat:', amountTotal);
+    return json({ ok: true, warning: 'amount no mapejat', amount_total: amountTotal });
   }
 
   const pkg = await env.DB.prepare('SELECT * FROM hour_packages WHERE id = ?').bind(packageId).first();
