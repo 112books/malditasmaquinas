@@ -166,7 +166,7 @@ malditasmaquinas/
 --line:   #1e1c1a   /* línies divisòries */
 --cream:  #e2ddd6   /* text principal */
 --cream2: #9a958e   /* text secundari */
---cream3: #5a5650   /* text terciari / UI gran */
+--cream3: #7a7570   /* text terciari / UI gran — #7a7570 sobre bg = ~4.8:1 WCAG AA */
 --rust:   #bf3d08   /* accent fosc */
 --rust2:  #e04d10   /* accent principal */
 --rust3:  #ff6425   /* accent hover */
@@ -291,7 +291,38 @@ Gestió: `wrangler secret put NOM`
 
 ## Historial de tasques fetes
 
-### 2026-04-17
+### 2026-04-17 (sessió 2)
+
+**Emails amb marca i RGPD**
+- Nou `workers/api/email.js`: template HTML compartit per a tots els correus
+  - `emailHtml()` per a clients: logo dimoni, capçalera de marca, peu RGPD (responsable, NIF, drets, link privacitat)
+  - `emailAdminHtml()` per a notificacions internes: sense peu RGPD, marca "Admin"
+  - `sendEmail()` helper centralitzat que crida Resend
+- Tots els correus existents migrats al nou template: nova consulta (admin), resposta (client), pagament (admin + client)
+
+**Adjunts a consultes (R2)**
+- Nou `workers/api/upload.js`: `POST /api/upload` puja un fitxer a R2 (màx 10 MB, 5 fitxers, tipus validats)
+  - `GET /api/files/:key` serveix el fitxer autenticat (client veu els seus, admin veu tots)
+  - Key format: `{userId}/{uuid}.{ext}`
+- `workers/wrangler.toml`: R2 bucket `malditasmaquinas-files` activat (cal crear: `wrangler r2 bucket create malditasmaquinas-files`)
+- `workers/api/consultations.js`: crea consulta amb `adjunts` (JSON array a `adjunts_r2_keys`), lista adjunts a l'email admin
+- `static/app/index.html`: formulari amb `<input type="file">` (previsualització, upload seqüencial amb progrés, errors inline), detall consulta mostra adjunts com a botons de descàrrega (`downloadFile()` via fetch+blob)
+
+**Seguretat, accessibilitat i estàndards web**
+- `basehead.html`: `<link rel="canonical">`, Open Graph complet, `twitter:card`, JSON-LD `LocalBusiness`, GoatCounter `https://` (era `//`), `hreflang` ca/es/x-default, `theme-color`, `rel="author"` → humans.txt
+- `static/humans.txt`: creat (format humanstxt.org)
+- `content/ca/privacitat/` i `content/es/privacidad/`: nova secció "Transparència tècnica" amb taula d'estàndards complerts
+- `layouts/robots.txt`: personalitzat (oculta /app/ i /stats/, apunta al sitemap)
+- `static/_headers`: headers Cloudflare Pages (CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy)
+- `static/.htaccess`: expandit per a servidors Apache (comprensió, cache, headers)
+- `assets/css/main.css`: `cream3` puja de `#5a5650` → `#7a7570` (contrast 3.1:1 → 4.8:1, passa WCAG AA)
+- Footer: col dreta ("Powered by LinuxBCN") amb estètica aside-box (bg2 + vora taronja), línia d'estàndards (humans.txt · HTML5 · WCAG AA · RGPD · sense cookies)
+- `hugo.toml`: eliminats Stripe links `test_*` obsolets (els links reals estan a `static/app/index.html`)
+
+**Deploy Worker — pendent fer manualment**
+- `cd workers && wrangler r2 bucket create malditasmaquinas-files && wrangler deploy`
+
+### 2026-04-17 (sessió 1)
 
 **Nav / header**
 - `<nav>` mogut dins de `<header class="site-header">`. El sticky ara va al `<header>`, no al `<nav>` — és l'únic fix que funciona quan el pare té la mateixa alçada que el fill
@@ -338,14 +369,14 @@ Gestió: `wrangler secret put NOM`
 
 ## Pendent / deute tècnic
 
-- **Estadístiques** — `/stats/` desplegada però pendent de verificar que les dades carreguen correctament (GoatCounter necessita visites reals acumulades)
-- **Adjunts a consultes** — integració Cloudflare R2 pendent; l'usuari ho ha demanat però s'ha ajornat
-- **Emails** — millorar plantilles: logo MalditasMaquinas, text RGPD, evitar spam (domini Resend verificat ✓, DKIM a DNS ✓)
-- **Stripe confirmation page** — la pàgina post-pagament és en anglès ("Thanks for your payment"); cal configurar URL de redirecció personalitzada als Payment Links
-- **Stripe Tax** — ajornat fins que el workflow bàsic sigui estable; IVA inclòs als preus com a solució provisional
-- **Secrets incorrectes al Worker** — verificar que els 5 secrets amb noms incorrectes s'han esborrat (Cloudflare → Workers → malditasmaquinas-api → Settings → Variables)
+- **Deploy Worker pendent** — cal fer `wrangler r2 bucket create malditasmaquinas-files && wrangler deploy` des de `workers/`
+- **Telegram** — les notificacions no semblen arribar; revisar `TELEGRAM_BOT_TOKEN` i `TELEGRAM_CHAT_ID` als secrets del Worker (Cloudflare → Workers → malditasmaquinas-api → Settings → Variables)
+- **Estadístiques** — `/stats/` desplegada però pendent de verificar que les dades carreguen (GoatCounter necessita visites reals acumulades)
+- **Stripe confirmation page** — la pàgina post-pagament és en anglès; cal configurar URL de redirecció als Payment Links
+- **Stripe Tax** — ajornat; IVA inclòs als preus com a solució provisional
+- **Secrets incorrectes al Worker** — verificar que els secrets amb noms incorrectes s'han esborrat
 - **Pàgines legals en castellà** — manquen `content/es/condiciones/`, `privacidad/`, `aviso-legal/`, `contacto/`
-- `layouts/_default/single.html` — no creat; les pàgines individuals van per `list.html` o layouts específics
+- `layouts/_default/single.html` — no creat; pàgines individuals van per `list.html` o layouts específics
 
 ---
 
