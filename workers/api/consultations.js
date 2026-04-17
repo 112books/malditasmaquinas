@@ -1,16 +1,18 @@
 /**
  * consultations.js — Consultes tècniques
  *
- * GET  /api/consultations          → llista (client: les seves; admin: totes)
- * POST /api/consultations          → nova consulta (requereix ≥ 0.25h)
- * GET  /api/consultations/:id      → detall + respostes
- * POST /api/consultations/:id/respond → admin respon
- * PUT  /api/consultations/:id/close   → tanca consulta
+ * GET  /api/consultations              → llista
+ * POST /api/consultations              → nova consulta (requereix ≥ 0.25h)
+ * GET  /api/consultations/:id          → detall + respostes + adjunts
+ * POST /api/consultations/:id/respond  → admin respon (notifica client per correu)
+ * PUT  /api/consultations/:id/close    → tanca consulta
  */
 
 import { json, unauthorized, verifyJWT } from './index.js';
+import { emailHtml, emailAdminHtml, sendEmail } from './email.js';
 
 const HORES_MINIMES = 0.25;
+const BASE_URL      = 'https://malditasmaquinas.com';
 
 export async function handleConsultations(request, env, path) {
   const payload = await verifyJWT(request, env);
@@ -61,6 +63,7 @@ async function create(request, env, payload) {
 
   const titol    = (body.titol    || '').trim();
   const pregunta = (body.pregunta || '').trim();
+  const adjunts  = Array.isArray(body.adjunts) ? body.adjunts.slice(0, 5) : [];
 
   if (!pregunta) return json({ error: 'la pregunta és obligatòria' }, 400);
 
@@ -79,41 +82,53 @@ async function create(request, env, payload) {
   }
 
   const id = crypto.randomUUID();
+  const adjuntsJson = adjunts.length ? JSON.stringify(adjunts) : null;
+
   await env.DB.prepare(
-    'INSERT INTO consultations (id, user_id, titol, pregunta, hores_descomptades) VALUES (?, ?, ?, ?, ?)'
-  ).bind(id, payload.sub, titol, pregunta, HORES_MINIMES).run();
+    'INSERT INTO consultations (id, user_id, titol, pregunta, adjunts_r2_keys, hores_descomptades) VALUES (?, ?, ?, ?, ?, ?)'
+  ).bind(id, payload.sub, titol, pregunta, adjuntsJson, HORES_MINIMES).run();
 
   const user = await env.DB.prepare('SELECT nom, email FROM profiles WHERE id = ?').bind(payload.sub).first();
 
-  // Notifica admin per Telegram
+  // ── Telegram a l'admin ───────────────────────────────────────────────────────
   if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+    const adjTxt = adjunts.length ? `\n📎 ${adjunts.length} adjunt${adjunts.length > 1 ? 's' : ''}: ${adjunts.map(a => a.nom).join(', ')}` : '';
     await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         chat_id: env.TELEGRAM_CHAT_ID,
-        text: `📩 <b>Nova consulta</b>\nDe: ${user?.nom} (${user?.email})\nTítol: ${titol || '(sense títol)'}\n\n${pregunta.slice(0, 200)}${pregunta.length > 200 ? '…' : ''}`,
+        text: `📩 <b>Nova consulta</b>\nDe: ${user?.nom} (${user?.email})\nTítol: ${titol || '(sense títol)'}${adjTxt}\n\n${pregunta.slice(0, 300)}${pregunta.length > 300 ? '…' : ''}`,
         parse_mode: 'HTML',
       }),
     });
   }
 
-  // Notifica admin per email
+  // ── Email a l'admin ──────────────────────────────────────────────────────────
   if (env.RESEND_API_KEY) {
-    const baseUrl = env.BASE_URL || 'https://malditasmaquinas.com';
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'MalditasMaquinas <hola@malditasmaquinas.com>',
-        to: ['hola@malditasmaquinas.com'],
-        subject: `Nova consulta de ${user?.nom || user?.email}: ${titol || '(sense títol)'}`,
-        html: `
-          <p><b>De:</b> ${user?.nom} (${user?.email})</p>
-          <p><b>Títol:</b> ${titol || '(sense títol)'}</p>
-          <blockquote style="border-left:3px solid #e04d10;padding:1rem;background:#181714;color:#e2ddd6;">${pregunta.replace(/\n/g, '<br>')}</blockquote>
-          <p><a href="${baseUrl}/app/">Respon al panell</a></p>
+    const adjHtml = adjunts.length
+      ? `<p style="margin:.75rem 0 0;font-size:.8rem;color:#9a958e;">
+           📎 ${adjunts.length} adjunt${adjunts.length > 1 ? 's' : ''}:
+           ${adjunts.map(a => `<span style="color:#e04d10;">${esc(a.nom)}</span>`).join(', ')}
+         </p>`
+      : '';
+
+    await sendEmail(env, {
+      to: 'hola@malditasmaquinas.com',
+      subject: `Nova consulta de ${user?.nom || user?.email}: ${titol || '(sense títol)'}`,
+      html: emailAdminHtml({
+        titol: 'Nova consulta',
+        contingut: `
+          <p style="margin:0 0 .5rem;font-size:.8rem;color:#7a7570;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;">nova consulta</p>
+          <p style="margin:0 0 1.25rem;"><strong>${esc(user?.nom)}</strong> · <a href="mailto:${esc(user?.email)}" style="color:#e04d10;text-decoration:none;">${esc(user?.email)}</a></p>
+          ${titol ? `<p style="margin:0 0 1rem;font-size:1.05rem;font-weight:600;">${esc(titol)}</p>` : ''}
+          <blockquote style="margin:0 0 1rem;padding:1rem 1.25rem;background:#0d0c0b;border-left:3px solid #e04d10;color:#9a958e;font-size:.9rem;line-height:1.7;">
+            ${esc(pregunta).replace(/\n/g, '<br>')}
+          </blockquote>
+          ${adjHtml}
         `,
+        cta_text: 'Respon al panell',
+        cta_url: `${BASE_URL}/app/`,
       }),
     });
   }
@@ -129,15 +144,18 @@ async function detail(env, payload, id) {
   ).bind(id).first();
 
   if (!consultation) return json({ error: 'not found' }, 404);
-  if (payload.role !== 'admin' && consultation.user_id !== payload.sub) {
-    return unauthorized();
-  }
+  if (payload.role !== 'admin' && consultation.user_id !== payload.sub) return unauthorized();
 
   const responses = await env.DB.prepare(
     'SELECT r.*, p.nom AS admin_nom FROM responses r JOIN profiles p ON p.id = r.admin_id WHERE r.consultation_id = ? ORDER BY r.created_at ASC'
   ).bind(id).all();
 
-  return json({ ...consultation, respostes: responses.results ?? [] });
+  // Parseja adjunts
+  let adjunts = [];
+  try { adjunts = consultation.adjunts_r2_keys ? JSON.parse(consultation.adjunts_r2_keys) : []; }
+  catch { adjunts = []; }
+
+  return json({ ...consultation, adjunts, respostes: responses.results ?? [] });
 }
 
 // ── POST /api/consultations/:id/respond ──────────────────────────────────────
@@ -163,23 +181,24 @@ async function respond(request, env, payload, id) {
     "UPDATE consultations SET estat = 'resposta', updated_at = datetime('now') WHERE id = ?"
   ).bind(id).run();
 
-  // Notifica el client per email
+  // ── Email al client ──────────────────────────────────────────────────────────
   const client = await env.DB.prepare('SELECT email, nom FROM profiles WHERE id = ?').bind(consultation.user_id).first();
   if (client && env.RESEND_API_KEY) {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'MalditasMaquinas <hola@malditasmaquinas.com>',
-        to: [client.email],
-        subject: `Resposta a la teva consulta · MalditasMaquinas`,
-        html: `
-          <p>Hola ${client.nom},</p>
-          <p>Hem respost a la teva consulta: <strong>${consultation.titol || 'Consulta'}</strong></p>
-          <blockquote style="border-left:3px solid #e04d10;padding:1rem;background:#181714;color:#e2ddd6;">${text.replace(/\n/g, '<br>')}</blockquote>
-          <p><a href="${env.BASE_URL || 'https://malditasmaquinas.com'}/app/">Veure al panell</a></p>
-          <p>— MalditasMaquinas</p>
+    await sendEmail(env, {
+      to: client.email,
+      subject: `Resposta a la teva consulta · MalditasMaquinas`,
+      html: emailHtml({
+        titol: 'Resposta a la teva consulta',
+        contingut: `
+          <p style="margin:0 0 1.25rem;">Hola <strong>${esc(client.nom)}</strong>,</p>
+          <p style="margin:0 0 1rem;">Hem respost a la teva consulta: <strong>${esc(consultation.titol || 'Consulta')}</strong></p>
+          <blockquote style="margin:0 0 1.25rem;padding:1rem 1.25rem;background:#0d0c0b;border-left:3px solid #e04d10;color:#9a958e;font-size:.9rem;line-height:1.7;">
+            ${esc(text).replace(/\n/g, '<br>')}
+          </blockquote>
+          <p style="margin:0;font-size:.85rem;color:#9a958e;">Accedeix al teu panell per veure la consulta completa i el teu saldo d'hores.</p>
         `,
+        cta_text: 'Veure al panell',
+        cta_url: `${BASE_URL}/app/`,
       }),
     });
   }
@@ -199,4 +218,8 @@ async function close(env, payload, id) {
   ).bind(id).run();
 
   return json({ ok: true });
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }

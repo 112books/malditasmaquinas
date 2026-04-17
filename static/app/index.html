@@ -593,6 +593,13 @@ function showNewConsultation() {
           <label class="form-label" for="consPregunta">Consulta *</label>
           <textarea class="form-input" id="consPregunta" required rows="8" placeholder="Descriu el problema amb detall: sistema operatiu, programari, missatges d'error, passos per reproduir-lo…" style="resize:vertical;"></textarea>
         </div>
+        <div class="form-group">
+          <label class="form-label" for="consFiles">Adjunts (opcional · màx 5 fitxers · 10 MB cadascun)</label>
+          <input class="form-input" type="file" id="consFiles" multiple
+            accept=".jpg,.jpeg,.png,.gif,.webp,.svg,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx,.zip"
+            style="padding:.6rem;cursor:pointer;">
+          <div id="fileList" style="margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+        </div>
         <div style="display:flex;gap:.75rem;">
           <button type="submit" class="btn-primary" id="consBtn" style="width:auto;padding:.85rem 2rem;">Envia la consulta</button>
         </div>
@@ -602,25 +609,92 @@ function showNewConsultation() {
   `);
 
   el('backDash').addEventListener('click', e => { e.preventDefault(); showClient(); });
+
+  // Previsualització de fitxers seleccionats
+  el('consFiles').addEventListener('change', () => {
+    const files = Array.from(el('consFiles').files);
+    el('fileList').innerHTML = files.map(f =>
+      `<span style="font-family:var(--f-mono);font-size:.65rem;color:var(--cream2);background:var(--bg2);padding:.25rem .6rem;">
+        📎 ${escHtml(f.name)} <span style="color:var(--cream3)">(${(f.size/1024).toFixed(0)} KB)</span>
+      </span>`
+    ).join('');
+  });
+
   el('consForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const btn = el('consBtn');
-    btn.disabled = true; btn.textContent = 'Enviant…';
-    const titol    = el('consTitol').value.trim();
+    const btn     = el('consBtn');
+    const msgEl   = el('consMsg');
+    const titol   = el('consTitol').value.trim();
     const pregunta = el('consPregunta').value.trim();
-    const { ok, status, data } = await api('POST', '/consultations', { titol, pregunta });
+    const files   = Array.from(el('consFiles').files).slice(0, 5);
+
+    btn.disabled = true;
+
+    // 1. Pujar fitxers
+    let adjunts = [];
+    if (files.length) {
+      btn.textContent = `Pujant fitxers (0/${files.length})…`;
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        if (f.size > 10 * 1024 * 1024) {
+          msgEl.innerHTML = `<div class="msg-box err">${escHtml(f.name)}: massa gran (màx 10 MB)</div>`;
+          btn.disabled = false; btn.textContent = 'Envia la consulta';
+          return;
+        }
+        const fd = new FormData();
+        fd.append('file', f);
+        const res = await fetch(`${API}/upload`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${State.jwt}` },
+          body: fd,
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          msgEl.innerHTML = `<div class="msg-box err">Error pujant ${escHtml(f.name)}: ${escHtml(err.error || 'error desconegut')}</div>`;
+          btn.disabled = false; btn.textContent = 'Envia la consulta';
+          return;
+        }
+        const d = await res.json();
+        adjunts.push({ key: d.key, nom: d.nom, mida: d.mida, tipus: d.tipus });
+        btn.textContent = `Pujant fitxers (${i + 1}/${files.length})…`;
+      }
+    }
+
+    // 2. Crear la consulta
+    btn.textContent = 'Enviant…';
+    const { ok, status, data } = await api('POST', '/consultations', { titol, pregunta, adjunts });
     if (ok) {
-      el('consMsg').innerHTML = '<div class="msg-box ok">Consulta enviada. T\'avisarem per correu quan tinguem resposta.</div>';
+      msgEl.innerHTML = '<div class="msg-box ok">Consulta enviada. T\'avisarem per correu quan tinguem resposta.</div>';
       btn.textContent = 'Enviada ✓';
       setTimeout(() => showClient(), 2000);
     } else if (status === 402) {
-      el('consMsg').innerHTML = `<div class="msg-box err">${escHtml(data.message)}</div>`;
+      msgEl.innerHTML = `<div class="msg-box err">${escHtml(data.message)}</div>`;
       btn.disabled = false; btn.textContent = 'Envia la consulta';
     } else {
-      el('consMsg').innerHTML = `<div class="msg-box err">Error en enviar. Torna-ho a provar.</div>`;
+      msgEl.innerHTML = `<div class="msg-box err">Error en enviar. Torna-ho a provar.</div>`;
       btn.disabled = false; btn.textContent = 'Envia la consulta';
     }
   });
+}
+
+// ── Descarregar fitxer adjunt (autenticat) ────────────────────────────────────
+
+async function downloadFile(key, nom) {
+  try {
+    const res = await fetch(`${API}/files/${encodeURIComponent(key)}`, {
+      headers: { 'Authorization': `Bearer ${State.jwt}` },
+    });
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = nom;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch { /* silenci */ }
 }
 
 // ── Detall consulta ──
@@ -647,6 +721,23 @@ async function showConsultation(id) {
 
       <p class="section-title">consulta</p>
       <div class="consultation-body">${escHtml(data.pregunta)}</div>
+
+      ${data.adjunts && data.adjunts.length > 0 ? `
+      <p class="section-title" style="margin-top:1.5rem;">adjunts</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;">
+        ${data.adjunts.map(a => `
+          <button onclick="downloadFile(${JSON.stringify(a.key)}, ${JSON.stringify(a.nom)})"
+            style="background:var(--bg2);border:1px solid var(--line);color:var(--cream2);
+                   font-family:var(--f-mono);font-size:.7rem;padding:.4rem .85rem;cursor:pointer;
+                   transition:border-color .15s;"
+            onmouseover="this.style.borderColor='var(--rust2)'"
+            onmouseout="this.style.borderColor='var(--line)'">
+            📎 ${escHtml(a.nom)}
+            <span style="color:var(--cream3)">(${a.mida ? (a.mida/1024).toFixed(0) + ' KB' : ''})</span>
+          </button>
+        `).join('')}
+      </div>
+      ` : ''}
 
       ${respostes.length > 0 ? `
         <p class="section-title">respostes</p>

@@ -18,10 +18,11 @@ compatibility_flags = ["nodejs_compat"]
 #   binding = "KV"
 #   id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
-# ── R2 (fitxers adjunts) — activar quan calgui ───────────────────────────────
-# [[r2_buckets]]
-#   binding = "R2"
-#   bucket_name = "malditasmaquinas-files"
+# ── R2 (fitxers adjunts) ─────────────────────────────────────────────────────
+# Crear el bucket: wrangler r2 bucket create malditasmaquinas-files
+[[r2_buckets]]
+  binding = "R2"
+  bucket_name = "malditasmaquinas-files"
 
 # ── Secrets (mai al codi, pujar amb: wrangler secret put NOM) ────────────────
 # STRIPE_SECRET_KEY

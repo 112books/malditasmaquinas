@@ -11,6 +11,7 @@
  */
 
 import { json } from './index.js';
+import { emailHtml, emailAdminHtml, sendEmail } from './email.js';
 
 // Mapa amount_subtotal (cèntims, preu base sense IVA) → package_id de D1
 const AMOUNT_TO_PACKAGE = {
@@ -97,46 +98,56 @@ export async function handleStripeWebhook(request, env) {
     });
   }
 
-  // Email a l'admin
-  if (env.RESEND_API_KEY) {
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'MalditasMaquinas <hola@malditasmaquinas.com>',
-        to: ['hola@malditasmaquinas.com'],
-        subject: `💳 Pagament rebut: ${pkg.nom} — ${user.nom}`,
-        html: `
-          <p><b>Client:</b> ${user.nom} (${user.email})</p>
-          <p><b>Paquet:</b> ${pkg.nom} (${pkg.hores}h)</p>
-          <p><b>Import:</b> ${(session.amount_total / 100).toFixed(2)} €</p>
-          <p><b>Caduca:</b> ${expiresAt.slice(0, 10)}</p>
-        `,
-      }),
-    });
-  }
+  const baseUrl = 'https://malditasmaquinas.com';
+  const importEur = (session.amount_total / 100).toFixed(2);
 
-  // Email al client
-  if (env.RESEND_API_KEY) {
-    const baseUrl = env.BASE_URL || 'https://malditasmaquinas.com';
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'MalditasMaquinas <hola@malditasmaquinas.com>',
-        to: [user.email],
-        subject: `Compra confirmada: paquet ${pkg.nom} · MalditasMaquinas`,
-        html: `
-          <p>Hola ${user.nom},</p>
-          <p>Hem rebut el teu pagament. Ja tens <strong>${pkg.hores}h</strong> disponibles (paquet <em>${pkg.nom}</em>).</p>
-          <p>Caduca: ${expiresAt.slice(0, 10)}</p>
-          <br>
-          <p><a href="${baseUrl}/app/">Accedeix al teu panell i envia la primera consulta</a></p>
-          <p>— MalditasMaquinas</p>
-        `,
-      }),
-    });
-  }
+  // ── Email a l'admin ──────────────────────────────────────────────────────────
+  await sendEmail(env, {
+    to: 'hola@malditasmaquinas.com',
+    subject: `💳 Pagament rebut: ${pkg.nom} — ${user.nom}`,
+    html: emailAdminHtml({
+      titol: 'Pagament rebut',
+      contingut: `
+        <p style="margin:0 0 .5rem;font-size:.8rem;color:#7a7570;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;">pagament confirmat</p>
+        <table cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:1.25rem;">
+          <tr><td style="padding:.35rem 0;color:#9a958e;font-size:.85rem;width:120px;">Client</td>
+              <td style="padding:.35rem 0;"><strong>${esc(user.nom)}</strong> · ${esc(user.email)}</td></tr>
+          <tr><td style="padding:.35rem 0;color:#9a958e;font-size:.85rem;">Paquet</td>
+              <td style="padding:.35rem 0;"><strong>${esc(pkg.nom)}</strong> · ${pkg.hores}h</td></tr>
+          <tr><td style="padding:.35rem 0;color:#9a958e;font-size:.85rem;">Import</td>
+              <td style="padding:.35rem 0;color:#e04d10;font-size:1.1rem;font-weight:700;">${importEur} €</td></tr>
+          <tr><td style="padding:.35rem 0;color:#9a958e;font-size:.85rem;">Caduca</td>
+              <td style="padding:.35rem 0;">${expiresAt.slice(0, 10)}</td></tr>
+        </table>
+      `,
+      cta_text: 'Veure panell admin',
+      cta_url: `${baseUrl}/app/`,
+    }),
+  });
+
+  // ── Email al client ──────────────────────────────────────────────────────────
+  await sendEmail(env, {
+    to: user.email,
+    subject: `Compra confirmada: paquet ${pkg.nom} · MalditasMaquinas`,
+    html: emailHtml({
+      titol: 'Compra confirmada',
+      contingut: `
+        <p style="margin:0 0 1.25rem;">Hola <strong>${esc(user.nom)}</strong>,</p>
+        <p style="margin:0 0 1rem;">Hem rebut el teu pagament. Ja pots enviar consultes.</p>
+        <table cellpadding="0" cellspacing="0" style="width:100%;margin-bottom:1.5rem;background:#0d0c0b;padding:1rem;">
+          <tr><td style="padding:.35rem 0;color:#9a958e;font-size:.85rem;width:100px;">Paquet</td>
+              <td style="padding:.35rem 0;"><strong>${esc(pkg.nom)}</strong> · ${pkg.hores}h</td></tr>
+          <tr><td style="padding:.35rem 0;color:#9a958e;font-size:.85rem;">Import</td>
+              <td style="padding:.35rem 0;color:#e04d10;font-weight:700;">${importEur} € (IVA inclòs)</td></tr>
+          <tr><td style="padding:.35rem 0;color:#9a958e;font-size:.85rem;">Caduca</td>
+              <td style="padding:.35rem 0;">${expiresAt.slice(0, 10)}</td></tr>
+        </table>
+        <p style="margin:0;font-size:.85rem;color:#9a958e;">Accedeix al teu panell per enviar la primera consulta. Et responem en menys de 24h en dies laborables.</p>
+      `,
+      cta_text: 'Envia la primera consulta',
+      cta_url: `${baseUrl}/app/`,
+    }),
+  });
 
   return json({ ok: true });
 }
