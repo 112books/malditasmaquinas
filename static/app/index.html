@@ -271,6 +271,15 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
+function formatHores(h) {
+  if (!h || h <= 0) return '0 min';
+  if (h < 1) return `${Math.round(h * 60)} min`;
+  if (h === Math.floor(h)) return `${h}h`;
+  const hInt = Math.floor(h);
+  const min  = Math.round((h - hInt) * 60);
+  return min > 0 ? `${hInt}h ${min}min` : `${hInt}h`;
+}
+
 function updateNav() {
   if (State.user) {
     el('navUser').textContent = State.user.nom || State.user.email;
@@ -447,19 +456,27 @@ async function showClient() {
     ${pkgHtml}
 
     <div class="balance-bar">
-      <span class="balance-num">${hores.toFixed(2)}</span>
-      <span class="balance-label">hores disponibles</span>
+      <span class="balance-num">${formatHores(hores)}</span>
+      <span class="balance-label">disponibles</span>
       <button class="balance-buy" onclick="App.showBuyPkg()">comprar hores →</button>
     </div>
 
+    ${hores >= 0.25 && cons.length === 0 ? `
+    <div style="margin-bottom:2rem;padding:1.75rem;background:var(--bg2);border-left:3px solid var(--rust2);text-align:center;">
+      <p style="font-family:var(--f-mono);font-size:.8rem;color:var(--cream2);margin-bottom:1.25rem;">Tens <strong style="color:var(--rust2)">${formatHores(hores)}</strong> disponibles. Envia la primera consulta i et responem en menys de 24h.</p>
+      <button class="btn-primary" onclick="App.showNewConsultation()" style="font-size:1rem;padding:1rem 2rem;">+ nova consulta</button>
+    </div>
+    ` : `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
       <span class="section-title">consultes</span>
       <button class="btn-secondary" onclick="App.showNewConsultation()" ${hores < 0.25 ? 'disabled title="Cal tenir almenys 0.25h disponibles"' : ''}>+ nova consulta</button>
     </div>
+    `}
 
     <div class="consultation-list" id="consList">
-      ${cons.length === 0
-        ? '<div class="empty-state">Encara no tens cap consulta.</div>'
+      ${cons.length === 0 && hores < 0.25
+        ? '<div class="empty-state">Compra hores per poder enviar consultes.</div>'
+        : cons.length === 0 ? ''
         : cons.map(c => renderConsItem(c)).join('')
       }
     </div>
@@ -747,7 +764,7 @@ function renderUsersTab(users) {
               <td style="font-family:var(--f-mono);font-size:.78rem;">${escHtml(u.email)}</td>
               <td><span class="badge ${u.role === 'admin' ? 'admin' : ''}">${escHtml(u.role)}</span></td>
               <td><span class="badge ${escHtml(u.status)}">${escHtml(u.status)}</span></td>
-              <td style="font-family:var(--f-mono);font-size:.78rem;">${parseFloat(u.hores_disponibles || 0).toFixed(2)}h</td>
+              <td style="font-family:var(--f-mono);font-size:.78rem;">${formatHores(parseFloat(u.hores_disponibles || 0))}</td>
               <td style="font-family:var(--f-mono);font-size:.68rem;color:var(--cream3);">${formatDate(u.created_at)}</td>
               <td>
                 ${u.status === 'pending' ? `<button class="btn-action validate" onclick="App.validateUser('${escHtml(u.id)}')">validar</button>` : ''}
