@@ -43,13 +43,13 @@ export async function handleStripeWebhook(request, env) {
 
   const session = event.data.object;
 
-  // Identifica el paquet per amount_total (cèntims, present al payload)
-  const amountTotal = session.amount_total;
-  const packageId   = AMOUNT_TO_PACKAGE[amountTotal];
+  // Identifica el paquet per amount_subtotal (sense IVA, present al payload)
+  const amountSubtotal = session.amount_subtotal;
+  const packageId      = AMOUNT_TO_PACKAGE[amountSubtotal];
 
   if (!packageId) {
-    console.error('Stripe: amount_total no mapejat:', amountTotal);
-    return json({ ok: true, warning: 'amount no mapejat', amount_total: amountTotal });
+    console.error('Stripe: amount_subtotal no mapejat:', amountSubtotal);
+    return json({ ok: true, warning: 'amount no mapejat', amount_subtotal: amountSubtotal });
   }
 
   const pkg = await env.DB.prepare('SELECT * FROM hour_packages WHERE id = ?').bind(packageId).first();
