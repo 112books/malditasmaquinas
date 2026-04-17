@@ -2,12 +2,13 @@
   <div class="footer-top">
     <div class="footer-col">
       <span class="footer-copy">© {{ now.Year }} malditasmaquinas.com</span>
-      <nav class="footer-links">
-        <a href="{{ "avis-legal/" | relLangURL }}">Avís legal</a>
-        <a href="{{ "privacitat/" | relLangURL }}">Privacitat</a>
-        <a href="{{ "privacitat/" | relLangURL }}#cookies">Política de cookies</a>
-        <a href="{{ "condicions/" | relLangURL }}">Condicions</a>
-        <a href="{{ "contacte/" | relLangURL }}">Contacte</a>
+      <nav class="footer-links" aria-label="Enllaços legals">
+        <a href="{{ i18n "footer_legal_url" | relLangURL }}">{{ i18n "footer_legal" }}</a>
+        <a href="{{ i18n "footer_privacy_url" | relLangURL }}">{{ i18n "footer_privacy" }}</a>
+        <a href="{{ i18n "footer_privacy_url" | relLangURL }}#cookies">{{ i18n "footer_cookies" }}</a>
+        <a href="{{ i18n "footer_conditions_url" | relLangURL }}">{{ i18n "footer_conditions" }}</a>
+        <a href="{{ i18n "footer_faq_url" | relLangURL }}">{{ i18n "footer_faq" }}</a>
+        <a href="{{ i18n "footer_contact_url" | relLangURL }}">{{ i18n "footer_contact" }}</a>
       </nav>
     </div>
     <div class="footer-col footer-col--right">

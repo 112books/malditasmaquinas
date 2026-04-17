@@ -1,0 +1,16 @@
+{{ define "main" }}
+<div class="page-wrap faq-wrap">
+  <header class="page-header">
+    <span class="stag">preguntes freqüents</span>
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{ with .Params.intro }}<p class="faq-intro">{{ . }}</p>{{ end }}
+  </header>
+  <div class="faq-body">
+    {{ .Content }}
+  </div>
+  <div class="faq-cta">
+    <p>No has trobat el que buscaves?</p>
+    <a href="{{ "contacte/" | relLangURL }}" class="btn-p">Contacta'ns</a>
+  </div>
+</div>
+{{ end }}

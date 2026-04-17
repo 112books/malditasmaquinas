@@ -1,0 +1,25 @@
+{{ define "main" }}
+<section class="section">
+  <div class="s-header">
+    <div>
+      <span class="stag">serveis</span>
+      <h1 class="s-h1">En què et podem<br>ajudar</h1>
+    </div>
+    <p class="s-intro">Tot el que necessites, sense contractes ni compromisos de permanència. Assessorament tecnològic honest per a artistes, autònoms i petites empreses.</p>
+  </div>
+  <div class="srv-grid">
+    {{ range .Pages }}
+    <a class="srv" href="{{ .RelPermalink }}">
+      <div class="srv-line"></div>
+      <div class="srv-t">{{ .Title }}</div>
+      <p class="srv-d">{{ .Description }}</p>
+      <span class="srv-more" aria-hidden="true">veure el servei →</span>
+    </a>
+    {{ end }}
+  </div>
+</section>
+<div class="srv-index-cta">
+  <a href="{{ .Site.Home.RelPermalink }}#paquets" class="btn-p">Compra hores</a>
+  <a href="{{ "faq/" | relLangURL }}" class="btn-s">Preguntes freqüents →</a>
+</div>
+{{ end }}

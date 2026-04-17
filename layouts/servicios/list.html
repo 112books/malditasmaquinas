@@ -1,0 +1,25 @@
+{{ define "main" }}
+<section class="section">
+  <div class="s-header">
+    <div>
+      <span class="stag">servicios</span>
+      <h1 class="s-h1">En qué podemos<br>ayudarte</h1>
+    </div>
+    <p class="s-intro">Todo lo que necesitas, sin contratos ni compromisos de permanencia. Asesoramiento tecnológico honesto para artistas, autónomos y pequeñas empresas.</p>
+  </div>
+  <div class="srv-grid">
+    {{ range .Pages }}
+    <a class="srv" href="{{ .RelPermalink }}">
+      <div class="srv-line"></div>
+      <div class="srv-t">{{ .Title }}</div>
+      <p class="srv-d">{{ .Description }}</p>
+      <span class="srv-more" aria-hidden="true">ver el servicio →</span>
+    </a>
+    {{ end }}
+  </div>
+</section>
+<div class="srv-index-cta">
+  <a href="{{ .Site.Home.RelPermalink }}#paquets" class="btn-p">Compra horas</a>
+  <a href="{{ "faq/" | relLangURL }}" class="btn-s">Preguntas frecuentes →</a>
+</div>
+{{ end }}

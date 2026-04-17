@@ -30,3 +30,36 @@ other = "{{ .Hours }} h"
 
 [package_validity]
 other = "{{ .Days }} dies de validesa"
+
+[footer_legal]
+other = "Avís legal"
+
+[footer_legal_url]
+other = "avis-legal/"
+
+[footer_privacy]
+other = "Privacitat"
+
+[footer_privacy_url]
+other = "privacitat/"
+
+[footer_cookies]
+other = "Cookies"
+
+[footer_conditions]
+other = "Condicions"
+
+[footer_conditions_url]
+other = "condicions/"
+
+[footer_faq]
+other = "FAQ"
+
+[footer_faq_url]
+other = "faq/"
+
+[footer_contact]
+other = "Contacte"
+
+[footer_contact_url]
+other = "contacte/"

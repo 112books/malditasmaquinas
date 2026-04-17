@@ -1,0 +1,99 @@
+{{ define "main" }}
+
+{{/* Definim les dades dels paquets localment */}}
+{{ $paquets := slice
+  (dict "id" "minim"     "nom" "mínim"     "hores" "30"  "unitat" "min"   "preu" "35"  "iva" true  "caducitat" "1 mes"    "desc" "Per a una consulta puntual o per provar el servei sense compromís."       "stripe" .Site.Params.stripe.links.minim)
+  (dict "id" "basic"     "nom" "bàsic"     "hores" "1"   "unitat" "hora"  "preu" "60"  "iva" true  "caducitat" "3 mesos"  "desc" "Per a 2-4 consultes senzilles o un petit problema a resoldre."            "stripe" .Site.Params.stripe.links.basic)
+  (dict "id" "mitja"     "nom" "mitjà"     "hores" "3"   "unitat" "hores" "preu" "150" "iva" true  "caducitat" "5 mesos"  "desc" "Per a un projecte petit o diverses consultes al llarg d'uns mesos."       "stripe" .Site.Params.stripe.links.mitja)
+  (dict "id" "estandard" "nom" "estàndard" "hores" "5"   "unitat" "hores" "preu" "225" "iva" true  "caducitat" "7 mesos"  "desc" "El més popular. Per a projectes mitjans o ús habitual del servei."        "stripe" .Site.Params.stripe.links.estandard "popular" true)
+  (dict "id" "pro"       "nom" "pro"       "hores" "10"  "unitat" "hores" "preu" "380" "iva" true  "caducitat" "10 mesos" "desc" "Per a ús recurrent o un projecte de certa envergadura."                   "stripe" .Site.Params.stripe.links.pro)
+  (dict "id" "avancat"   "nom" "avançat"   "hores" "20"  "unitat" "hores" "preu" "600" "iva" true  "caducitat" "12 mesos" "desc" "Per a empreses o professionals amb necessitats tecnològiques continues."  "stripe" .Site.Params.stripe.links.avancat)
+}}
+
+<section class="pkg-section">
+  <span class="stag">paquets d'hores</span>
+  <div class="s-header">
+    <h1 class="s-h1">Tria el paquet<br>que et convé</h1>
+    <p class="s-intro">Compra hores prepagades i usa-les quan les necessitis. Sense subscripcions, sense permanència, sense sorpreses.</p>
+  </div>
+
+  <div class="pkg-grid">
+    {{ range $paquets }}
+    <div class="pkg{{ if .popular }} feat{{ end }}">
+      {{ if .popular }}<div class="pkg-badge">popular</div>{{ end }}
+      <div class="pkg-n">{{ .nom }}</div>
+      <div class="pkg-h">{{ .hores }}</div>
+      <span class="pkg-u">{{ .unitat }}</span>
+      <span class="pkg-p">{{ .preu }} €</span>
+      <span class="pkg-i">+ iva</span>
+      <div class="pkg-v">caduca en {{ .caducitat }}</div>
+      {{ with .stripe }}
+      <a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>
+      {{ end }}
+    </div>
+    {{ end }}
+  </div>
+</section>
+
+<section class="section pkg-guide-section">
+  <span class="stag">quin triar?</span>
+  <div class="s-header">
+    <h2 class="s-h1">Depèn de<br>com el faràs servir</h2>
+    <p class="s-intro">Si no tens clar quantes hores necessites, comença pel mínim o el bàsic. Pots comprar més quan vulguis.</p>
+  </div>
+
+  <div class="pkg-guide-grid">
+    <div class="pkg-guide-item">
+      <div class="pkg-guide-label">Consulta puntual</div>
+      <p class="pkg-guide-desc">Tens un dubte concret, un problema específic o vols provar el servei abans de comprometre't amb més hores.</p>
+      <div class="pkg-guide-rec">
+        <span class="pkg-guide-tag">mínim</span>
+        <span class="pkg-guide-tag">bàsic</span>
+      </div>
+    </div>
+    <div class="pkg-guide-item">
+      <div class="pkg-guide-label">Projecte concret</div>
+      <p class="pkg-guide-desc">Tens una migració, una configuració o un projecte definit que calcules que durarà entre 2 i 5 hores.</p>
+      <div class="pkg-guide-rec">
+        <span class="pkg-guide-tag">mitjà</span>
+        <span class="pkg-guide-tag pkg-guide-tag--pop">estàndard</span>
+      </div>
+    </div>
+    <div class="pkg-guide-item">
+      <div class="pkg-guide-label">Ús recurrent</div>
+      <p class="pkg-guide-desc">Fas servir el servei regularment, tens diverses consultes al mes o un projecte llarg en curs.</p>
+      <div class="pkg-guide-rec">
+        <span class="pkg-guide-tag">pro</span>
+        <span class="pkg-guide-tag">avançat</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section pkg-rules-section">
+  <span class="stag">com funcionen les hores</span>
+  <div class="pkg-rules-grid">
+    <div class="pkg-rule">
+      <div class="pkg-rule-n">15 min</div>
+      <div class="pkg-rule-t">mínim per consulta</div>
+      <p class="pkg-rule-d">Cada consulta enviada descompta 15 minuts automàticament. Si la resolució requereix més temps, t'avisem prèviament.</p>
+    </div>
+    <div class="pkg-rule">
+      <div class="pkg-rule-n">48 h</div>
+      <div class="pkg-rule-t">temps de resposta</div>
+      <p class="pkg-rule-d">Màxim 48 hores en dies laborables. Sense trucades, tot per escrit. Pots adjuntar captures, fitxers i àudios.</p>
+    </div>
+    <div class="pkg-rule">
+      <div class="pkg-rule-n">retorn</div>
+      <div class="pkg-rule-t">si caduquen amb saldo</div>
+      <p class="pkg-rule-d">Si el paquet caduca amb hores no usades, retornem l'import proporcional sobre el preu pagat. Sense comissions.</p>
+    </div>
+  </div>
+</section>
+
+<div class="srv-index-cta">
+  <a href="{{ "contacte/" | relLangURL }}" class="btn-p">Fes una consulta</a>
+  <a href="{{ "faq/" | relLangURL }}" class="btn-s">Preguntes freqüents →</a>
+</div>
+
+{{ end }}

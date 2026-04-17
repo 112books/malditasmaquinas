@@ -1,11 +1,12 @@
 +++
 title = "Condicions del servei"
+description = "Condicions generals del servei de consultoria tecnològica de MalditasMaquinas.com."
 layout = "legal"
 +++
 
 ## Objecte
 
-Aquestes condicions regulen la prestació del servei de consultoria tecnològica a demanda ofert per LinuxBCN a través de MalditasMaquinas.com.
+Aquestes condicions regulen la prestació del servei de consultoria tecnològica a demanda ofert per Joan Martínez Serres (LinuxBCN / MalditasMaquinas.com) als seus clients.
 
 ## Model de servei
 
@@ -13,35 +14,49 @@ El servei funciona mitjançant la compra prèvia de paquets d'hores prepagades. 
 
 ## Paquets d'hores
 
-| Paquet | Hores | Preu | Caducitat |
-|--------|-------|------|-----------|
-| Mínim | 0.5h | 35 € + IVA | 1 mes |
-| Bàsic | 1h | 60 € + IVA | 3 mesos |
-| Mitjà | 3h | 150 € + IVA | 5 mesos |
-| Estàndard | 5h | 225 € + IVA | 7 mesos |
-| Pro | 10h | 380 € + IVA | 10 mesos |
-| Avançat | 20h | 600 € + IVA | 12 mesos |
+| Paquet | Durada | Preu (sense IVA) | Caducitat |
+|--------|--------|-----------------|-----------|
+| Mínim | 30 min | 35 € | 1 mes |
+| Bàsic | 1 h | 60 € | 3 mesos |
+| Mitjà | 3 h | 150 € | 5 mesos |
+| Estàndard | 5 h | 225 € | 7 mesos |
+| Pro | 10 h | 380 € | 10 mesos |
+| Avançat | 20 h | 600 € | 12 mesos |
+
+Els preus s'incrementen amb l'IVA vigent en el moment de la compra. S'emet factura per a totes les transaccions.
 
 ## Descompte d'hores
 
-Cada consulta enviada descompta un mínim de **0.25 hores** (15 minuts) del saldo disponible, independentment del temps real dedicat a la resposta.
+Cada consulta enviada descompta un mínim de **15 minuts** del saldo disponible, independentment del temps real dedicat a la resposta. Si la resolució d'una consulta requereix més de 30 minuts de treball, el prestador informarà el client de l'estimació d'hores necessàries **abans d'iniciar el treball**. El client podrà acceptar o declinar.
 
-## Caducitat
+## Caducitat i retorn
 
-Les hores no consumides caduquen en el termini indicat per a cada paquet a partir de la data de compra. Les hores caducades no es recuperen però sí que es retornen econòmicament (vegeu política de retorn).
-
-## Política de retorn
-
-En cas de caducitat amb hores no consumides, LinuxBCN retornarà l'import proporcional de les hores no usades calculat sobre el preu pagat. No s'apliquen comissions. La sol·licitud s'ha de fer per correu a hola@malditasmaquinas.com.
+Les hores no consumides caduquen en el termini indicat per a cada paquet, comptat a partir de la data de compra. En cas de caducitat amb hores no usades, Joan Martínez Serres retornarà l'import proporcional calculat sobre el preu pagat, sense comissions. La sol·licitud s'ha de fer per escrit a hola@malditasmaquinas.com.
 
 ## Temps de resposta
 
-LinuxBCN es compromet a respondre les consultes en un termini raonable, habitualment inferior a 48 hores en dies laborables. Aquest termini no és contractual.
+El termini habitual de resposta és de **48 hores en dies laborables**. Els festius i caps de setmana no computen. Aquest termini és orientatiu i no té caràcter contractual.
+
+## Canal de comunicació
+
+Totes les consultes s'atenen per escrit a través del panell de client. No s'atenen consultes per telèfon ni videoconferència. El client pot adjuntar missatges d'àudio, captures de pantalla i fitxers a les seves consultes.
+
+## Facturació
+
+S'emet factura per a totes les compres. El client ha de proporcionar les dades fiscals (nom o raó social, NIF/CIF, adreça) en el moment del registre o del primer pagament. Si el client no necessita la factura per deduir l'IVA, no cal que la presenti, però el prestador la conserva en tot cas.
 
 ## Limitació de responsabilitat
 
-LinuxBCN ofereix el servei amb la diligència professional habitual però no garanteix resultats específics. La responsabilitat màxima es limita a l'import de les hores consumides en la consulta objecte de reclamació.
+Joan Martínez Serres presta el servei amb la diligència professional habitual però **no garanteix resultats específics**. La responsabilitat màxima per qualsevol reclamació es limita a l'import de les hores imputades a la consulta objecte de la reclamació.
+
+## Dret d'admissió
+
+El prestador es reserva el dret de no iniciar o de cancel·lar la prestació del servei a clients que incomplissin les presents condicions, tinguessin un comportament abusiu o sol·licitessin serveis contraris a la legalitat o a l'ètica professional. En cas de cancel·lació per part del prestador, es retornarà el saldo d'hores no usat íntegrament.
 
 ## Modificació de condicions
 
-LinuxBCN es reserva el dret de modificar aquestes condicions amb avís previ de 30 dies als usuaris registrats.
+Joan Martínez Serres es reserva el dret de modificar aquestes condicions amb un avís previ de 30 dies als usuaris registrats. L'ús continuat del servei després d'aquest termini implica l'acceptació de les noves condicions.
+
+## Legislació i fur
+
+Aquestes condicions es regeixen per la legislació espanyola. Per a qualsevol controvèrsia, les parts se sotmeten als jutjats i tribunals de Barcelona.

@@ -1,0 +1,43 @@
+{{ partial "basehead.html" . }}
+  <a class="skip-link" href="#main-content">Salta al contingut principal</a>
+  {{ partial "nav.html" . }}
+  <main id="main-content">
+    <div class="e404-wrap">
+
+      <div class="e404-left">
+        <div class="e404-code" aria-label="Error 404">
+          <span class="e4a" aria-hidden="true">4</span>
+          <span class="e4b" aria-hidden="true">0</span>
+          <span class="e4c" aria-hidden="true">4</span>
+        </div>
+
+        <div>
+          <div class="e404-label">Pàgina no trobada</div>
+          <p class="e404-msg">La pàgina que busques no existeix, o alguna màquina maldita se l'ha cruspit. Pot ser un error a l'URL o pot ser que hagi canviat d'adreça. No ho sabem.</p>
+        </div>
+
+        <div class="e404-terminal" aria-hidden="true" role="presentation">
+          <span class="e404-prompt">$ locate pàgina</span>
+          <span class="e404-out e404-out--err">→ no s'han trobat resultats</span>
+          <span class="e404-prompt">$ ping malditasmaquinas.com</span>
+          <span class="e404-out e404-out--ok">→ OK — les màquines responen</span>
+          <span class="e404-prompt">$ ping pàgina-perduda<span class="e404-cursor">█</span></span>
+          <span class="e404-out e404-out--err">→ ERROR: host desconegut</span>
+        </div>
+
+        <div class="e404-actions">
+          <a href="{{ .Site.Home.RelPermalink }}" class="btn-p">← tornar a l'inici</a>
+          <a href="{{ "serveis/" | relLangURL }}" class="btn-s">veure serveis →</a>
+        </div>
+      </div>
+
+      <div class="e404-right" aria-hidden="true">
+        <img src="/img/dimoni-roig.png" alt="">
+        <span class="e404-bignum">404</span>
+      </div>
+
+    </div>
+  </main>
+  {{ partial "footer.html" . }}
+</body>
+</html>
