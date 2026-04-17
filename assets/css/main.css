@@ -482,8 +482,12 @@ a { color: inherit; }
 
 /* ── Nav right (lang + acc) ───────────────────────────────────────────────── */
 .nav-right { display: flex; align-items: center; gap: 1rem; }
-.nav-dimoni img { display: block; width: 28px; height: 28px; object-fit: contain; opacity: .75; transition: opacity .2s, transform .2s; }
-.nav-dimoni:hover img { opacity: 1; transform: translateY(-2px) rotate(-8deg); }
+.nav-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+.nav-brand img { display: block; width: 30px; height: 30px; object-fit: contain; opacity: .85; transition: opacity .2s, transform .2s; }
+.nav-brand:hover img { opacity: 1; transform: translateY(-2px) rotate(-8deg); }
+.nav-brand-text { font-family: var(--f-mono); font-size: .78rem; color: var(--cream2); letter-spacing: .02em; transition: color .2s; }
+.nav-brand-text strong { color: var(--rust2); font-weight: 400; }
+.nav-brand:hover .nav-brand-text { color: var(--cream); }
 .nav-lang {
   font-family: var(--f-mono);
   font-size: .75rem;
