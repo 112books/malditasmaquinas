@@ -291,6 +291,33 @@ Gestió: `wrangler secret put NOM`
 
 ## Historial de tasques fetes
 
+### 2026-04-17
+
+**Nav / header**
+- `<nav>` mogut dins de `<header class="site-header">`. El sticky ara va al `<header>`, no al `<nav>` — és l'únic fix que funciona quan el pare té la mateixa alçada que el fill
+- Brand nav: dimoni 42px, text 1.05rem (era 30px / 0.78rem)
+- Mòbil (≤600px): dues files — fila 1: dimoni + MalditasMaquinas (ample complet); fila 2: icones nav (esquerra) + idioma + candau (dreta). Text "accés" amagat en mòbil, només la icona
+- Mateixos canvis aplicats a `static/stats/index.html` (nav independent)
+
+**GoatCounter estadístiques (`/stats/`)**
+- Afegit `<script data-goatcounter>` a `layouts/partials/basehead.html`
+- Nou `workers/api/stats.js`: proxy server-side que protegeix el `GOATCOUNTER_TOKEN`
+- Nou `static/stats/index.html`: dashboard complet (navegadors, SO, països, mides pantalla, pàgines)
+- Secret `GOATCOUNTER_TOKEN` configurat al Worker
+- **Bug fix**: GoatCounter API v0 no accepta `period=week`, necessita `start=YYYY-MM-DD&end=YYYY-MM-DD`. Afegida funció `periodToRange()` al Worker
+- Estructura de resposta GoatCounter: `/stats/{page}` retorna `{stats: [...]}` (no `{browsers: [...]}` etc.); `/stats/hits` retorna `{hits: [{path, count, max, event, stats}]}` sense `count_unique` per pàgina; totals via `/stats/total` → `{total: N, total_events: N}`
+- Mètriques disponibles al proxy: `total | hits | browsers | systems | sizes | locations`
+
+**Stripe (sessió anterior, 2026-04-17)**
+- Webhook fix: canviat de mapeig per `price_id` (no disponible al payload) a `amount_subtotal`
+- Preus IVA inclòs (21%): 4235, 7260, 19965, 31460, 60500, 108900 centaus
+- 6 nous Payment Links de Stripe en mode live amb IVA inclòs als preus
+- Notificació per email a admin en cada pagament (Resend)
+- Notificació per email a admin en cada nova consulta (Resend)
+- Migració D1 `0003_fix_hour_balance_view.sql` aplicada remotament: `p.id AS user_id` + `GROUP BY p.id` (la vista referencava `p.user_id` inexistent)
+- Protecció staging (`password-gate.html`) eliminada de `baseof.html` — ja en producció
+- Dominis DNS configurats a Dinahosting: A → GitHub Pages, CNAME www, MX Dinahosting, SPF/DKIM/DMARC per Resend
+
 ### 2026-04-14
 - Protecció staging amb password (SHA-256 client-side, sessionStorage). Contrasenya: Linux2026
 - Logo animat hero: corregit a `dimoni-roig-banyes-blanques.png` amb `relURL`
@@ -311,13 +338,14 @@ Gestió: `wrangler secret put NOM`
 
 ## Pendent / deute tècnic
 
-- **Magic link** — l'encallament a "carregant_" s'ha corregit però **no s'ha provat** el nou deploy; cal demanar nou link i verificar (obrir F12 per veure errors de consola)
-- **Stripe** — `STRIPE_SECRET_KEY` i `STRIPE_WEBHOOK_SECRET` no configurats al Worker; el webhook no funciona
-- **Migració D1 preus** — `0003_update_prices.sql` no aplicada remotament (error d'auth de wrangler); executar manualment: Cloudflare → D1 → malditasmaquinas-db → Console
-- **Secrets incorrectes al Worker** — 5 secrets amb valors reals com a noms (exposats); esborrar des de Cloudflare → Workers → malditasmaquinas-api → Settings → Variables
+- **Estadístiques** — `/stats/` desplegada però pendent de verificar que les dades carreguen correctament (GoatCounter necessita visites reals acumulades)
+- **Adjunts a consultes** — integració Cloudflare R2 pendent; l'usuari ho ha demanat però s'ha ajornat
+- **Emails** — millorar plantilles: logo MalditasMaquinas, text RGPD, evitar spam (domini Resend verificat ✓, DKIM a DNS ✓)
+- **Stripe confirmation page** — la pàgina post-pagament és en anglès ("Thanks for your payment"); cal configurar URL de redirecció personalitzada als Payment Links
+- **Stripe Tax** — ajornat fins que el workflow bàsic sigui estable; IVA inclòs als preus com a solució provisional
+- **Secrets incorrectes al Worker** — verificar que els 5 secrets amb noms incorrectes s'han esborrat (Cloudflare → Workers → malditasmaquinas-api → Settings → Variables)
 - **Pàgines legals en castellà** — manquen `content/es/condiciones/`, `privacidad/`, `aviso-legal/`, `contacto/`
 - `layouts/_default/single.html` — no creat; les pàgines individuals van per `list.html` o layouts específics
-- `static/.htaccess` — no trackat al git; revisar si cal afegir-lo o ignorar-lo
 
 ---
 
