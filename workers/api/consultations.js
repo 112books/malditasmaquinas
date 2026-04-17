@@ -83,9 +83,10 @@ async function create(request, env, payload) {
     'INSERT INTO consultations (id, user_id, titol, pregunta, hores_descomptades) VALUES (?, ?, ?, ?, ?)'
   ).bind(id, payload.sub, titol, pregunta, HORES_MINIMES).run();
 
+  const user = await env.DB.prepare('SELECT nom, email FROM profiles WHERE id = ?').bind(payload.sub).first();
+
   // Notifica admin per Telegram
   if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
-    const user = await env.DB.prepare('SELECT nom, email FROM profiles WHERE id = ?').bind(payload.sub).first();
     await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -93,6 +94,26 @@ async function create(request, env, payload) {
         chat_id: env.TELEGRAM_CHAT_ID,
         text: `📩 <b>Nova consulta</b>\nDe: ${user?.nom} (${user?.email})\nTítol: ${titol || '(sense títol)'}\n\n${pregunta.slice(0, 200)}${pregunta.length > 200 ? '…' : ''}`,
         parse_mode: 'HTML',
+      }),
+    });
+  }
+
+  // Notifica admin per email
+  if (env.RESEND_API_KEY) {
+    const baseUrl = env.BASE_URL || 'https://malditasmaquinas.com';
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'MalditasMaquinas <hola@malditasmaquinas.com>',
+        to: ['hola@malditasmaquinas.com'],
+        subject: `Nova consulta de ${user?.nom || user?.email}: ${titol || '(sense títol)'}`,
+        html: `
+          <p><b>De:</b> ${user?.nom} (${user?.email})</p>
+          <p><b>Títol:</b> ${titol || '(sense títol)'}</p>
+          <blockquote style="border-left:3px solid #e04d10;padding:1rem;background:#181714;color:#e2ddd6;">${pregunta.replace(/\n/g, '<br>')}</blockquote>
+          <p><a href="${baseUrl}/app/">Respon al panell</a></p>
+        `,
       }),
     });
   }

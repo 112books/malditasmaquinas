@@ -97,6 +97,25 @@ export async function handleStripeWebhook(request, env) {
     });
   }
 
+  // Email a l'admin
+  if (env.RESEND_API_KEY) {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'MalditasMaquinas <hola@malditasmaquinas.com>',
+        to: ['hola@malditasmaquinas.com'],
+        subject: `💳 Pagament rebut: ${pkg.nom} — ${user.nom}`,
+        html: `
+          <p><b>Client:</b> ${user.nom} (${user.email})</p>
+          <p><b>Paquet:</b> ${pkg.nom} (${pkg.hores}h)</p>
+          <p><b>Import:</b> ${(session.amount_total / 100).toFixed(2)} €</p>
+          <p><b>Caduca:</b> ${expiresAt.slice(0, 10)}</p>
+        `,
+      }),
+    });
+  }
+
   // Email al client
   if (env.RESEND_API_KEY) {
     const baseUrl = env.BASE_URL || 'https://malditasmaquinas.com';
