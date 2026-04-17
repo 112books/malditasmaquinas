@@ -18,10 +18,10 @@ El servei funciona mitjançant la compra prèvia de paquets d'hores prepagades. 
 |--------|--------|-----------------|-----------|
 | Mínim | 30 min | 35 € | 1 mes |
 | Bàsic | 1 h | 60 € | 3 mesos |
-| Mitjà | 3 h | 150 € | 5 mesos |
-| Estàndard | 5 h | 225 € | 7 mesos |
-| Pro | 10 h | 380 € | 10 mesos |
-| Avançat | 20 h | 600 € | 12 mesos |
+| Mitjà | 3 h | 165 € | 5 mesos |
+| Estàndard | 5 h | 260 € | 7 mesos |
+| Pro | 10 h | 500 € | 10 mesos |
+| Avançat | 20 h | 900 € | 12 mesos |
 
 Els preus s'incrementen amb l'IVA vigent en el moment de la compra. S'emet factura per a totes les transaccions.
 
@@ -43,7 +43,7 @@ Totes les consultes s'atenen per escrit a través del panell de client. No s'ate
 
 ## Facturació
 
-S'emet factura per a totes les compres. El client ha de proporcionar les dades fiscals (nom o raó social, NIF/CIF, adreça) en el moment del registre o del primer pagament. Si el client no necessita la factura per deduir l'IVA, no cal que la presenti, però el prestador la conserva en tot cas.
+S'emet factura per a totes les compres. El client ha de proporcionar les dades fiscals (nom o raó social, NIF/CIF, adreça) en el moment del registre o del primer pagament.
 
 ## Limitació de responsabilitat
 

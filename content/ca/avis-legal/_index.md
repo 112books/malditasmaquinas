@@ -6,10 +6,9 @@ layout = "legal"
 
 ## Titular del lloc web
 
-**Joan Martínez Serres**
+**Joan Martínez Serres** (LinuxBCN / MalditasMaquinas.com)
 NIF: 38121766W
-Activitat: Consultoria tecnològica sota les marques LinuxBCN i MalditasMaquinas.com
-Adreça professional: Nau Bostik · Carrer Ferran Turné 1-11, 08027 Barcelona
+Adreça professional: Nau Bostik — Carrer Ferran Turné 1-11, 08027 Barcelona
 Correu electrònic: hola@malditasmaquinas.com
 
 ## Condicions d'ús

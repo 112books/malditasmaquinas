@@ -208,10 +208,10 @@ malditasmaquinas/
 |--------|-------|------|-----------|
 | mínim | 0.5h | 35 € + IVA | 1 mes |
 | bàsic | 1h | 60 € + IVA | 3 mesos |
-| mitjà | 3h | 150 € + IVA | 5 mesos |
-| estàndard | 5h | 225 € + IVA | 7 mesos |
-| pro | 10h | 380 € + IVA | 10 mesos |
-| avançat | 20h | 600 € + IVA | 12 mesos |
+| mitjà | 3h | 165 € + IVA | 5 mesos |
+| estàndard | 5h | 260 € + IVA | 7 mesos |
+| pro | 10h | 500 € + IVA | 10 mesos |
+| avançat | 20h | 900 € + IVA | 12 mesos |
 
 - Mínim per consulta: **0.25h** descomptades automàticament
 - Retorn parcial d'hores no usades en caducar, sense comissions
@@ -236,10 +236,10 @@ malditasmaquinas/
 
 SPA en HTML/JS vanilla a `static/app/index.html`. Sense framework.
 
-- Autenticació: JWT via Cloudflare Workers (cookie HttpOnly)
-- Panell client: saldo d'hores, historial, enviar consultes, adjunts via R2
-- Panell admin: rebre consultes, respondre, gestionar usuaris (rol `admin` a D1)
-- **Backend pendent** — ara mateix és un placeholder
+- Autenticació: magic link → JWT (localStorage `mm_jwt`), 30 dies, HS256
+- Panell client: saldo d'hores, historial de consultes, nova consulta, compra paquets
+- Panell admin: gestió d'usuaris (validar/bloquejar), totes les consultes, respondre
+- Backend desplegat a Cloudflare Workers. Stripe webhook pendent de configurar.
 
 ---
 
@@ -289,10 +289,34 @@ Gestió: `wrangler secret put NOM`
 
 ---
 
+## Historial de tasques fetes
+
+### 2026-04-14
+- Protecció staging amb password (SHA-256 client-side, sessionStorage). Contrasenya: Linux2026
+- Logo animat hero: corregit a `dimoni-roig-banyes-blanques.png` amb `relURL`
+- Links de paquets i footer corregits amb `relURL` / `relLangURL` per funcionar a GitHub Pages (subpath `/malditasmaquinas/`)
+- Backend complet desplegat a Cloudflare Workers (`malditasmaquinas-api.hola-78f.workers.dev`):
+  - `auth.js`: registre, magic link, verify JWT, me
+  - `hours.js`: balanç i historial de compres
+  - `consultations.js`: llista, crear, detall, respondre, tancar
+  - `admin.js`: usuaris, validar, bloquejar
+  - `stripe-webhook.js`: verifica signatura, crea purchase, notifica
+- D1 (`malditasmaquinas-db`) creat i migrat (0001 + 0002): taules profiles, hour_packages, purchases, consultations, responses, magic_tokens
+- Secrets del Worker configurats: JWT_SECRET, RESEND_API_KEY, TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, BASE_URL
+- SPA `/app/index.html` completa: login, registre, panell client, panell admin, consultes, compra paquets
+- Corregit error "carregant_" afegint try-catch a `boot()`, `showClient()`, `showAdmin()` i `boot().catch()`
+- Avís legal actualitzat: NIF 38121766W, Nau Bostik — Carrer Ferran Turné 1-11, 08027 Barcelona
+
+---
+
 ## Pendent / deute tècnic
 
-- `layouts/_default/single.html` — no creat encara; les pàgines individuals van per `list.html` o layouts específics
-- `content/es/` — manquen `contacto/`, `aviso-legal/`, `privacidad/`, `condiciones/` (pendent de crear en paral·lel amb les de `ca/`)
+- **Magic link** — l'encallament a "carregant_" s'ha corregit però **no s'ha provat** el nou deploy; cal demanar nou link i verificar (obrir F12 per veure errors de consola)
+- **Stripe** — `STRIPE_SECRET_KEY` i `STRIPE_WEBHOOK_SECRET` no configurats al Worker; el webhook no funciona
+- **Migració D1 preus** — `0003_update_prices.sql` no aplicada remotament (error d'auth de wrangler); executar manualment: Cloudflare → D1 → malditasmaquinas-db → Console
+- **Secrets incorrectes al Worker** — 5 secrets amb valors reals com a noms (exposats); esborrar des de Cloudflare → Workers → malditasmaquinas-api → Settings → Variables
+- **Pàgines legals en castellà** — manquen `content/es/condiciones/`, `privacidad/`, `aviso-legal/`, `contacto/`
+- `layouts/_default/single.html` — no creat; les pàgines individuals van per `list.html` o layouts específics
 - `static/.htaccess` — no trackat al git; revisar si cal afegir-lo o ignorar-lo
 
 ---

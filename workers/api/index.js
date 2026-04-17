@@ -6,13 +6,25 @@
 import { handleAuth } from './auth.js';
 import { handleConsultations } from './consultations.js';
 import { handleHours } from './hours.js';
+import { handleAdmin } from './admin.js';
 import { handleStripeWebhook } from './stripe-webhook.js';
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': 'https://malditasmaquinas.com',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
+const ALLOWED_ORIGINS = [
+  'https://malditasmaquinas.com',
+  'https://112books.github.io',
+  'http://localhost:1313',
+  'http://127.0.0.1:1313',
+];
+
+function getCorsHeaders(request) {
+  const origin = request.headers.get('Origin') || '';
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -21,15 +33,16 @@ export default {
 
     // Preflight CORS
     if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: CORS_HEADERS });
+      return new Response(null, { headers: getCorsHeaders(request) });
     }
 
     try {
       // ── Routes ──────────────────────────────────────────────────────────────
-      if (path.startsWith('/auth'))              return handleAuth(request, env, path);
-      if (path.startsWith('/consultations'))     return handleConsultations(request, env, path);
-      if (path.startsWith('/hours'))             return handleHours(request, env, path);
-      if (path === '/stripe-webhook')            return handleStripeWebhook(request, env);
+      if (path.startsWith('/auth'))              return await handleAuth(request, env, path);
+      if (path.startsWith('/consultations'))     return await handleConsultations(request, env, path);
+      if (path.startsWith('/hours'))             return await handleHours(request, env, path);
+      if (path.startsWith('/admin'))             return await handleAdmin(request, env, path);
+      if (path === '/stripe-webhook')            return await handleStripeWebhook(request, env);
 
       return json({ error: 'not found' }, 404);
 
@@ -42,15 +55,16 @@ export default {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-export function json(data, status = 200) {
+export function json(data, status = 200, request = null) {
+  const cors = request ? getCorsHeaders(request) : { 'Access-Control-Allow-Origin': '*' };
   return new Response(JSON.stringify(data), {
     status,
-    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+    headers: { ...cors, 'Content-Type': 'application/json' },
   });
 }
 
-export function unauthorized() {
-  return json({ error: 'unauthorized' }, 401);
+export function unauthorized(request = null) {
+  return json({ error: 'unauthorized' }, 401, request);
 }
 
 export async function verifyJWT(request, env) {

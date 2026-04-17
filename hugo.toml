@@ -80,8 +80,9 @@ enableGitInfo = false
 # ── Paràmetres globals ────────────────────────────────────────────────────────
 
 [params]
+  stagingHash = "385e7a9d95f499fbd9bb8b666b8c014e1463b2bb3fd94f884a26a53fc65b8a05"
   author = "LinuxBCN"
-  logo = "/svg/logo.svg"
+  logo = "/img/dimoni-roig-banyes-blanques.png"
   accentColor = "#FF6B00"  # taronja
 
   # Cloudflare Workers API

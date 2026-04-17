@@ -18,10 +18,10 @@ El servicio funciona mediante la compra previa de paquetes de horas prepagadas. 
 |---------|----------|-----------------|-----------|
 | Mínimo | 30 min | 35 € | 1 mes |
 | Básico | 1 h | 60 € | 3 meses |
-| Medio | 3 h | 150 € | 5 meses |
-| Estándar | 5 h | 225 € | 7 meses |
-| Pro | 10 h | 380 € | 10 meses |
-| Avanzado | 20 h | 600 € | 12 meses |
+| Medio | 3 h | 165 € | 5 meses |
+| Estándar | 5 h | 260 € | 7 meses |
+| Pro | 10 h | 500 € | 10 meses |
+| Avanzado | 20 h | 900 € | 12 meses |
 
 Los precios se incrementan con el IVA vigente en el momento de la compra. Se emite factura para todas las transacciones.
 

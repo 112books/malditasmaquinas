@@ -1,12 +1,12 @@
 {{ define "main" }}
 
 {{ $paquets := slice
-  (dict "id" "minim"     "nom" "mínimo"    "hores" "30"  "unitat" "min"   "preu" "35"  "caducitat" "1 mes"     "desc" "Para una consulta puntual o para probar el servicio sin compromiso."         "stripe" .Site.Params.stripe.links.minim)
-  (dict "id" "basic"     "nom" "básico"    "hores" "1"   "unitat" "hora"  "preu" "60"  "caducitat" "3 meses"   "desc" "Para 2-4 consultas sencillas o un pequeño problema a resolver."              "stripe" .Site.Params.stripe.links.basic)
-  (dict "id" "mitja"     "nom" "medio"     "hores" "3"   "unitat" "horas" "preu" "150" "caducitat" "5 meses"   "desc" "Para un proyecto pequeño o varias consultas a lo largo de unos meses."       "stripe" .Site.Params.stripe.links.mitja)
-  (dict "id" "estandard" "nom" "estándar"  "hores" "5"   "unitat" "horas" "preu" "225" "caducitat" "7 meses"   "desc" "El más popular. Para proyectos medianos o uso habitual del servicio."        "stripe" .Site.Params.stripe.links.estandard "popular" true)
-  (dict "id" "pro"       "nom" "pro"       "hores" "10"  "unitat" "horas" "preu" "380" "caducitat" "10 meses"  "desc" "Para uso recurrente o un proyecto de cierta envergadura."                    "stripe" .Site.Params.stripe.links.pro)
-  (dict "id" "avancat"   "nom" "avanzado"  "hores" "20"  "unitat" "horas" "preu" "600" "caducitat" "12 meses"  "desc" "Para empresas o profesionales con necesidades tecnológicas continuas."        "stripe" .Site.Params.stripe.links.avancat)
+  (dict "id" "minim"     "nom" "mínimo"   "hores" "30"  "unitat" "min"   "preu" "35"  "caducitat" "1 mes"    "popular" false)
+  (dict "id" "basic"     "nom" "básico"   "hores" "1"   "unitat" "hora"  "preu" "60"  "caducitat" "3 meses"  "popular" false)
+  (dict "id" "mitja"     "nom" "medio"    "hores" "3"   "unitat" "horas" "preu" "165" "caducitat" "5 meses"  "popular" false)
+  (dict "id" "estandard" "nom" "estándar" "hores" "5"   "unitat" "horas" "preu" "260" "caducitat" "7 meses"  "popular" true)
+  (dict "id" "pro"       "nom" "pro"      "hores" "10"  "unitat" "horas" "preu" "500" "caducitat" "10 meses" "popular" false)
+  (dict "id" "avancat"   "nom" "avanzado" "hores" "20"  "unitat" "horas" "preu" "900" "caducitat" "12 meses" "popular" false)
 }}
 
 <section class="pkg-section">
@@ -26,9 +26,7 @@
       <span class="pkg-p">{{ .preu }} €</span>
       <span class="pkg-i">+ iva</span>
       <div class="pkg-v">caduca en {{ .caducitat }}</div>
-      {{ with .stripe }}
-      <a href="{{ . }}" class="pkg-cta" target="_blank" rel="noopener noreferrer">compra</a>
-      {{ end }}
+      <a href="{{ printf "app/?pkg=%s" .id | relURL }}" class="pkg-cta">compra</a>
     </div>
     {{ end }}
   </div>
