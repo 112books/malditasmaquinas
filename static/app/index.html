@@ -107,10 +107,13 @@
       cursor: pointer; transition: background .15s;
     }
     .consultation-item:hover { background: var(--bg2); }
-    .ci-estat { font-family: var(--f-mono); font-size: .6rem; letter-spacing: .08em; padding: .2rem .5rem; white-space: nowrap; }
-    .ci-estat.pendent  { background: var(--bg3); color: var(--cream3); }
-    .ci-estat.resposta { background: var(--rust); color: var(--cream); }
-    .ci-estat.tancat   { background: var(--line); color: var(--cream3); }
+    .ci-estat { font-family: var(--f-mono); font-size: .6rem; letter-spacing: .08em; padding: .2rem .5rem; white-space: nowrap; border-radius: 2px; }
+    .ci-estat.pendent  { background: rgba(224,77,16,.2); color: var(--rust3); border: 1px solid var(--rust2); }
+    .ci-estat.resposta { background: rgba(74,170,100,.15); color: #4aa864; border: 1px solid #4aa864; }
+    .ci-estat.tancat   { background: var(--bg2); color: var(--cream3); border: 1px solid var(--line); }
+    .consultation-item.pendent { border-left: 3px solid var(--rust2); }
+    .consultation-item.resposta { border-left: 3px solid #4aa864; }
+    .consultation-item.tancat  { border-left: 3px solid var(--line); opacity: .7; }
     .ci-titol { font-size: .95rem; color: var(--cream); flex: 1; }
     .ci-data  { font-family: var(--f-mono); font-size: .6rem; color: var(--cream3); white-space: nowrap; }
     .ci-user  { font-family: var(--f-mono); font-size: .65rem; color: var(--cream2); white-space: nowrap; }
@@ -493,7 +496,7 @@ async function showClient() {
 
 function renderConsItem(c, showUser = false) {
   return `
-    <div class="consultation-item" data-id="${escHtml(c.id)}">
+    <div class="consultation-item ${escHtml(c.estat)}" data-id="${escHtml(c.id)}">
       <span class="ci-estat ${escHtml(c.estat)}">${escHtml(c.estat)}</span>
       <span class="ci-titol">${escHtml(c.titol || '(sense títol)')}</span>
       ${showUser ? `<span class="ci-user">${escHtml(c.nom || c.email || '')}</span>` : ''}
