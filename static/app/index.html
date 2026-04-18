@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="ca" id="htmlRoot">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,6 +39,8 @@
     .btn-logout:hover { color: var(--cream2); border-color: var(--cream3); }
     .app-back { font-family: var(--f-mono); font-size: .7rem; color: var(--cream3); letter-spacing: .06em; transition: color .15s; }
     .app-back:hover { color: var(--cream2); }
+    .nav-lang-sw { font-family: var(--f-mono); font-size: .65rem; color: var(--cream3); border: 1px solid var(--line); background: none; padding: .25rem .55rem; transition: all .15s; }
+    .nav-lang-sw:hover { color: var(--cream2); border-color: var(--cream3); }
 
     /* ── Main ── */
     .app-main { flex: 1; padding: 3rem 2rem; max-width: 900px; width: 100%; margin: 0 auto; }
@@ -198,13 +200,14 @@
   <a href="../" class="app-brand">Malditas<span>Maquinas</span>.</a>
   <div class="nav-actions">
     <span class="nav-user" id="navUser"></span>
-    <button class="btn-logout" id="btnLogout" style="display:none" onclick="App.logout()">sortir</button>
-    <a href="../" class="app-back" id="navBack">← tornar</a>
+    <button class="btn-logout" id="btnLogout" style="display:none" onclick="App.logout()"></button>
+    <button class="nav-lang-sw" id="btnLangSw" onclick="App.switchLang()"></button>
+    <a href="../" class="app-back" id="navBack"></a>
   </div>
 </nav>
 
 <main class="app-main app-main--center" id="appMain">
-  <div class="loading"><span class="loading-dot">carregant_</span></div>
+  <div class="loading"><span class="loading-dot" id="initLoading"></span></div>
 </main>
 
 <footer class="app-footer" id="appFooter">
@@ -213,6 +216,258 @@
 
 <script>
 'use strict';
+
+// ── Idioma ─────────────────────────────────────────────────────────────────────
+
+const LANG = (() => {
+  const urlLang = new URLSearchParams(location.search).get('lang');
+  if (urlLang === 'es' || urlLang === 'ca') {
+    localStorage.setItem('mm_lang', urlLang);
+    return urlLang;
+  }
+  const stored = localStorage.getItem('mm_lang');
+  if (stored === 'es' || stored === 'ca') return stored;
+  return navigator.language?.startsWith('es') ? 'es' : 'ca';
+})();
+
+document.getElementById('htmlRoot').lang = LANG;
+
+const TRANSLATIONS = {
+  ca: {
+    loading:          'carregant_',
+    logout:           'sortir',
+    back:             '← tornar',
+    lang_switch:      'ES',
+    // Auth
+    login_title:      'Accedeix.',
+    login_sub_plain:  'El teu panell: hores, consultes i historial.',
+    login_sub_pkg:    (nom, h, p) => `Vols el paquet <strong>${nom}</strong> (${h}h · ${p} €). Accedeix primer al teu compte.`,
+    login_email:      'Correu electrònic',
+    login_ph:         'tu@exemple.com',
+    login_btn:        "Envia el link d'accés",
+    login_sending:    'Enviant…',
+    login_sent:       'Enviat ✓',
+    login_ok:         'Link enviat! Comprova el correu (i la carpeta de spam).',
+    login_err:        "Error. Torna-ho a provar.",
+    login_switch:     "Encara no tens compte?",
+    login_switch_a:   "Registra't",
+    // Register
+    reg_title:        'Registre.',
+    reg_sub_plain:    'Crea el teu compte. Validarem la sol·licitud en menys de 24h.',
+    reg_sub_pkg:      (nom, h, p) => `Paquet seleccionat: <strong>${nom}</strong> (${h}h · ${p} €). Crea el compte i t'avisem quan estigui actiu.`,
+    reg_nom:          'Nom',
+    reg_nom_ph:       'Com et diem?',
+    reg_email:        'Correu electrònic',
+    reg_btn:          'Crea el compte',
+    reg_sending:      'Enviant…',
+    reg_exists:       "Aquest correu ja té compte.",
+    reg_exists_a:     "Accedeix amb magic link",
+    reg_switch:       'Ja tens compte?',
+    reg_switch_a:     'Accedeix',
+    // Pending
+    pending_thanks:   nom => `Gràcies, ${nom}.`,
+    pending_text:     "Hem rebut el teu registre. Revisarem el compte i t'enviarem un correu quan estigui actiu.<br><br>Habitualment menys de 24h en dies laborables.",
+    pending_back:     '← tornar al web',
+    // Dashboard
+    dash_hello:       nom => `Hola, ${nom}.`,
+    dash_sub:         'El teu panell de control.',
+    available:        'disponibles',
+    buy_hours:        'comprar hores →',
+    new_cons:         '+ nova consulta',
+    cons_title:       'consultes',
+    empty_no_hours:   'Compra hores per poder enviar consultes.',
+    no_hours_tip:     h => `Tens <strong style="color:var(--rust2)">${h}</strong> disponibles. Envia la primera consulta i et responem en menys de 24h.`,
+    first_cons_btn:   '+ nova consulta',
+    // Packages
+    pkg_selected:     'paquet seleccionat',
+    pkg_unit_h:       'hora',
+    pkg_unit_hs:      'hores',
+    pkg_buy_link:     (nom, preu) => `comprar ${nom} — ${preu} € (IVA inclòs) →`,
+    pkg_expires:      cad => `Caduca en ${cad}. Paga amb Stripe (targeta, Bizum…).`,
+    buy_title:        'Compra hores.',
+    buy_sub:          'Tria el paquet i paga amb Stripe.',
+    // New consultation
+    cons_new_title:   'Nova consulta.',
+    cons_new_sub:     'Explica el problema. Com més detall, millor resposta. Es descomptaran 0.25h.',
+    cons_tit_label:   'Títol (opcional)',
+    cons_tit_ph:      'Resum breu del problema',
+    cons_q_label:     'Consulta *',
+    cons_q_ph:        "Descriu el problema amb detall: sistema operatiu, programari, missatges d'error, passos per reproduir-lo…",
+    cons_files_label: 'Adjunts (opcional · màx 5 fitxers · 10 MB cadascun)',
+    cons_send_btn:    'Envia la consulta',
+    cons_sending:     'Enviant…',
+    cons_uploading:   (i, n) => `Pujant fitxers (${i}/${n})…`,
+    cons_file_big:    nom => `${nom}: massa gran (màx 10 MB)`,
+    cons_file_err:    nom => `Error pujant ${nom}`,
+    cons_ok:          "Consulta enviada. T'avisarem per correu quan tinguem resposta.",
+    cons_sent:        'Enviada ✓',
+    cons_err:         'Error en enviar. Torna-ho a provar.',
+    // Detail
+    back_panel:       '← tornar al panell',
+    back_short:       '← tornar',
+    sec_consulta:     'consulta',
+    sec_adjunts:      'adjunts',
+    sec_respostes:    'respostes',
+    sec_respondre:    'respondre',
+    resp_ph:          'Escriu la resposta…',
+    resp_send:        'Envia resposta',
+    resp_close_admin: 'Tanca la consulta',
+    resp_close_client:'Tancar la consulta',
+    resp_sending:     'Enviant…',
+    resp_ok:          'Resposta enviada. El client rep un correu.',
+    resp_err:         'Error en enviar.',
+    no_title:         '(sense títol)',
+    // Admin
+    admin_title:      'Admin.',
+    admin_sub:        (u, c) => `${u} usuaris · ${c} consultes pendents`,
+    admin_client_link:'veure panell client →',
+    tab_users:        'usuaris',
+    tab_pending:      n => ` (${n} pendents)`,
+    tab_cons:         'consultes',
+    no_users:         'Cap usuari.',
+    no_cons:          'Cap consulta.',
+    th_nom:           'Nom',
+    th_email:         'Email',
+    th_rol:           'Rol',
+    th_estat:         'Estat',
+    th_hours:         'Hores',
+    th_reg:           'Registre',
+    th_actions:       'Accions',
+    btn_validate:     'validar',
+    btn_block:        'bloquejar',
+    btn_unblock:      'desbloquear',
+    confirm_block:    'Bloquejar aquest usuari?',
+    // Errors
+    err_link_expired: "El link ha caducat o ja s'ha usat. Sol·licita un de nou.",
+    err_back_login:   'Torna al login',
+    err_conn:         'Error de connexió. ',
+    err_retry_btn:    'Reintenta',
+    err_blocked:      'El compte ha estat bloquejat. Contacta amb hola@malditasmaquinas.com.',
+    err_unexpected:   'Error inesperat. ',
+    // Packages catalog
+    pkg_names: { minim:'mínim', basic:'bàsic', mitja:'mitjà', estandard:'estàndard', pro:'pro', avancat:'avançat' },
+    pkg_expires_map: { minim:'1 mes', basic:'3 mesos', mitja:'5 mesos', estandard:'7 mesos', pro:'10 mesos', avancat:'12 mesos' },
+    date_locale: 'ca-ES',
+  },
+  es: {
+    loading:          'cargando_',
+    logout:           'salir',
+    back:             '← volver',
+    lang_switch:      'CA',
+    // Auth
+    login_title:      'Acceder.',
+    login_sub_plain:  'Tu panel: horas, consultas e historial.',
+    login_sub_pkg:    (nom, h, p) => `Quieres el paquete <strong>${nom}</strong> (${h}h · ${p} €). Accede primero a tu cuenta.`,
+    login_email:      'Correo electrónico',
+    login_ph:         'tu@ejemplo.com',
+    login_btn:        'Enviar el link de acceso',
+    login_sending:    'Enviando…',
+    login_sent:       'Enviado ✓',
+    login_ok:         'Link enviado. Revisa el correo (y la carpeta de spam).',
+    login_err:        'Error. Inténtalo de nuevo.',
+    login_switch:     '¿Aún no tienes cuenta?',
+    login_switch_a:   'Regístrate',
+    // Register
+    reg_title:        'Registro.',
+    reg_sub_plain:    'Crea tu cuenta. Validaremos la solicitud en menos de 24h.',
+    reg_sub_pkg:      (nom, h, p) => `Paquete seleccionado: <strong>${nom}</strong> (${h}h · ${p} €). Crea la cuenta y te avisamos cuando esté activa.`,
+    reg_nom:          'Nombre',
+    reg_nom_ph:       '¿Cómo te llamamos?',
+    reg_email:        'Correo electrónico',
+    reg_btn:          'Crear la cuenta',
+    reg_sending:      'Enviando…',
+    reg_exists:       'Este correo ya tiene cuenta.',
+    reg_exists_a:     'Accede con magic link',
+    reg_switch:       '¿Ya tienes cuenta?',
+    reg_switch_a:     'Acceder',
+    // Pending
+    pending_thanks:   nom => `Gracias, ${nom}.`,
+    pending_text:     'Hemos recibido tu registro. Revisaremos la cuenta y te enviaremos un correo cuando esté activa.<br><br>Normalmente menos de 24h en días laborables.',
+    pending_back:     '← volver a la web',
+    // Dashboard
+    dash_hello:       nom => `Hola, ${nom}.`,
+    dash_sub:         'Tu panel de control.',
+    available:        'disponibles',
+    buy_hours:        'comprar horas →',
+    new_cons:         '+ nueva consulta',
+    cons_title:       'consultas',
+    empty_no_hours:   'Compra horas para poder enviar consultas.',
+    no_hours_tip:     h => `Tienes <strong style="color:var(--rust2)">${h}</strong> disponibles. Envía la primera consulta y te respondemos en menos de 24h.`,
+    first_cons_btn:   '+ nueva consulta',
+    // Packages
+    pkg_selected:     'paquete seleccionado',
+    pkg_unit_h:       'hora',
+    pkg_unit_hs:      'horas',
+    pkg_buy_link:     (nom, preu) => `comprar ${nom} — ${preu} € (IVA incluido) →`,
+    pkg_expires:      cad => `Caduca en ${cad}. Paga con Stripe (tarjeta, Bizum…).`,
+    buy_title:        'Compra horas.',
+    buy_sub:          'Elige el paquete y paga con Stripe.',
+    // New consultation
+    cons_new_title:   'Nueva consulta.',
+    cons_new_sub:     'Explica el problema. Cuanto más detalle, mejor respuesta. Se descontarán 0.25h.',
+    cons_tit_label:   'Título (opcional)',
+    cons_tit_ph:      'Resumen breve del problema',
+    cons_q_label:     'Consulta *',
+    cons_q_ph:        'Describe el problema con detalle: sistema operativo, software, mensajes de error, pasos para reproducirlo…',
+    cons_files_label: 'Adjuntos (opcional · máx 5 archivos · 10 MB cada uno)',
+    cons_send_btn:    'Enviar la consulta',
+    cons_sending:     'Enviando…',
+    cons_uploading:   (i, n) => `Subiendo archivos (${i}/${n})…`,
+    cons_file_big:    nom => `${nom}: demasiado grande (máx 10 MB)`,
+    cons_file_err:    nom => `Error subiendo ${nom}`,
+    cons_ok:          'Consulta enviada. Te avisaremos por correo cuando tengamos respuesta.',
+    cons_sent:        'Enviada ✓',
+    cons_err:         'Error al enviar. Inténtalo de nuevo.',
+    // Detail
+    back_panel:       '← volver al panel',
+    back_short:       '← volver',
+    sec_consulta:     'consulta',
+    sec_adjunts:      'adjuntos',
+    sec_respostes:    'respuestas',
+    sec_respondre:    'responder',
+    resp_ph:          'Escribe la respuesta…',
+    resp_send:        'Enviar respuesta',
+    resp_close_admin: 'Cerrar la consulta',
+    resp_close_client:'Cerrar la consulta',
+    resp_sending:     'Enviando…',
+    resp_ok:          'Respuesta enviada. El cliente recibe un correo.',
+    resp_err:         'Error al enviar.',
+    no_title:         '(sin título)',
+    // Admin
+    admin_title:      'Admin.',
+    admin_sub:        (u, c) => `${u} usuarios · ${c} consultas pendientes`,
+    admin_client_link:'ver panel cliente →',
+    tab_users:        'usuarios',
+    tab_pending:      n => ` (${n} pendientes)`,
+    tab_cons:         'consultas',
+    no_users:         'Sin usuarios.',
+    no_cons:          'Sin consultas.',
+    th_nom:           'Nombre',
+    th_email:         'Email',
+    th_rol:           'Rol',
+    th_estat:         'Estado',
+    th_hours:         'Horas',
+    th_reg:           'Registro',
+    th_actions:       'Acciones',
+    btn_validate:     'validar',
+    btn_block:        'bloquear',
+    btn_unblock:      'desbloquear',
+    confirm_block:    '¿Bloquear este usuario?',
+    // Errors
+    err_link_expired: 'El link ha caducado o ya se ha usado. Solicita uno nuevo.',
+    err_back_login:   'Volver al login',
+    err_conn:         'Error de conexión. ',
+    err_retry_btn:    'Reintentar',
+    err_blocked:      'La cuenta ha sido bloqueada. Contacta con hola@malditasmaquinas.com.',
+    err_unexpected:   'Error inesperado. ',
+    // Packages catalog
+    pkg_names: { minim:'mínimo', basic:'básico', mitja:'medio', estandard:'estándar', pro:'pro', avancat:'avanzado' },
+    pkg_expires_map: { minim:'1 mes', basic:'3 meses', mitja:'5 meses', estandard:'7 meses', pro:'10 meses', avancat:'12 meses' },
+    date_locale: 'es-ES',
+  },
+};
+
+const t = TRANSLATIONS[LANG];
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -223,13 +478,16 @@ const API = (location.hostname === 'localhost' || location.hostname === '127.0.0
 const JWT_KEY = 'mm_jwt';
 
 const PACKAGES = {
-  minim:     { nom: 'mínim',     hores: 0.5, preu: 42.35,  base: 35,  caducitat: '1 mes',    link: 'https://buy.stripe.com/bJeeVeaNH7YMeTpd7pao808' },
-  basic:     { nom: 'bàsic',     hores: 1,   preu: 72.60,  base: 60,  caducitat: '3 mesos',  link: 'https://buy.stripe.com/8x214o5tn1Ao12z9Vdao809' },
-  mitja:     { nom: 'mitjà',     hores: 3,   preu: 199.65, base: 165, caducitat: '5 mesos',  link: 'https://buy.stripe.com/4gMfZiaNHa6UdPl0kDao80a' },
-  estandard: { nom: 'estàndard', hores: 5,   preu: 314.60, base: 260, caducitat: '7 mesos',  link: 'https://buy.stripe.com/bJe3cwg816UI7qXebtao80b' },
-  pro:       { nom: 'pro',       hores: 10,  preu: 605.00, base: 500, caducitat: '10 mesos', link: 'https://buy.stripe.com/cNi00k8Fz7YMbHdd7pao80c' },
-  avancat:   { nom: 'avançat',   hores: 20,  preu: 1089.00,base: 900, caducitat: '12 mesos', link: 'https://buy.stripe.com/8x27sM1d71Ao5iPc3lao80d' },
+  minim:     { hores: 0.5, preu: 42.35,  base: 35,  link: 'https://buy.stripe.com/bJeeVeaNH7YMeTpd7pao808' },
+  basic:     { hores: 1,   preu: 72.60,  base: 60,  link: 'https://buy.stripe.com/8x214o5tn1Ao12z9Vdao809' },
+  mitja:     { hores: 3,   preu: 199.65, base: 165, link: 'https://buy.stripe.com/4gMfZiaNHa6UdPl0kDao80a' },
+  estandard: { hores: 5,   preu: 314.60, base: 260, link: 'https://buy.stripe.com/bJe3cwg816UI7qXebtao80b' },
+  pro:       { hores: 10,  preu: 605.00, base: 500, link: 'https://buy.stripe.com/cNi00k8Fz7YMbHdd7pao80c' },
+  avancat:   { hores: 20,  preu: 1089.00,base: 900, link: 'https://buy.stripe.com/8x27sM1d71Ao5iPc3lao80d' },
 };
+
+function pkgNom(key)     { return t.pkg_names[key] || key; }
+function pkgExpires(key) { return t.pkg_expires_map[key] || ''; }
 
 // ── State ─────────────────────────────────────────────────────────────────────
 
@@ -238,7 +496,6 @@ const State = {
   jwt: localStorage.getItem(JWT_KEY),
   pendingPkg: null,
   adminTab: 'users',
-  consultationDetail: null,
 };
 
 // ── API helpers ───────────────────────────────────────────────────────────────
@@ -271,7 +528,7 @@ function escHtml(str) {
 
 function formatDate(iso) {
   if (!iso) return '';
-  return new Date(iso).toLocaleDateString('ca-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  return new Date(iso).toLocaleDateString(t.date_locale, { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
 function formatHores(h) {
@@ -284,15 +541,23 @@ function formatHores(h) {
 }
 
 function updateNav() {
+  el('btnLogout').textContent  = t.logout;
+  el('btnLangSw').textContent  = t.lang_switch;
+  el('navBack').textContent    = t.back;
+
   if (State.user) {
     el('navUser').textContent = State.user.nom || State.user.email;
     el('btnLogout').style.display = 'inline-block';
-    el('navBack').style.display = 'none';
+    el('navBack').style.display   = 'none';
   } else {
     el('navUser').textContent = '';
     el('btnLogout').style.display = 'none';
-    el('navBack').style.display = 'inline-block';
+    el('navBack').style.display   = 'inline-block';
   }
+}
+
+function loadingHtml() {
+  return `<div class="loading"><span class="loading-dot">${t.loading}</span></div>`;
 }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
@@ -303,7 +568,6 @@ async function verifyToken(token) {
     State.jwt = data.token;
     State.user = data.user;
     localStorage.setItem(JWT_KEY, data.token);
-    // Neteja el token de la URL
     history.replaceState({}, '', location.pathname + (State.pendingPkg ? `?pkg=${State.pendingPkg}` : ''));
     return true;
   }
@@ -321,116 +585,105 @@ async function loadMe() {
 
 // ── Views ─────────────────────────────────────────────────────────────────────
 
-// ── Login ──
-
 function showLogin(msg = '') {
   const pkgCtx = State.pendingPkg ? PACKAGES[State.pendingPkg] : null;
   setMain(`
     <div class="auth-box">
-      <h1 class="auth-title">Accedeix.</h1>
+      <h1 class="auth-title">${t.login_title}</h1>
       <p class="auth-sub">${pkgCtx
-        ? `Vols el paquet <strong>${escHtml(pkgCtx.nom)}</strong> (${pkgCtx.hores}h · ${pkgCtx.preu} €). Accedeix primer al teu compte.`
-        : 'El teu panell: hores, consultes i historial.'
+        ? t.login_sub_pkg(escHtml(pkgNom(State.pendingPkg)), pkgCtx.hores, pkgCtx.preu)
+        : t.login_sub_plain
       }</p>
       <form id="loginForm">
         <div class="form-group">
-          <label class="form-label" for="loginEmail">Correu electrònic</label>
-          <input class="form-input" type="email" id="loginEmail" required placeholder="tu@exemple.com" autocomplete="email">
+          <label class="form-label" for="loginEmail">${t.login_email}</label>
+          <input class="form-input" type="email" id="loginEmail" required placeholder="${t.login_ph}" autocomplete="email">
         </div>
-        <button type="submit" class="btn-primary" id="loginBtn">Envia el link d'accés</button>
+        <button type="submit" class="btn-primary" id="loginBtn">${t.login_btn}</button>
       </form>
       ${msg ? `<div class="msg-box ok">${escHtml(msg)}</div>` : ''}
       <div id="loginMsg"></div>
-      <p class="form-switch">Encara no tens compte? <a href="#" id="goRegister">Registra't</a></p>
+      <p class="form-switch">${t.login_switch} <a href="#" id="goRegister">${t.login_switch_a}</a></p>
     </div>
   `, true);
 
   el('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
     const btn = el('loginBtn');
-    btn.disabled = true; btn.textContent = 'Enviant…';
+    btn.disabled = true; btn.textContent = t.login_sending;
     const email = el('loginEmail').value.trim();
     const { ok, data } = await api('POST', '/auth/magic-link', { email });
     if (ok) {
-      el('loginMsg').innerHTML = `<div class="msg-box ok">Link enviat! Comprova el correu (i la carpeta de spam).</div>`;
-      btn.textContent = 'Enviat ✓';
+      el('loginMsg').innerHTML = `<div class="msg-box ok">${t.login_ok}</div>`;
+      btn.textContent = t.login_sent;
     } else {
-      el('loginMsg').innerHTML = `<div class="msg-box err">${escHtml(data.message || 'Error. Torna-ho a provar.')}</div>`;
-      btn.disabled = false; btn.textContent = 'Envia el link d\'accés';
+      el('loginMsg').innerHTML = `<div class="msg-box err">${escHtml(data.message || t.login_err)}</div>`;
+      btn.disabled = false; btn.textContent = t.login_btn;
     }
   });
   el('goRegister').addEventListener('click', e => { e.preventDefault(); showRegister(); });
 }
 
-// ── Register ──
-
 function showRegister() {
   const pkgCtx = State.pendingPkg ? PACKAGES[State.pendingPkg] : null;
   setMain(`
     <div class="auth-box">
-      <h1 class="auth-title">Registre.</h1>
+      <h1 class="auth-title">${t.reg_title}</h1>
       <p class="auth-sub">${pkgCtx
-        ? `Paquet seleccionat: <strong>${escHtml(pkgCtx.nom)}</strong> (${pkgCtx.hores}h · ${pkgCtx.preu} €). Crea el compte i t'avisem quan estigui actiu.`
-        : 'Crea el teu compte. Validarem la sol·licitud en menys de 24h.'
+        ? t.reg_sub_pkg(escHtml(pkgNom(State.pendingPkg)), pkgCtx.hores, pkgCtx.preu)
+        : t.reg_sub_plain
       }</p>
       <form id="registerForm">
         <div class="form-group">
-          <label class="form-label" for="regNom">Nom</label>
-          <input class="form-input" type="text" id="regNom" required placeholder="Com et diem?" autocomplete="given-name">
+          <label class="form-label" for="regNom">${t.reg_nom}</label>
+          <input class="form-input" type="text" id="regNom" required placeholder="${t.reg_nom_ph}" autocomplete="given-name">
         </div>
         <div class="form-group">
-          <label class="form-label" for="regEmail">Correu electrònic</label>
-          <input class="form-input" type="email" id="regEmail" required placeholder="tu@exemple.com" autocomplete="email">
+          <label class="form-label" for="regEmail">${t.reg_email}</label>
+          <input class="form-input" type="email" id="regEmail" required placeholder="${t.login_ph}" autocomplete="email">
         </div>
-        <button type="submit" class="btn-primary" id="regBtn">Crea el compte</button>
+        <button type="submit" class="btn-primary" id="regBtn">${t.reg_btn}</button>
       </form>
       <div id="regMsg"></div>
-      <p class="form-switch">Ja tens compte? <a href="#" id="goLogin">Accedeix</a></p>
+      <p class="form-switch">${t.reg_switch} <a href="#" id="goLogin">${t.reg_switch_a}</a></p>
     </div>
   `, true);
 
   el('registerForm').addEventListener('submit', async e => {
     e.preventDefault();
     const btn = el('regBtn');
-    btn.disabled = true; btn.textContent = 'Enviant…';
+    btn.disabled = true; btn.textContent = t.reg_sending;
     const nom   = el('regNom').value.trim();
     const email = el('regEmail').value.trim();
     const { ok, status, data } = await api('POST', '/auth/register', { nom, email });
     if (ok) {
       showPending(nom);
     } else if (status === 409 && data.error === 'ja_existeix') {
-      el('regMsg').innerHTML = `<div class="msg-box">Aquest correu ja té compte. <a href="#" id="goLogin2" style="color:var(--rust2)">Accedeix amb magic link</a>.</div>`;
+      el('regMsg').innerHTML = `<div class="msg-box">${t.reg_exists} <a href="#" id="goLogin2" style="color:var(--rust2)">${t.reg_exists_a}</a>.</div>`;
       el('goLogin2').addEventListener('click', e => { e.preventDefault(); showLogin(); });
-      btn.disabled = false; btn.textContent = 'Crea el compte';
-    } else if (status === 409) {
-      el('regMsg').innerHTML = `<div class="msg-box err">${escHtml(data.message || 'Compte ja existent.')}</div>`;
-      btn.disabled = false; btn.textContent = 'Crea el compte';
+      btn.disabled = false; btn.textContent = t.reg_btn;
     } else {
-      el('regMsg').innerHTML = `<div class="msg-box err">${escHtml(data.error || 'Error. Torna-ho a provar.')}</div>`;
-      btn.disabled = false; btn.textContent = 'Crea el compte';
+      el('regMsg').innerHTML = `<div class="msg-box err">${escHtml(data.error || data.message || t.login_err)}</div>`;
+      btn.disabled = false; btn.textContent = t.reg_btn;
     }
   });
   el('goLogin').addEventListener('click', e => { e.preventDefault(); showLogin(); });
 }
 
-// ── Pending ──
-
 function showPending(nom) {
   setMain(`
     <div class="pending-box">
       <div class="pending-icon">⏳</div>
-      <h2 class="pending-title">Gràcies, ${escHtml(nom || '')}.</h2>
-      <p class="pending-text">Hem rebut el teu registre. Revisarem el compte i t'enviarem un correu quan estigui actiu.<br><br>Habitualment menys de 24h en dies laborables.</p>
+      <h2 class="pending-title">${t.pending_thanks(escHtml(nom || ''))}</h2>
+      <p class="pending-text">${t.pending_text}</p>
       <br>
-      <a href="../" style="font-family:var(--f-mono);font-size:.75rem;color:var(--cream3);border-bottom:1px solid var(--line);">← tornar al web</a>
+      <a href="../" style="font-family:var(--f-mono);font-size:.75rem;color:var(--cream3);border-bottom:1px solid var(--line);">${t.pending_back}</a>
     </div>
   `, true);
 }
 
-// ── Dashboard client ──
-
 async function showClient() {
-  setMain('<div class="loading"><span class="loading-dot">carregant_</span></div>');
+  setMain(loadingHtml());
 
   let balRes, consRes;
   try {
@@ -440,45 +693,43 @@ async function showClient() {
     ]);
   } catch (err) {
     console.error('showClient error:', err);
-    setMain('<div class="auth-box"><div class="msg-box err">Error de connexió. <button class="btn-primary" onclick="location.reload()">Reintenta</button></div></div>', true);
+    setMain(`<div class="auth-box"><div class="msg-box err">${t.err_conn}<button class="btn-primary" onclick="location.reload()">${t.err_retry_btn}</button></div></div>`, true);
     return;
   }
 
   const hores = balRes.ok ? (balRes.data.hores_disponibles ?? 0) : 0;
   const cons  = consRes.ok ? consRes.data : [];
-
-  // Si ve d'un paquet pendent, mostra selecció de paquets primer
   const pkgHtml = State.pendingPkg ? renderPkgSelector(State.pendingPkg) : '';
 
   setMain(`
     <div class="dash-header">
-      <h1 class="dash-title">Hola, ${escHtml(State.user.nom || 'client')}.</h1>
-      <p class="dash-sub">El teu panell de control.</p>
+      <h1 class="dash-title">${t.dash_hello(escHtml(State.user.nom || ''))}</h1>
+      <p class="dash-sub">${t.dash_sub}</p>
     </div>
 
     ${pkgHtml}
 
     <div class="balance-bar">
       <span class="balance-num">${formatHores(hores)}</span>
-      <span class="balance-label">disponibles</span>
-      <button class="balance-buy" onclick="App.showBuyPkg()">comprar hores →</button>
+      <span class="balance-label">${t.available}</span>
+      <button class="balance-buy" onclick="App.showBuyPkg()">${t.buy_hours}</button>
     </div>
 
     ${hores >= 0.25 && cons.length === 0 ? `
     <div style="margin-bottom:2rem;padding:1.75rem;background:var(--bg2);border-left:3px solid var(--rust2);text-align:center;">
-      <p style="font-family:var(--f-mono);font-size:.8rem;color:var(--cream2);margin-bottom:1.25rem;">Tens <strong style="color:var(--rust2)">${formatHores(hores)}</strong> disponibles. Envia la primera consulta i et responem en menys de 24h.</p>
-      <button class="btn-primary" onclick="App.showNewConsultation()" style="font-size:1rem;padding:1rem 2rem;">+ nova consulta</button>
+      <p style="font-family:var(--f-mono);font-size:.8rem;color:var(--cream2);margin-bottom:1.25rem;">${t.no_hours_tip(formatHores(hores))}</p>
+      <button class="btn-primary" onclick="App.showNewConsultation()" style="font-size:1rem;padding:1rem 2rem;">${t.first_cons_btn}</button>
     </div>
     ` : `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-      <span class="section-title">consultes</span>
-      <button class="btn-secondary" onclick="App.showNewConsultation()" ${hores < 0.25 ? 'disabled title="Cal tenir almenys 0.25h disponibles"' : ''}>+ nova consulta</button>
+      <span class="section-title">${t.cons_title}</span>
+      <button class="btn-secondary" onclick="App.showNewConsultation()" ${hores < 0.25 ? `disabled title="${t.empty_no_hours}"` : ''}>${t.new_cons}</button>
     </div>
     `}
 
     <div class="consultation-list" id="consList">
       ${cons.length === 0 && hores < 0.25
-        ? '<div class="empty-state">Compra hores per poder enviar consultes.</div>'
+        ? `<div class="empty-state">${t.empty_no_hours}</div>`
         : cons.length === 0 ? ''
         : cons.map(c => renderConsItem(c)).join('')
       }
@@ -488,17 +739,13 @@ async function showClient() {
   el('consList')?.querySelectorAll('.consultation-item').forEach(item => {
     item.addEventListener('click', () => App.showConsultation(item.dataset.id));
   });
-
-  if (State.pendingPkg) {
-    el('consList')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
 }
 
 function renderConsItem(c, showUser = false) {
   return `
     <div class="consultation-item ${escHtml(c.estat)}" data-id="${escHtml(c.id)}">
       <span class="ci-estat ${escHtml(c.estat)}">${escHtml(c.estat)}</span>
-      <span class="ci-titol">${escHtml(c.titol || '(sense títol)')}</span>
+      <span class="ci-titol">${escHtml(c.titol || t.no_title)}</span>
       ${showUser ? `<span class="ci-user">${escHtml(c.nom || c.email || '')}</span>` : ''}
       <span class="ci-data">${formatDate(c.created_at)}</span>
     </div>
@@ -508,13 +755,13 @@ function renderConsItem(c, showUser = false) {
 function renderPkgSelector(selectedKey) {
   return `
     <div style="margin-bottom:2rem;padding:1.5rem;background:var(--bg2);border-left:3px solid var(--rust2)">
-      <p class="section-title" style="margin-bottom:1.25rem;">paquet seleccionat</p>
+      <p class="section-title" style="margin-bottom:1.25rem;">${t.pkg_selected}</p>
       <div class="pkg-cta-wrap">
         ${Object.entries(PACKAGES).map(([key, pkg]) => `
           <div class="pkg-card ${key === selectedKey ? 'selected' : ''}" style="display:inline-block;margin-right:1px;margin-bottom:1px;min-width:120px;" onclick="App.selectPkg('${key}')">
-            <div class="pkg-card-name">${escHtml(pkg.nom)}</div>
+            <div class="pkg-card-name">${escHtml(pkgNom(key))}</div>
             <div class="pkg-card-hours">${pkg.hores}</div>
-            <div class="pkg-card-unit">${pkg.hores === 1 ? 'hora' : 'hores'}</div>
+            <div class="pkg-card-unit">${pkg.hores === 1 ? t.pkg_unit_h : t.pkg_unit_hs}</div>
             <div class="pkg-card-price">${pkg.base} € <span style="font-size:.7em;color:var(--cream2)">+ IVA</span></div>
           </div>
         `).join('')}
@@ -530,32 +777,30 @@ function renderPkgLink(key) {
   return `
     <div style="margin-top:1.25rem;">
       <a href="${escHtml(pkg.link)}" class="btn-stripe" target="_blank" rel="noopener noreferrer">
-        comprar ${escHtml(pkg.nom)} — ${pkg.preu} € (IVA inclòs) →
+        ${t.pkg_buy_link(escHtml(pkgNom(key)), pkg.preu)}
       </a>
-      <p style="margin-top:.75rem;font-family:var(--f-mono);font-size:.65rem;color:var(--cream3);">Caduca en ${escHtml(pkg.caducitat)}. Paga amb Stripe (targeta, Bizum…).</p>
+      <p style="margin-top:.75rem;font-family:var(--f-mono);font-size:.65rem;color:var(--cream3);">${t.pkg_expires(pkgExpires(key))}</p>
     </div>
   `;
 }
-
-// ── Comprar paquets ──
 
 function showBuyPkg(preselect) {
   State.pendingPkg = preselect || State.pendingPkg || 'estandard';
   setMain(`
     <div>
-      <a href="#" class="back-link" id="backDash">← tornar al panell</a>
+      <a href="#" class="back-link" id="backDash">${t.back_panel}</a>
       <div class="dash-header">
-        <h2 class="dash-title">Compra hores.</h2>
-        <p class="dash-sub">Tria el paquet i paga amb Stripe.</p>
+        <h2 class="dash-title">${t.buy_title}</h2>
+        <p class="dash-sub">${t.buy_sub}</p>
       </div>
       <div class="pkg-select" id="pkgGrid">
         ${Object.entries(PACKAGES).map(([key, pkg]) => `
           <div class="pkg-card ${key === State.pendingPkg ? 'selected' : ''}" data-pkg="${key}">
-            <div class="pkg-card-name">${escHtml(pkg.nom)}</div>
+            <div class="pkg-card-name">${escHtml(pkgNom(key))}</div>
             <div class="pkg-card-hours">${pkg.hores}</div>
-            <div class="pkg-card-unit">${pkg.hores === 1 ? 'hora' : 'hores'}</div>
+            <div class="pkg-card-unit">${pkg.hores === 1 ? t.pkg_unit_h : t.pkg_unit_hs}</div>
             <div class="pkg-card-price">${pkg.base} € <span style="font-size:.7em;color:var(--cream2)">+ IVA</span></div>
-            <div style="font-family:var(--f-mono);font-size:.6rem;color:var(--cream3);margin-top:.4rem;">${escHtml(pkg.caducitat)}</div>
+            <div style="font-family:var(--f-mono);font-size:.6rem;color:var(--cream3);margin-top:.4rem;">${escHtml(pkgExpires(key))}</div>
           </div>
         `).join('')}
       </div>
@@ -574,34 +819,32 @@ function showBuyPkg(preselect) {
   });
 }
 
-// ── Nova consulta ──
-
 function showNewConsultation() {
   setMain(`
     <div>
-      <a href="#" class="back-link" id="backDash">← tornar al panell</a>
+      <a href="#" class="back-link" id="backDash">${t.back_panel}</a>
       <div class="dash-header">
-        <h2 class="dash-title">Nova consulta.</h2>
-        <p class="dash-sub">Explica el problema. Com més detall, millor resposta. Es descomptaran 0.25h.</p>
+        <h2 class="dash-title">${t.cons_new_title}</h2>
+        <p class="dash-sub">${t.cons_new_sub}</p>
       </div>
       <form id="consForm">
         <div class="form-group">
-          <label class="form-label" for="consTitol">Títol (opcional)</label>
-          <input class="form-input" type="text" id="consTitol" placeholder="Resum breu del problema">
+          <label class="form-label" for="consTitol">${t.cons_tit_label}</label>
+          <input class="form-input" type="text" id="consTitol" placeholder="${t.cons_tit_ph}">
         </div>
         <div class="form-group">
-          <label class="form-label" for="consPregunta">Consulta *</label>
-          <textarea class="form-input" id="consPregunta" required rows="8" placeholder="Descriu el problema amb detall: sistema operatiu, programari, missatges d'error, passos per reproduir-lo…" style="resize:vertical;"></textarea>
+          <label class="form-label" for="consPregunta">${t.cons_q_label}</label>
+          <textarea class="form-input" id="consPregunta" required rows="8" placeholder="${t.cons_q_ph}" style="resize:vertical;"></textarea>
         </div>
         <div class="form-group">
-          <label class="form-label" for="consFiles">Adjunts (opcional · màx 5 fitxers · 10 MB cadascun)</label>
+          <label class="form-label" for="consFiles">${t.cons_files_label}</label>
           <input class="form-input" type="file" id="consFiles" multiple
             accept=".jpg,.jpeg,.png,.gif,.webp,.svg,.pdf,.txt,.csv,.doc,.docx,.xls,.xlsx,.zip"
             style="padding:.6rem;cursor:pointer;">
           <div id="fileList" style="margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem;"></div>
         </div>
         <div style="display:flex;gap:.75rem;">
-          <button type="submit" class="btn-primary" id="consBtn" style="width:auto;padding:.85rem 2rem;">Envia la consulta</button>
+          <button type="submit" class="btn-primary" id="consBtn" style="width:auto;padding:.85rem 2rem;">${t.cons_send_btn}</button>
         </div>
       </form>
       <div id="consMsg"></div>
@@ -610,7 +853,6 @@ function showNewConsultation() {
 
   el('backDash').addEventListener('click', e => { e.preventDefault(); showClient(); });
 
-  // Previsualització de fitxers seleccionats
   el('consFiles').addEventListener('change', () => {
     const files = Array.from(el('consFiles').files);
     el('fileList').innerHTML = files.map(f =>
@@ -622,23 +864,22 @@ function showNewConsultation() {
 
   el('consForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const btn     = el('consBtn');
-    const msgEl   = el('consMsg');
-    const titol   = el('consTitol').value.trim();
+    const btn      = el('consBtn');
+    const msgEl    = el('consMsg');
+    const titol    = el('consTitol').value.trim();
     const pregunta = el('consPregunta').value.trim();
-    const files   = Array.from(el('consFiles').files).slice(0, 5);
+    const files    = Array.from(el('consFiles').files).slice(0, 5);
 
     btn.disabled = true;
 
-    // 1. Pujar fitxers
     let adjunts = [];
     if (files.length) {
-      btn.textContent = `Pujant fitxers (0/${files.length})…`;
+      btn.textContent = t.cons_uploading(0, files.length);
       for (let i = 0; i < files.length; i++) {
         const f = files[i];
         if (f.size > 10 * 1024 * 1024) {
-          msgEl.innerHTML = `<div class="msg-box err">${escHtml(f.name)}: massa gran (màx 10 MB)</div>`;
-          btn.disabled = false; btn.textContent = 'Envia la consulta';
+          msgEl.innerHTML = `<div class="msg-box err">${escHtml(t.cons_file_big(f.name))}</div>`;
+          btn.disabled = false; btn.textContent = t.cons_send_btn;
           return;
         }
         const fd = new FormData();
@@ -650,34 +891,31 @@ function showNewConsultation() {
         });
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
-          msgEl.innerHTML = `<div class="msg-box err">Error pujant ${escHtml(f.name)}: ${escHtml(err.error || 'error desconegut')}</div>`;
-          btn.disabled = false; btn.textContent = 'Envia la consulta';
+          msgEl.innerHTML = `<div class="msg-box err">${escHtml(t.cons_file_err(f.name))}: ${escHtml(err.error || '')}</div>`;
+          btn.disabled = false; btn.textContent = t.cons_send_btn;
           return;
         }
         const d = await res.json();
         adjunts.push({ key: d.key, nom: d.nom, mida: d.mida, tipus: d.tipus });
-        btn.textContent = `Pujant fitxers (${i + 1}/${files.length})…`;
+        btn.textContent = t.cons_uploading(i + 1, files.length);
       }
     }
 
-    // 2. Crear la consulta
-    btn.textContent = 'Enviant…';
+    btn.textContent = t.cons_sending;
     const { ok, status, data } = await api('POST', '/consultations', { titol, pregunta, adjunts });
     if (ok) {
-      msgEl.innerHTML = '<div class="msg-box ok">Consulta enviada. T\'avisarem per correu quan tinguem resposta.</div>';
-      btn.textContent = 'Enviada ✓';
+      msgEl.innerHTML = `<div class="msg-box ok">${t.cons_ok}</div>`;
+      btn.textContent = t.cons_sent;
       setTimeout(() => showClient(), 2000);
     } else if (status === 402) {
       msgEl.innerHTML = `<div class="msg-box err">${escHtml(data.message)}</div>`;
-      btn.disabled = false; btn.textContent = 'Envia la consulta';
+      btn.disabled = false; btn.textContent = t.cons_send_btn;
     } else {
-      msgEl.innerHTML = `<div class="msg-box err">Error en enviar. Torna-ho a provar.</div>`;
-      btn.disabled = false; btn.textContent = 'Envia la consulta';
+      msgEl.innerHTML = `<div class="msg-box err">${t.cons_err}</div>`;
+      btn.disabled = false; btn.textContent = t.cons_send_btn;
     }
   });
 }
-
-// ── Descarregar fitxer adjunt (autenticat) ────────────────────────────────────
 
 async function downloadFile(key, nom) {
   try {
@@ -688,8 +926,7 @@ async function downloadFile(key, nom) {
     const blob = await res.blob();
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href     = url;
-    a.download = nom;
+    a.href = url; a.download = nom;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -697,21 +934,19 @@ async function downloadFile(key, nom) {
   } catch { /* silenci */ }
 }
 
-// ── Detall consulta ──
-
 async function showConsultation(id) {
-  setMain('<div class="loading"><span class="loading-dot">carregant_</span></div>');
+  setMain(loadingHtml());
   const { ok, data } = await api('GET', `/consultations/${id}`);
   if (!ok) { showClient(); return; }
 
-  const isAdmin = State.user.role === 'admin';
+  const isAdmin   = State.user.role === 'admin';
   const respostes = data.respostes || [];
 
   setMain(`
     <div>
-      <a href="#" class="back-link" id="backCons">← tornar</a>
+      <a href="#" class="back-link" id="backCons">${t.back_short}</a>
       <div class="dash-header">
-        <h2 class="dash-title">${escHtml(data.titol || 'Consulta')}</h2>
+        <h2 class="dash-title">${escHtml(data.titol || t.no_title)}</h2>
         <p class="dash-sub">
           <span class="ci-estat ${escHtml(data.estat)}" style="display:inline-block;">${escHtml(data.estat)}</span>
           &nbsp;·&nbsp; ${formatDate(data.created_at)}
@@ -719,11 +954,11 @@ async function showConsultation(id) {
         </p>
       </div>
 
-      <p class="section-title">consulta</p>
+      <p class="section-title">${t.sec_consulta}</p>
       <div class="consultation-body">${escHtml(data.pregunta)}</div>
 
       ${data.adjunts && data.adjunts.length > 0 ? `
-      <p class="section-title" style="margin-top:1.5rem;">adjunts</p>
+      <p class="section-title" style="margin-top:1.5rem;">${t.sec_adjunts}</p>
       <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;">
         ${data.adjunts.map(a => `
           <button onclick="downloadFile(${JSON.stringify(a.key)}, ${JSON.stringify(a.nom)})"
@@ -740,7 +975,7 @@ async function showConsultation(id) {
       ` : ''}
 
       ${respostes.length > 0 ? `
-        <p class="section-title">respostes</p>
+        <p class="section-title">${t.sec_respostes}</p>
         <div class="response-list">
           ${respostes.map(r => `
             <div class="response-item">
@@ -752,19 +987,19 @@ async function showConsultation(id) {
       ` : ''}
 
       ${isAdmin && data.estat !== 'tancat' ? `
-        <p class="section-title">respondre</p>
+        <p class="section-title">${t.sec_respondre}</p>
         <div class="respond-form">
-          <textarea id="respText" placeholder="Escriu la resposta…"></textarea>
+          <textarea id="respText" placeholder="${t.resp_ph}"></textarea>
           <div class="respond-actions">
-            <button class="btn-primary" id="btnRespond" style="width:auto;padding:.75rem 1.5rem;">Envia resposta</button>
-            <button class="btn-secondary" id="btnClose">Tanca la consulta</button>
+            <button class="btn-primary" id="btnRespond" style="width:auto;padding:.75rem 1.5rem;">${t.resp_send}</button>
+            <button class="btn-secondary" id="btnClose">${t.resp_close_admin}</button>
           </div>
         </div>
         <div id="respondMsg"></div>
       ` : ''}
 
       ${!isAdmin && data.estat !== 'tancat' ? `
-        <button class="btn-secondary" id="btnClose" style="margin-top:1rem;">Tancar la consulta</button>
+        <button class="btn-secondary" id="btnClose" style="margin-top:1rem;">${t.resp_close_client}</button>
         <div id="respondMsg"></div>
       ` : ''}
     </div>
@@ -779,14 +1014,14 @@ async function showConsultation(id) {
     const text = el('respText').value.trim();
     if (!text) return;
     const btn = el('btnRespond');
-    btn.disabled = true; btn.textContent = 'Enviant…';
+    btn.disabled = true; btn.textContent = t.resp_sending;
     const { ok } = await api('POST', `/consultations/${id}/respond`, { text });
     if (ok) {
-      el('respondMsg').innerHTML = '<div class="msg-box ok">Resposta enviada. El client rep un correu.</div>';
+      el('respondMsg').innerHTML = `<div class="msg-box ok">${t.resp_ok}</div>`;
       setTimeout(() => showConsultation(id), 1500);
     } else {
-      el('respondMsg').innerHTML = '<div class="msg-box err">Error en enviar.</div>';
-      btn.disabled = false; btn.textContent = 'Envia resposta';
+      el('respondMsg').innerHTML = `<div class="msg-box err">${t.resp_err}</div>`;
+      btn.disabled = false; btn.textContent = t.resp_send;
     }
   });
 
@@ -796,11 +1031,9 @@ async function showConsultation(id) {
   });
 }
 
-// ── Admin dashboard ──
-
 async function showAdmin(tab) {
   if (tab) State.adminTab = tab;
-  setMain('<div class="loading"><span class="loading-dot">carregant_</span></div>');
+  setMain(loadingHtml());
 
   let usersRes, consRes;
   try {
@@ -810,26 +1043,26 @@ async function showAdmin(tab) {
     ]);
   } catch (err) {
     console.error('showAdmin error:', err);
-    setMain('<div class="auth-box"><div class="msg-box err">Error de connexió. <button class="btn-primary" onclick="location.reload()">Reintenta</button></div></div>', true);
+    setMain(`<div class="auth-box"><div class="msg-box err">${t.err_conn}<button class="btn-primary" onclick="location.reload()">${t.err_retry_btn}</button></div></div>`, true);
     return;
   }
 
-  const users = usersRes.ok ? usersRes.data : [];
-  const cons  = consRes.ok  ? consRes.data  : [];
+  const users        = usersRes.ok ? usersRes.data : [];
+  const cons         = consRes.ok  ? consRes.data  : [];
   const pendingCount = users.filter(u => u.status === 'pending').length;
 
   setMain(`
     <div class="dash-header">
-      <h1 class="dash-title">Admin.</h1>
-      <p class="dash-sub">${users.length} usuaris · ${cons.filter(c => c.estat === 'pendent').length} consultes pendents · <a href="#" onclick="event.preventDefault();showClient()" style="color:var(--rust2);font-family:var(--f-mono);font-size:.8rem;">veure panell client →</a></p>
+      <h1 class="dash-title">${t.admin_title}</h1>
+      <p class="dash-sub">${t.admin_sub(users.length, cons.filter(c => c.estat === 'pendent').length)} · <a href="#" onclick="event.preventDefault();showClient()" style="color:var(--rust2);font-family:var(--f-mono);font-size:.8rem;">${t.admin_client_link}</a></p>
     </div>
 
     <div class="tabs">
       <button class="tab ${State.adminTab === 'users' ? 'active' : ''}" onclick="App.showAdmin('users')">
-        usuaris${pendingCount > 0 ? ` (${pendingCount} pendents)` : ''}
+        ${t.tab_users}${pendingCount > 0 ? t.tab_pending(pendingCount) : ''}
       </button>
       <button class="tab ${State.adminTab === 'cons' ? 'active' : ''}" onclick="App.showAdmin('cons')">
-        consultes
+        ${t.tab_cons}
       </button>
     </div>
 
@@ -842,13 +1075,13 @@ async function showAdmin(tab) {
 }
 
 function renderUsersTab(users) {
-  if (!users.length) return '<div class="empty-state">Cap usuari.</div>';
+  if (!users.length) return `<div class="empty-state">${t.no_users}</div>`;
   return `
     <div style="overflow-x:auto;">
       <table class="user-table">
         <thead>
           <tr>
-            <th>Nom</th><th>Email</th><th>Rol</th><th>Estat</th><th>Hores</th><th>Registre</th><th>Accions</th>
+            <th>${t.th_nom}</th><th>${t.th_email}</th><th>${t.th_rol}</th><th>${t.th_estat}</th><th>${t.th_hours}</th><th>${t.th_reg}</th><th>${t.th_actions}</th>
           </tr>
         </thead>
         <tbody>
@@ -861,9 +1094,9 @@ function renderUsersTab(users) {
               <td style="font-family:var(--f-mono);font-size:.78rem;">${formatHores(parseFloat(u.hores_disponibles || 0))}</td>
               <td style="font-family:var(--f-mono);font-size:.68rem;color:var(--cream3);">${formatDate(u.created_at)}</td>
               <td>
-                ${u.status === 'pending' ? `<button class="btn-action validate" onclick="App.validateUser('${escHtml(u.id)}')">validar</button>` : ''}
-                ${u.status !== 'blocked' && u.role !== 'admin' ? `<button class="btn-action block" onclick="App.blockUser('${escHtml(u.id)}')">bloquejar</button>` : ''}
-                ${u.status === 'blocked' ? `<button class="btn-action validate" onclick="App.validateUser('${escHtml(u.id)}')">desbloquear</button>` : ''}
+                ${u.status === 'pending' ? `<button class="btn-action validate" onclick="App.validateUser('${escHtml(u.id)}')">${t.btn_validate}</button>` : ''}
+                ${u.status !== 'blocked' && u.role !== 'admin' ? `<button class="btn-action block" onclick="App.blockUser('${escHtml(u.id)}')">${t.btn_block}</button>` : ''}
+                ${u.status === 'blocked' ? `<button class="btn-action validate" onclick="App.validateUser('${escHtml(u.id)}')">${t.btn_unblock}</button>` : ''}
               </td>
             </tr>
           `).join('')}
@@ -874,7 +1107,7 @@ function renderUsersTab(users) {
 }
 
 function renderAdminConsTab(cons) {
-  if (!cons.length) return '<div class="empty-state">Cap consulta.</div>';
+  if (!cons.length) return `<div class="empty-state">${t.no_cons}</div>`;
   return `
     <div class="consultation-list" id="adminContent">
       ${cons.map(c => renderConsItem(c, true)).join('')}
@@ -891,17 +1124,24 @@ const App = {
     updateNav();
     showLogin();
   },
-  showBuyPkg(key) { showBuyPkg(key); },
-  showNewConsultation() { showNewConsultation(); },
-  showConsultation(id) { showConsultation(id); },
-  showAdmin(tab) { showAdmin(tab); },
-  selectPkg(key) { State.pendingPkg = key; },
+  switchLang() {
+    const newLang = LANG === 'ca' ? 'es' : 'ca';
+    localStorage.setItem('mm_lang', newLang);
+    const url = new URL(location.href);
+    url.searchParams.set('lang', newLang);
+    location.href = url.toString();
+  },
+  showBuyPkg(key)          { showBuyPkg(key); },
+  showNewConsultation()    { showNewConsultation(); },
+  showConsultation(id)     { showConsultation(id); },
+  showAdmin(tab)           { showAdmin(tab); },
+  selectPkg(key)           { State.pendingPkg = key; },
   async validateUser(id) {
     const { ok } = await api('PUT', `/admin/users/${id}/validate`);
     if (ok) showAdmin();
   },
   async blockUser(id) {
-    if (!confirm('Bloquejar aquest usuari?')) return;
+    if (!confirm(t.confirm_block)) return;
     const { ok } = await api('PUT', `/admin/users/${id}/block`);
     if (ok) showAdmin();
   },
@@ -910,7 +1150,8 @@ const App = {
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
 async function boot() {
-  el('footerYear').textContent = new Date().getFullYear();
+  el('footerYear').textContent   = new Date().getFullYear();
+  el('initLoading').textContent  = t.loading;
 
   const params = new URLSearchParams(location.search);
   const token  = params.get('token');
@@ -918,31 +1159,28 @@ async function boot() {
 
   if (pkg && PACKAGES[pkg]) State.pendingPkg = pkg;
 
-  // 1. Magic link a la URL
   if (token) {
     try {
       const ok = await verifyToken(token);
       if (!ok) {
         updateNav();
-        setMain('<div class="auth-box"><div class="msg-box err">El link ha caducat o ja s\'ha usat. Sol·licita un de nou.</div><br><button class="btn-primary" onclick="App.logout()">Torna al login</button></div>', true);
+        setMain(`<div class="auth-box"><div class="msg-box err">${t.err_link_expired}</div><br><button class="btn-primary" onclick="App.logout()">${t.err_back_login}</button></div>`, true);
         return;
       }
     } catch (err) {
       console.error('verifyToken error:', err);
       updateNav();
-      setMain('<div class="auth-box"><div class="msg-box err">Error de connexió amb el servidor. Torna-ho a provar.</div><br><button class="btn-primary" onclick="location.reload()">Reintenta</button></div>', true);
+      setMain(`<div class="auth-box"><div class="msg-box err">${t.err_conn}<button class="btn-primary" onclick="location.reload()">${t.err_retry_btn}</button></div></div>`, true);
       return;
     }
   }
 
-  // 2. JWT existent
   if (State.jwt && !State.user) {
     try { await loadMe(); } catch { State.jwt = null; localStorage.removeItem(JWT_KEY); }
   }
 
   updateNav();
 
-  // 3. Ruta
   if (!State.user) {
     State.pendingPkg ? showRegister() : showLogin();
     return;
@@ -950,12 +1188,11 @@ async function boot() {
 
   if (State.user.status === 'pending') { showPending(State.user.nom); return; }
   if (State.user.status === 'blocked') {
-    setMain('<div class="auth-box"><div class="msg-box err">El compte ha estat bloquejat. Contacta amb hola@malditasmaquinas.com.</div></div>', true);
+    setMain(`<div class="auth-box"><div class="msg-box err">${t.err_blocked}</div></div>`, true);
     return;
   }
 
   if (State.pendingPkg) { showBuyPkg(State.pendingPkg); return; }
-
   if (State.user.role === 'admin') { showAdmin(); return; }
 
   showClient();
@@ -963,7 +1200,7 @@ async function boot() {
 
 boot().catch(err => {
   console.error('boot error:', err);
-  setMain('<div class="auth-box"><div class="msg-box err">Error inesperat. <button class="btn-primary" onclick="location.reload()">Reintenta</button></div></div>', true);
+  setMain(`<div class="auth-box"><div class="msg-box err">${t.err_unexpected}<button class="btn-primary" onclick="location.reload()">${t.err_retry_btn}</button></div></div>`, true);
 });
 </script>
 </body>

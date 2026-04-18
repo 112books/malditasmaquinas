@@ -39,10 +39,34 @@ export async function handleStats(request, env, path, url) {
 
   const gcUrl = `${GC_BASE}/stats/${metric}?limit=${limit}&${range}`;
 
-  const resp = await fetch(gcUrl, {
-    headers: { Authorization: `Bearer ${env.GOATCOUNTER_TOKEN}` },
-  });
+  let resp;
+  try {
+    resp = await fetch(gcUrl, {
+      headers: { Authorization: `Bearer ${env.GOATCOUNTER_TOKEN}` },
+    });
+  } catch (err) {
+    return json({ error: `fetch failed: ${err.message}` }, 502);
+  }
 
-  const data = await resp.json();
-  return json(data, resp.status);
+  // Llegim sempre com a text primer per evitar crashes si no és JSON
+  const text = await resp.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    return json({
+      error: `GoatCounter HTTP ${resp.status} — resposta no JSON`,
+      raw: text.slice(0, 300),
+    }, 502);
+  }
+
+  // GoatCounter retorna errors com { "error": "..." }
+  if (!resp.ok) {
+    return json({
+      error: `GoatCounter HTTP ${resp.status}`,
+      detail: data?.error || data,
+    }, resp.status);
+  }
+
+  return json(data);
 }

@@ -19,10 +19,13 @@ compatibility_flags = ["nodejs_compat"]
 #   id = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 # ── R2 (fitxers adjunts) ─────────────────────────────────────────────────────
-# Crear el bucket: wrangler r2 bucket create malditasmaquinas-files
-[[r2_buckets]]
-  binding = "R2"
-  bucket_name = "malditasmaquinas-files"
+# Activar quan R2 estigui habilitat al compte Cloudflare:
+#   1. dash.cloudflare.com → R2 Object Storage → Enable
+#   2. wrangler r2 bucket create malditasmaquinas-files
+#   3. Descomentar el bloc següent i fer wrangler deploy
+# [[r2_buckets]]
+#   binding = "R2"
+#   bucket_name = "malditasmaquinas-files"
 
 # ── Secrets (mai al codi, pujar amb: wrangler secret put NOM) ────────────────
 # STRIPE_SECRET_KEY
