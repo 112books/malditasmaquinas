@@ -63,3 +63,397 @@ other = "Contacte"
 
 [footer_contact_url]
 other = "contacte/"
+
+# --- Globals (baseof, nav, footer) ---
+
+[skip_link]
+other = "Salta al contingut principal"
+
+[nav_aria_main]
+other = "Navegació principal"
+
+[nav_aria_home]
+other = "MalditasMaquinas — inici"
+
+[nav_aria_sections]
+other = "Seccions"
+
+[nav_aria_services]
+other = "Serveis"
+
+[nav_aria_how]
+other = "Com funciona"
+
+[nav_aria_packages]
+other = "Paquets d'hores"
+
+[nav_aria_faq]
+other = "Preguntes freqüents"
+
+[nav_aria_contact]
+other = "Contacte"
+
+[nav_aria_access]
+other = "Accedeix al teu panell"
+
+[nav_aria_lang_change]
+other = "Canvia a"
+
+[footer_aria_legal]
+other = "Enllaços legals"
+
+[footer_aria_standards]
+other = "Estàndards tècnics"
+
+[footer_standards_inline]
+other = "HTML5 · WCAG AA · RGPD · sense cookies"
+
+[footer_made_with]
+other = "fet amb"
+
+[footer_privacy_anchor]
+other = "transparncia-tcnica"
+
+# --- Pàgina de contacte ---
+
+[contact_stag]
+other = "contacte"
+
+[contact_title]
+other = "Parlem."
+
+[contact_notice_text]
+other = "Les <strong>consultes tècniques</strong> només s'atenen si tens un paquet d'hores contractat. Sense hores, no hi ha consulta."
+
+[contact_notice_cta]
+other = "Per comprar hores →"
+
+[contact_packages_link_text]
+other = "paquets d'hores"
+
+[contact_packages_path]
+other = "paquets/"
+
+[contact_label_email]
+other = "correu"
+
+[contact_label_reply]
+other = "resposta"
+
+[contact_reply_time]
+other = "menys de 48h laborables"
+
+[contact_label_location]
+other = "ubicació"
+
+[contact_form_subject_val]
+other = "Contacte MalditasMaquinas"
+
+[contact_form_name]
+other = "Nom"
+
+[contact_form_name_ph]
+other = "El teu nom"
+
+[contact_form_email_label]
+other = "Correu electrònic"
+
+[contact_form_subject_label]
+other = "Assumpte"
+
+[contact_form_subject_ph]
+other = "De què es tracta?"
+
+[contact_form_message]
+other = "Missatge"
+
+[contact_form_message_ph]
+other = "Explica'ns en què podem ajudar-te. Recorda que les consultes tècniques requereixen paquet d'hores."
+
+[contact_form_submit]
+other = "Envia el missatge"
+
+[contact_next_url]
+other = "https://malditasmaquinas.com/gracies/"
+
+# --- Pàgina 404 ---
+
+[e404_label]
+other = "Pàgina no trobada"
+
+[e404_msg]
+other = "La pàgina que busques no existeix, o alguna màquina maldita se l'ha cruspit. Pot ser un error a l'URL o pot ser que hagi canviat d'adreça. No ho sabem."
+
+[e404_back]
+other = "← tornar a l'inici"
+
+[e404_services]
+other = "veure serveis →"
+
+[e404_cmd1]
+other = "$ locate pàgina"
+
+[e404_out1]
+other = "→ no s'han trobat resultats"
+
+[e404_out2]
+other = "→ OK — les màquines responen"
+
+[e404_cmd3]
+other = "$ ping pàgina-perduda"
+
+[e404_out3]
+other = "→ ERROR: host desconegut"
+
+# --- Pàgines de servei (single + list) ---
+
+[services_path]
+other = "serveis/"
+
+[breadcrumb_aria]
+other = "Fil d'Ariadna"
+
+[breadcrumb_services]
+other = "serveis"
+
+[service_stag]
+other = "servei"
+
+[srv_info_aria]
+other = "Dades del servei"
+
+[srv_info_label_resposta]
+other = "resposta"
+
+[srv_info_label_minim]
+other = "mínim"
+
+[srv_cta_contact]
+other = "Fes una consulta →"
+
+[srv_list_more_detail]
+other = "veure el servei →"
+
+[services_list_intro]
+other = "Tot el que necessites, sense contractes ni compromisos de permanència. Assessorament tecnològic honest per a artistes, autònoms i petites empreses."
+
+# --- Pàgina d'inici (home) ---
+
+[hero_tag]
+other = "Consultoria Tecnològica · Barcelona"
+
+[hero_w2]
+other = "— ensinistrem les màquines"
+
+[hero_sub]
+other = "Més de 20 anys resolent problemes tècnics per a artistes, autònoms i petites empreses. Sense corbata."
+
+[hero_slogan]
+other = "Tu manes. Les màquines, <em>obeeixen.</em>"
+
+[hero_tagline]
+other = "Surt de la plantilla i confia en l'experiència de MalditasMaquinas per consolidar la teva presència digital de forma ètica, senzilla i eficaç."
+
+[hero_cta_how]
+other = "Com funciona →"
+
+[stat_min_label]
+other = "mínim per consulta"
+
+[stat_packages_label]
+other = "paquets d'hores"
+
+[stat_price_label]
+other = "sense subscripció"
+
+[anchor_services]
+other = "serveis"
+
+[anchor_packages]
+other = "paquets"
+
+[anchor_how]
+other = "com-funciona"
+
+[services_title]
+other = "En què et podem ajudar"
+
+[services_intro]
+other = "Tot el que necessites, sense contractes ni compromisos de permanència."
+
+[srv_more]
+other = "saber-ne més →"
+
+[srv_consultoria_url]
+other = "serveis/consultoria-tecnologica/"
+
+[srv_consultoria_t]
+other = "Consultoria tecnològica"
+
+[srv_consultoria_d]
+other = "Quin ordinador necessito? Quin programari em va bé? Com configuro el correu? Com em posiciono digitalment? Respostes clares, sense tecnicismes."
+
+[srv_software_url]
+other = "serveis/programari-a-mida/"
+
+[srv_software_t]
+other = "Programari a mida"
+
+[srv_software_d]
+other = "Solucions web a mida basades en tecnologies obertes. Simple, mantenible, sense dependències innecessàries."
+
+[srv_eines_url]
+other = "serveis/eines-creatives/"
+
+[srv_eines_t]
+other = "Eines creatives"
+
+[srv_eines_d]
+other = "Affinity, Inkscape, GIMP, Darktable, Kdenlive, Ardour. Suport per a processos creatius amb programari lliure i de qualitat."
+
+[srv_webs_url]
+other = "serveis/webs-i-servidors/"
+
+[srv_webs_t]
+other = "Webs i servidors"
+
+[srv_webs_d]
+other = "Hugo, VPS, DNS, SSL. Posem en ordre el teu ecosistema digital sense pagar de més."
+
+[srv_wp_url]
+other = "serveis/allibera-del-wordpress/"
+
+[srv_wp_t]
+other = "Allibera't del WordPress"
+
+[srv_wp_d]
+other = "Migra a Hugo o site estàtic. Ràpid, segur, econòmic i sostenible. El 99% de webs no necessiten res més."
+
+[srv_sec_url]
+other = "serveis/seguretat/"
+
+[srv_sec_t]
+other = "Seguretat"
+
+[srv_sec_d]
+other = "Auditories bàsiques, còpies de seguretat, gestió de contrasenyes i bones pràctiques."
+
+[srv_mail_url]
+other = "serveis/gestio-correu/"
+
+[srv_mail_t]
+other = "Gestió de correu"
+
+[srv_mail_d]
+other = "Configuració, migració i organització del correu professional. Adéu als problemes d'entrega i spam."
+
+[srv_mac_url]
+other = "serveis/mac-i-linux/"
+
+[srv_mac_t]
+other = "Mac i Linux"
+
+[srv_mac_d]
+other = "Instal·lació, configuració, manteniment i recuperació de sistemes Apple i Linux."
+
+[packages_stag]
+other = "paquets d'hores"
+
+[packages_title_1]
+other = "Sense hores,"
+
+[packages_title_2]
+other = "no hi ha consulta"
+
+[packages_intro]
+other = "Compra hores prepagades. Usa-les quan les necessitis. Sense subscripcions, sense sorpreses."
+
+[pkg_minim]
+other = "mínim"
+
+[pkg_basic]
+other = "bàsic"
+
+[pkg_mitja]
+other = "mitjà"
+
+[pkg_estandard]
+other = "estàndard"
+
+[pkg_pro]
+other = "pro"
+
+[pkg_avancat]
+other = "avançat"
+
+[pkg_unit_min]
+other = "min"
+
+[pkg_unit_hora]
+other = "hora"
+
+[pkg_unit_hores]
+other = "hores"
+
+[pkg_popular]
+other = "popular"
+
+[pkg_expires_1m]
+other = "caduca en 1 mes"
+
+[pkg_expires_3m]
+other = "caduca en 3 mesos"
+
+[pkg_expires_5m]
+other = "caduca en 5 mesos"
+
+[pkg_expires_7m]
+other = "caduca en 7 mesos"
+
+[pkg_expires_10m]
+other = "caduca en 10 mesos"
+
+[pkg_expires_12m]
+other = "caduca en 12 mesos"
+
+[pkg_cta]
+other = "compra"
+
+[pkg_iva]
+other = "+ iva"
+
+[how_stag]
+other = "com funciona"
+
+[how_title]
+other = "Simple. Directe.<br>Sense trucades gratuïtes."
+
+[step1_t]
+other = "Compra un paquet"
+
+[step1_d]
+other = "Tria les hores que necessites i paga amb Stripe. Bizum, targeta, el que prefereixis."
+
+[step2_t]
+other = "Envia la consulta"
+
+[step2_d]
+other = "Explica el problema. Adjunta captures, fitxers, el que calgui. Sense límit de detall."
+
+[step3_t]
+other = "Rebem i treballem"
+
+[step3_d]
+other = "T'avisem per correu quan tenim resposta. Es descompten 15 min mínims per consulta."
+
+[step4_t]
+other = "Saldo sempre visible"
+
+[step4_d]
+other = "Des del teu panell veus quantes hores et queden i quan caduca el paquet."
+
+[return_tag]
+other = "Política de retorn"
+
+[return_text]
+other = "Si no has usat totes les hores i el paquet caduca, et retornem la part proporcional. Sense comissions. Calculat sobre el preu que has pagat, no sobre tarifa individual."

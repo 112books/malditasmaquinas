@@ -1,5 +1,5 @@
 {{ partial "basehead.html" . }}
-  <a class="skip-link" href="#main-content">Salta al contingut principal</a>
+  <a class="skip-link" href="#main-content">{{ i18n "skip_link" }}</a>
   {{ partial "nav.html" . }}
   <main id="main-content">
     {{ block "main" . }}{{ end }}

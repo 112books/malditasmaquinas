@@ -1,56 +1,56 @@
 {{ define "main" }}
 <div class="page-wrap">
   <div class="page-header">
-    <span class="stag">contacte</span>
-    <h1 class="page-title">Parlem.</h1>
+    <span class="stag">{{ i18n "contact_stag" }}</span>
+    <h1 class="page-title">{{ i18n "contact_title" }}</h1>
   </div>
 
   <div class="contacte-grid">
     <div class="contacte-info">
       <div class="contacte-avís">
         <span class="aside-tag">important</span>
-        <p>Les <strong>consultes tècniques</strong> només s'atenen si tens un paquet d'hores contractat. Sense hores, no hi ha consulta.</p>
-        <p style="margin-top:.75rem">Per comprar hores → <a href="/paquets/" style="color:var(--rust2)">paquets d'hores</a></p>
+        <p>{{ i18n "contact_notice_text" | safeHTML }}</p>
+        <p style="margin-top:.75rem">{{ i18n "contact_notice_cta" }} <a href="{{ i18n "contact_packages_path" | relLangURL }}" style="color:var(--rust2)">{{ i18n "contact_packages_link_text" }}</a></p>
       </div>
 
       <div class="contacte-dades">
         <div class="contacte-fila">
-          <span class="contacte-label">correu</span>
+          <span class="contacte-label">{{ i18n "contact_label_email" }}</span>
           <a href="mailto:hola@malditasmaquinas.com" class="contacte-valor">hola@malditasmaquinas.com</a>
         </div>
         <div class="contacte-fila">
-          <span class="contacte-label">resposta</span>
-          <span class="contacte-valor">menys de 48h laborables</span>
+          <span class="contacte-label">{{ i18n "contact_label_reply" }}</span>
+          <span class="contacte-valor">{{ i18n "contact_reply_time" }}</span>
         </div>
         <div class="contacte-fila">
-          <span class="contacte-label">ubicació</span>
+          <span class="contacte-label">{{ i18n "contact_label_location" }}</span>
           <span class="contacte-valor">Barcelona</span>
         </div>
       </div>
     </div>
 
     <form class="contacte-form" action="https://formsubmit.co/hola@malditasmaquinas.com" method="POST">
-      <input type="hidden" name="_subject" value="Contacte MalditasMaquinas">
+      <input type="hidden" name="_subject" value="{{ i18n "contact_form_subject_val" }}">
       <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://malditasmaquinas.com/gracies/">
+      <input type="hidden" name="_next" value="{{ i18n "contact_next_url" }}">
 
       <div class="form-group">
-        <label class="form-label" for="nom">Nom</label>
-        <input class="form-input" type="text" id="nom" name="nom" required placeholder="El teu nom">
+        <label class="form-label" for="nom">{{ i18n "contact_form_name" }}</label>
+        <input class="form-input" type="text" id="nom" name="nom" required placeholder="{{ i18n "contact_form_name_ph" }}">
       </div>
       <div class="form-group">
-        <label class="form-label" for="email">Correu electrònic</label>
-        <input class="form-input" type="email" id="email" name="email" required placeholder="tu@exemple.com">
+        <label class="form-label" for="email">{{ i18n "contact_form_email_label" }}</label>
+        <input class="form-input" type="email" id="email" name="email" required placeholder="tu@example.com">
       </div>
       <div class="form-group">
-        <label class="form-label" for="assumpte">Assumpte</label>
-        <input class="form-input" type="text" id="assumpte" name="assumpte" required placeholder="De què es tracta?">
+        <label class="form-label" for="assumpte">{{ i18n "contact_form_subject_label" }}</label>
+        <input class="form-input" type="text" id="assumpte" name="assumpte" required placeholder="{{ i18n "contact_form_subject_ph" }}">
       </div>
       <div class="form-group">
-        <label class="form-label" for="missatge">Missatge</label>
-        <textarea class="form-input form-textarea" id="missatge" name="missatge" required placeholder="Explica'ns en què podem ajudar-te. Recorda que les consultes tècniques requereixen paquet d'hores."></textarea>
+        <label class="form-label" for="missatge">{{ i18n "contact_form_message" }}</label>
+        <textarea class="form-input form-textarea" id="missatge" name="missatge" required placeholder="{{ i18n "contact_form_message_ph" }}"></textarea>
       </div>
-      <button type="submit" class="btn-p" style="width:100%;text-align:center">Envia el missatge</button>
+      <button type="submit" class="btn-p" style="width:100%;text-align:center">{{ i18n "contact_form_submit" }}</button>
     </form>
   </div>
 </div>

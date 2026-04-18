@@ -2,10 +2,10 @@
 <section class="section">
   <div class="s-header">
     <div>
-      <span class="stag">serveis</span>
-      <h1 class="s-h1">En què et podem<br>ajudar</h1>
+      <span class="stag">{{ i18n "breadcrumb_services" }}</span>
+      <h1 class="s-h1">{{ i18n "services_title" }}</h1>
     </div>
-    <p class="s-intro">Tot el que necessites, sense contractes ni compromisos de permanència. Assessorament tecnològic honest per a artistes, autònoms i petites empreses.</p>
+    <p class="s-intro">{{ i18n "services_list_intro" }}</p>
   </div>
   <div class="srv-grid">
     {{ range .Pages }}
@@ -13,13 +13,13 @@
       <div class="srv-line"></div>
       <div class="srv-t">{{ .Title }}</div>
       <p class="srv-d">{{ .Description }}</p>
-      <span class="srv-more" aria-hidden="true">veure el servei →</span>
+      <span class="srv-more" aria-hidden="true">{{ i18n "srv_list_more_detail" }}</span>
     </a>
     {{ end }}
   </div>
 </section>
 <div class="srv-index-cta">
-  <a href="{{ .Site.Home.RelPermalink }}#paquets" class="btn-p">Compra hores</a>
-  <a href="{{ "faq/" | relLangURL }}" class="btn-s">Preguntes freqüents →</a>
+  <a href="{{ .Site.Home.RelPermalink }}#{{ i18n "anchor_packages" }}" class="btn-p">{{ i18n "cta_buy" }}</a>
+  <a href="{{ "faq/" | relLangURL }}" class="btn-s">{{ i18n "nav_aria_faq" }} →</a>
 </div>
 {{ end }}

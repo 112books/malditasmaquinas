@@ -1,5 +1,5 @@
 {{ partial "basehead.html" . }}
-  <a class="skip-link" href="#main-content">Salta al contingut principal</a>
+  <a class="skip-link" href="#main-content">{{ i18n "skip_link" }}</a>
   {{ partial "nav.html" . }}
   <main id="main-content">
     <div class="e404-wrap">
@@ -12,22 +12,22 @@
         </div>
 
         <div>
-          <div class="e404-label">Pàgina no trobada</div>
-          <p class="e404-msg">La pàgina que busques no existeix, o alguna màquina maldita se l'ha cruspit. Pot ser un error a l'URL o pot ser que hagi canviat d'adreça. No ho sabem.</p>
+          <div class="e404-label">{{ i18n "e404_label" }}</div>
+          <p class="e404-msg">{{ i18n "e404_msg" }}</p>
         </div>
 
         <div class="e404-terminal" aria-hidden="true" role="presentation">
-          <span class="e404-prompt">$ locate pàgina</span>
-          <span class="e404-out e404-out--err">→ no s'han trobat resultats</span>
+          <span class="e404-prompt">{{ i18n "e404_cmd1" }}</span>
+          <span class="e404-out e404-out--err">{{ i18n "e404_out1" }}</span>
           <span class="e404-prompt">$ ping malditasmaquinas.com</span>
-          <span class="e404-out e404-out--ok">→ OK — les màquines responen</span>
-          <span class="e404-prompt">$ ping pàgina-perduda<span class="e404-cursor">█</span></span>
-          <span class="e404-out e404-out--err">→ ERROR: host desconegut</span>
+          <span class="e404-out e404-out--ok">{{ i18n "e404_out2" }}</span>
+          <span class="e404-prompt">{{ i18n "e404_cmd3" }}<span class="e404-cursor">█</span></span>
+          <span class="e404-out e404-out--err">{{ i18n "e404_out3" }}</span>
         </div>
 
         <div class="e404-actions">
-          <a href="{{ .Site.Home.RelPermalink }}" class="btn-p">← tornar a l'inici</a>
-          <a href="{{ "serveis/" | relLangURL }}" class="btn-s">veure serveis →</a>
+          <a href="{{ .Site.Home.RelPermalink }}" class="btn-p">{{ i18n "e404_back" }}</a>
+          <a href="{{ i18n "services_path" | relLangURL }}" class="btn-s">{{ i18n "e404_services" }}</a>
         </div>
       </div>
 

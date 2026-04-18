@@ -63,3 +63,397 @@ other = "Contacto"
 
 [footer_contact_url]
 other = "contacto/"
+
+# --- Globals (baseof, nav, footer) ---
+
+[skip_link]
+other = "Saltar al contenido principal"
+
+[nav_aria_main]
+other = "Navegación principal"
+
+[nav_aria_home]
+other = "MalditasMaquinas — inicio"
+
+[nav_aria_sections]
+other = "Secciones"
+
+[nav_aria_services]
+other = "Servicios"
+
+[nav_aria_how]
+other = "Cómo funciona"
+
+[nav_aria_packages]
+other = "Paquetes de horas"
+
+[nav_aria_faq]
+other = "Preguntas frecuentes"
+
+[nav_aria_contact]
+other = "Contacto"
+
+[nav_aria_access]
+other = "Accede a tu panel"
+
+[nav_aria_lang_change]
+other = "Cambiar a"
+
+[footer_aria_legal]
+other = "Enlaces legales"
+
+[footer_aria_standards]
+other = "Estándares técnicos"
+
+[footer_standards_inline]
+other = "HTML5 · WCAG AA · RGPD · sin cookies"
+
+[footer_made_with]
+other = "hecho con"
+
+[footer_privacy_anchor]
+other = "transparencia-tecnica"
+
+# --- Página de contacto ---
+
+[contact_stag]
+other = "contacto"
+
+[contact_title]
+other = "Hablemos."
+
+[contact_notice_text]
+other = "Las <strong>consultas técnicas</strong> solo se atienden si tienes un paquete de horas contratado. Sin horas, no hay consulta."
+
+[contact_notice_cta]
+other = "Para comprar horas →"
+
+[contact_packages_link_text]
+other = "paquetes de horas"
+
+[contact_packages_path]
+other = "paquetes/"
+
+[contact_label_email]
+other = "correo"
+
+[contact_label_reply]
+other = "respuesta"
+
+[contact_reply_time]
+other = "menos de 48h laborables"
+
+[contact_label_location]
+other = "ubicación"
+
+[contact_form_subject_val]
+other = "Contacto MalditasMaquinas"
+
+[contact_form_name]
+other = "Nombre"
+
+[contact_form_name_ph]
+other = "Tu nombre"
+
+[contact_form_email_label]
+other = "Correo electrónico"
+
+[contact_form_subject_label]
+other = "Asunto"
+
+[contact_form_subject_ph]
+other = "¿De qué se trata?"
+
+[contact_form_message]
+other = "Mensaje"
+
+[contact_form_message_ph]
+other = "Cuéntanos en qué podemos ayudarte. Recuerda que las consultas técnicas requieren paquete de horas."
+
+[contact_form_submit]
+other = "Enviar el mensaje"
+
+[contact_next_url]
+other = "https://malditasmaquinas.com/es/gracias/"
+
+# --- Página 404 ---
+
+[e404_label]
+other = "Página no encontrada"
+
+[e404_msg]
+other = "La página que buscas no existe, o alguna maldita máquina se la ha comido. Puede ser un error en la URL o puede que haya cambiado de dirección. No lo sabemos."
+
+[e404_back]
+other = "← volver al inicio"
+
+[e404_services]
+other = "ver servicios →"
+
+[e404_cmd1]
+other = "$ locate página"
+
+[e404_out1]
+other = "→ no se han encontrado resultados"
+
+[e404_out2]
+other = "→ OK — las máquinas responden"
+
+[e404_cmd3]
+other = "$ ping página-perdida"
+
+[e404_out3]
+other = "→ ERROR: host desconocido"
+
+# --- Páginas de servicio (single + list) ---
+
+[services_path]
+other = "servicios/"
+
+[breadcrumb_aria]
+other = "Ruta de navegación"
+
+[breadcrumb_services]
+other = "servicios"
+
+[service_stag]
+other = "servicio"
+
+[srv_info_aria]
+other = "Datos del servicio"
+
+[srv_info_label_resposta]
+other = "respuesta"
+
+[srv_info_label_minim]
+other = "mínimo"
+
+[srv_cta_contact]
+other = "Haz una consulta →"
+
+[srv_list_more_detail]
+other = "ver el servicio →"
+
+[services_list_intro]
+other = "Todo lo que necesitas, sin contratos ni compromisos de permanencia. Asesoramiento tecnológico honesto para artistas, autónomos y pequeñas empresas."
+
+# --- Página de inicio (home) ---
+
+[hero_tag]
+other = "Consultoría Tecnológica · Barcelona"
+
+[hero_w2]
+other = "— domamos las máquinas"
+
+[hero_sub]
+other = "Más de 20 años resolviendo problemas técnicos para artistas, autónomos y pequeñas empresas. Sin corbata."
+
+[hero_slogan]
+other = "Tú mandas. Las máquinas, <em>obedecen.</em>"
+
+[hero_tagline]
+other = "Sal de la plantilla y confía en la experiencia de MalditasMaquinas para consolidar tu presencia digital de forma ética, sencilla y eficaz."
+
+[hero_cta_how]
+other = "Cómo funciona →"
+
+[stat_min_label]
+other = "mínimo por consulta"
+
+[stat_packages_label]
+other = "paquetes de horas"
+
+[stat_price_label]
+other = "sin suscripción"
+
+[anchor_services]
+other = "servicios"
+
+[anchor_packages]
+other = "paquetes"
+
+[anchor_how]
+other = "como-funciona"
+
+[services_title]
+other = "En qué podemos ayudarte"
+
+[services_intro]
+other = "Todo lo que necesitas, sin contratos ni compromisos de permanencia."
+
+[srv_more]
+other = "saber más →"
+
+[srv_consultoria_url]
+other = "servicios/consultoria-tecnologica/"
+
+[srv_consultoria_t]
+other = "Consultoría tecnológica"
+
+[srv_consultoria_d]
+other = "¿Qué ordenador necesito? ¿Qué software me va bien? ¿Cómo configuro el correo? ¿Cómo me posiciono digitalmente? Respuestas claras, sin tecnicismos."
+
+[srv_software_url]
+other = "servicios/software-a-medida/"
+
+[srv_software_t]
+other = "Software a medida"
+
+[srv_software_d]
+other = "Soluciones web a medida basadas en tecnologías abiertas. Simple, mantenible, sin dependencias innecesarias."
+
+[srv_eines_url]
+other = "servicios/herramientas-creativas/"
+
+[srv_eines_t]
+other = "Herramientas creativas"
+
+[srv_eines_d]
+other = "Affinity, Inkscape, GIMP, Darktable, Kdenlive, Ardour. Soporte para procesos creativos con software libre y de calidad."
+
+[srv_webs_url]
+other = "servicios/webs-y-servidores/"
+
+[srv_webs_t]
+other = "Webs y servidores"
+
+[srv_webs_d]
+other = "Hugo, VPS, DNS, SSL. Ponemos en orden tu ecosistema digital sin pagar de más."
+
+[srv_wp_url]
+other = "servicios/liberate-del-wordpress/"
+
+[srv_wp_t]
+other = "Libérate del WordPress"
+
+[srv_wp_d]
+other = "Migra a Hugo o site estático. Rápido, seguro, económico y sostenible. El 99% de webs no necesitan nada más."
+
+[srv_sec_url]
+other = "servicios/seguridad/"
+
+[srv_sec_t]
+other = "Seguridad"
+
+[srv_sec_d]
+other = "Auditorías básicas, copias de seguridad, gestión de contraseñas y buenas prácticas."
+
+[srv_mail_url]
+other = "servicios/gestion-correo/"
+
+[srv_mail_t]
+other = "Gestión de correo"
+
+[srv_mail_d]
+other = "Configuración, migración y organización del correo profesional. Adiós a los problemas de entrega y spam."
+
+[srv_mac_url]
+other = "servicios/mac-y-linux/"
+
+[srv_mac_t]
+other = "Mac y Linux"
+
+[srv_mac_d]
+other = "Instalación, configuración, mantenimiento y recuperación de sistemas Apple y Linux."
+
+[packages_stag]
+other = "paquetes de horas"
+
+[packages_title_1]
+other = "Sin horas,"
+
+[packages_title_2]
+other = "no hay consulta"
+
+[packages_intro]
+other = "Compra horas prepagadas. Úsalas cuando las necesites. Sin suscripciones, sin sorpresas."
+
+[pkg_minim]
+other = "mínimo"
+
+[pkg_basic]
+other = "básico"
+
+[pkg_mitja]
+other = "medio"
+
+[pkg_estandard]
+other = "estándar"
+
+[pkg_pro]
+other = "pro"
+
+[pkg_avancat]
+other = "avanzado"
+
+[pkg_unit_min]
+other = "min"
+
+[pkg_unit_hora]
+other = "hora"
+
+[pkg_unit_hores]
+other = "horas"
+
+[pkg_popular]
+other = "popular"
+
+[pkg_expires_1m]
+other = "caduca en 1 mes"
+
+[pkg_expires_3m]
+other = "caduca en 3 meses"
+
+[pkg_expires_5m]
+other = "caduca en 5 meses"
+
+[pkg_expires_7m]
+other = "caduca en 7 meses"
+
+[pkg_expires_10m]
+other = "caduca en 10 meses"
+
+[pkg_expires_12m]
+other = "caduca en 12 meses"
+
+[pkg_cta]
+other = "compra"
+
+[pkg_iva]
+other = "+ iva"
+
+[how_stag]
+other = "cómo funciona"
+
+[how_title]
+other = "Simple. Directo.<br>Sin llamadas gratuitas."
+
+[step1_t]
+other = "Compra un paquete"
+
+[step1_d]
+other = "Elige las horas que necesitas y paga con Stripe. Bizum, tarjeta, lo que prefieras."
+
+[step2_t]
+other = "Envía la consulta"
+
+[step2_d]
+other = "Explica el problema. Adjunta capturas, archivos, lo que haga falta. Sin límite de detalle."
+
+[step3_t]
+other = "Recibimos y trabajamos"
+
+[step3_d]
+other = "Te avisamos por correo cuando tenemos respuesta. Se descuentan 15 min mínimos por consulta."
+
+[step4_t]
+other = "Saldo siempre visible"
+
+[step4_d]
+other = "Desde tu panel ves cuántas horas te quedan y cuándo caduca el paquete."
+
+[return_tag]
+other = "Política de devolución"
+
+[return_text]
+other = "Si no has usado todas las horas y el paquete caduca, te devolvemos la parte proporcional. Sin comisiones. Calculado sobre el precio que has pagado, no sobre tarifa individual."

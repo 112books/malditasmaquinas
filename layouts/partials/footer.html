@@ -2,7 +2,7 @@
   <div class="footer-top">
     <div class="footer-col">
       <span class="footer-copy">© {{ now.Year }} malditasmaquinas.com</span>
-      <nav class="footer-links" aria-label="Enllaços legals">
+      <nav class="footer-links" aria-label="{{ i18n "footer_aria_legal" }}">
         <a href="{{ i18n "footer_legal_url" | relLangURL }}">{{ i18n "footer_legal" }}</a>
         <a href="{{ i18n "footer_privacy_url" | relLangURL }}">{{ i18n "footer_privacy" }}</a>
         <a href="{{ i18n "footer_privacy_url" | relLangURL }}#cookies">{{ i18n "footer_cookies" }}</a>
@@ -16,11 +16,11 @@
       <span>Consultancy | Development | Hosting | Design</span>
     </div>
   </div>
-  <div class="footer-standards" aria-label="Estàndards tècnics">
+  <div class="footer-standards" aria-label="{{ i18n "footer_aria_standards" }}">
     <a href="{{ "humans.txt" | relURL }}">humans.txt</a>
     <span aria-hidden="true">·</span>
-    <a href="{{ i18n "footer_privacy_url" | relLangURL }}#transparncia-tcnica">HTML5 · WCAG AA · RGPD · sense cookies</a>
+    <a href="{{ i18n "footer_privacy_url" | relLangURL }}#{{ i18n "footer_privacy_anchor" }}">{{ i18n "footer_standards_inline" }}</a>
     <span aria-hidden="true">·</span>
-    <span>fet amb <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a></span>
+    <span>{{ i18n "footer_made_with" }} <a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a></span>
   </div>
 </footer>

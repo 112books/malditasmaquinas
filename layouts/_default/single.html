@@ -2,23 +2,23 @@
 <article class="srv-detail">
   <div class="srv-detail-wrap">
 
-    <nav class="srv-breadcrumb" aria-label="Fil d'Ariadna">
-      <a href="{{ "serveis/" | relLangURL }}">serveis</a>
+    <nav class="srv-breadcrumb" aria-label="{{ i18n "breadcrumb_aria" }}">
+      <a href="{{ i18n "services_path" | relLangURL }}">{{ i18n "breadcrumb_services" }}</a>
       <span aria-hidden="true"> / </span>
       <span>{{ .Title | lower }}</span>
     </nav>
 
     <header class="srv-detail-header">
-      <span class="stag">servei</span>
+      <span class="stag">{{ i18n "service_stag" }}</span>
       <h1 class="srv-detail-title">{{ .Title }}</h1>
       {{ with .Params.tagline }}<p class="srv-tagline">{{ . }}</p>{{ end }}
     </header>
 
     {{ with .Params.info }}
-    <div class="srv-info-grid" aria-label="Dades del servei">
+    <div class="srv-info-grid" aria-label="{{ i18n "srv_info_aria" }}">
       {{ with .format }}<div class="srv-info-item"><span class="srv-info-label">format</span><span class="srv-info-val">{{ . }}</span></div>{{ end }}
-      {{ with .resposta }}<div class="srv-info-item"><span class="srv-info-label">resposta</span><span class="srv-info-val">{{ . }}</span></div>{{ end }}
-      {{ with .minim }}<div class="srv-info-item"><span class="srv-info-label">mínim</span><span class="srv-info-val">{{ . }}</span></div>{{ end }}
+      {{ with .resposta }}<div class="srv-info-item"><span class="srv-info-label">{{ i18n "srv_info_label_resposta" }}</span><span class="srv-info-val">{{ . }}</span></div>{{ end }}
+      {{ with .minim }}<div class="srv-info-item"><span class="srv-info-label">{{ i18n "srv_info_label_minim" }}</span><span class="srv-info-val">{{ . }}</span></div>{{ end }}
       {{ with .nota }}<div class="srv-info-item srv-info-item--wide"><span class="srv-info-label">nota</span><span class="srv-info-val">{{ . }}</span></div>{{ end }}
     </div>
     {{ end }}
@@ -28,8 +28,8 @@
     </div>
 
     <div class="srv-detail-cta">
-      <a href="{{ .Site.Home.RelPermalink }}#paquets" class="btn-p">Compra hores</a>
-      <a href="{{ "contacte/" | relLangURL }}" class="btn-s">Fes una consulta →</a>
+      <a href="{{ .Site.Home.RelPermalink }}#{{ i18n "anchor_packages" }}" class="btn-p">{{ i18n "cta_buy" }}</a>
+      <a href="{{ i18n "footer_contact_url" | relLangURL }}" class="btn-s">{{ i18n "srv_cta_contact" }}</a>
     </div>
 
   </div>
