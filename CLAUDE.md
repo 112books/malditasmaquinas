@@ -291,6 +291,40 @@ Gestió: `wrangler secret put NOM`
 
 ## Historial de tasques fetes
 
+### 2026-04-18
+
+**Traducció completa al castellà (i18n)**
+- `i18n/ca.toml` i `i18n/es.toml`: ~120+ claus noves (nav, footer, contacte, portada, serveis, 404)
+- `layouts/partials/nav.html`: fix links castellà (`contacto/`, `#servicios`, `#paquetes`, etc.)
+- `layouts/partials/footer.html`: claus i18n per aria-labels i textos
+- `layouts/_default/baseof.html`: skip-link i18n
+- `layouts/_default/contacte.html`: reescrit amb i18n, link paquets per idioma
+- `layouts/_default/single.html`: creat; fix `serveis/` → `{{ i18n "services_path" | relLangURL }}`
+- `layouts/home.html`: reescrit amb i18n (hero, serveis, paquets, com funciona)
+- `layouts/serveis/list.html` i `layouts/servicios/list.html`: unificats amb i18n
+- `layouts/404.html`: tot i18n
+- Patrón clau: mai `"serveis/" | relLangURL` — sempre `{{ i18n "services_path" | relLangURL }}`
+
+**Panell privat `/app/` bilingüe**
+- `static/app/index.html`: sistema i18n complet (ca/es) sense framework
+  - Detecció: `?lang=` → localStorage → `navigator.language`
+  - `TRANSLATIONS` object + `const t = TRANSLATIONS[LANG]`
+  - Commutador d'idioma al nav (`App.switchLang()`)
+  - Totes les cadenes, dates (`t.date_locale`), noms de paquet i caducitat traduïts
+
+**Worker stats — errors visibles**
+- `workers/api/stats.js`: resposta llegida com a text primer (evita crash si GoatCounter retorna no-JSON)
+- `static/stats/index.html`: `renderError()` mostra errors en comptes de "carregant" infinit
+
+**Worker deploy**
+- `workers/package.json`: creat (faltava, impedia `npm install`)
+- `workers/wrangler.toml`: R2 comentat fins que s'activi al dashboard
+- Worker redespolegat amb tots els secrets correctes
+
+**Telegram (investigació parcial)**
+- Secrets `TELEGRAM_BOT_TOKEN` i `TELEGRAM_CHAT_ID` (380684) pujats al Worker
+- Error "chat not found": el bot del token no coincideix amb el que Joan ha provat; pendent resoldre
+
 ### 2026-04-17 (sessió 2)
 
 **Emails amb marca i RGPD**
@@ -369,14 +403,11 @@ Gestió: `wrangler secret put NOM`
 
 ## Pendent / deute tècnic
 
-- **Deploy Worker pendent** — cal fer `wrangler r2 bucket create malditasmaquinas-files && wrangler deploy` des de `workers/`
-- **Telegram** — les notificacions no semblen arribar; revisar `TELEGRAM_BOT_TOKEN` i `TELEGRAM_CHAT_ID` als secrets del Worker (Cloudflare → Workers → malditasmaquinas-api → Settings → Variables)
-- **Estadístiques** — `/stats/` desplegada però pendent de verificar que les dades carreguen (GoatCounter necessita visites reals acumulades)
+- **Telegram** — error "chat not found": token i CHAT_ID (380684) pujats, però el bot del token i el que Joan ha provat probablement no coincideixen. Cal: Cloudflare → Workers → malditasmaquinas-api → Settings → copiar `TELEGRAM_BOT_TOKEN` → `curl .../getMe` → buscar aquell bot a Telegram → `/start` → re-provar
+- **R2 adjunts** — quan s'activi R2 al dashboard Cloudflare: `wrangler r2 bucket create malditasmaquinas-files` → descomentar `[[r2_buckets]]` a `wrangler.toml` → `wrangler deploy`
 - **Stripe confirmation page** — la pàgina post-pagament és en anglès; cal configurar URL de redirecció als Payment Links
 - **Stripe Tax** — ajornat; IVA inclòs als preus com a solució provisional
-- **Secrets incorrectes al Worker** — verificar que els secrets amb noms incorrectes s'han esborrat
 - **Pàgines legals en castellà** — manquen `content/es/condiciones/`, `privacidad/`, `aviso-legal/`, `contacto/`
-- `layouts/_default/single.html` — no creat; pàgines individuals van per `list.html` o layouts específics
 
 ---
 
