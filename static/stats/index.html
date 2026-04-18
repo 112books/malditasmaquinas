@@ -204,7 +204,11 @@ const OS_ICONS = {
 // ── Fetch ───────────────────────────────────────────────────────────────────
 async function fetchStat(metric) {
   const r = await fetch(`${API}/${metric}?period=${currentPeriod}&limit=20`);
-  if (!r.ok) throw new Error(`${metric} error ${r.status}`);
+  if (!r.ok) {
+    let body = '';
+    try { body = (await r.json())?.error || ''; } catch {}
+    throw new Error(`${metric}: HTTP ${r.status}${body ? ' — ' + body : ''}`);
+  }
   return r.json();
 }
 
@@ -269,6 +273,12 @@ function updateTotals(total) {
   document.getElementById('totalEvents').textContent = (total?.total_events || 0).toLocaleString('ca');
 }
 
+// ── Error helper ────────────────────────────────────────────────────────────
+function renderError(container, err) {
+  const msg = err?.message || String(err);
+  container.innerHTML = `<span style="font-family:var(--f-mono);font-size:.65rem;color:#e05050">${msg}</span>`;
+}
+
 // ── Load all ────────────────────────────────────────────────────────────────
 async function loadAll() {
   ['browsers','systems','locations','sizes','hits'].forEach(id => {
@@ -277,7 +287,7 @@ async function loadAll() {
   });
   ['totalVisits','totalEvents'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) { el.textContent = ''; el.classList.add('loading'); }
+    if (el) { el.textContent = '—'; el.classList.add('loading'); }
   });
 
   const [total, hits, browsers, systems, sizes, locations] = await Promise.allSettled([
@@ -289,15 +299,36 @@ async function loadAll() {
     fetchStat('locations'),
   ]);
 
+  // Totals
   if (total.status === 'fulfilled') {
     updateTotals(total.value);
     ['totalVisits','totalEvents'].forEach(id => document.getElementById(id)?.classList.remove('loading'));
+  } else {
+    ['totalVisits','totalEvents'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = '—'; el.classList.remove('loading'); }
+    });
+    console.error('total:', total.reason);
   }
-  if (hits.status      === 'fulfilled') renderHits(hits.value, document.getElementById('hits'));
-  if (browsers.status  === 'fulfilled') renderLogoGrid(browsers.value?.browsers || browsers.value?.stats, BROWSER_ICONS, document.getElementById('browsers'));
-  if (systems.status   === 'fulfilled') renderLogoGrid(systems.value?.systems   || systems.value?.stats,  OS_ICONS,      document.getElementById('systems'));
-  if (locations.status === 'fulfilled') renderBarList(locations.value?.locations || locations.value?.stats, document.getElementById('locations'));
-  if (sizes.status     === 'fulfilled') renderBarList(sizes.value?.sizes        || sizes.value?.stats,     document.getElementById('sizes'), true);
+
+  // Llistes
+  const cases = [
+    [hits,      'hits',      (v, c) => renderHits(v, c)],
+    [browsers,  'browsers',  (v, c) => renderLogoGrid(v?.browsers || v?.stats, BROWSER_ICONS, c)],
+    [systems,   'systems',   (v, c) => renderLogoGrid(v?.systems  || v?.stats, OS_ICONS,      c)],
+    [locations, 'locations', (v, c) => renderBarList(v?.locations || v?.stats, c)],
+    [sizes,     'sizes',     (v, c) => renderBarList(v?.sizes     || v?.stats, c, true)],
+  ];
+  for (const [result, id, render] of cases) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (result.status === 'fulfilled') {
+      render(result.value, el);
+    } else {
+      console.error(id + ':', result.reason);
+      renderError(el, result.reason);
+    }
+  }
 }
 
 // ── Period buttons ──────────────────────────────────────────────────────────
