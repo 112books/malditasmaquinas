@@ -37,6 +37,25 @@ export async function handleStats(request, env, path, url) {
   const limit  = url.searchParams.get('limit')  || '20';
   const range  = periodToRange(period);
 
+  // GoatCounter v0 no té /stats/total — calculem sumant tots els hits
+  if (metric === 'total') {
+    const gcUrl = `${GC_BASE}/stats/hits?limit=999&${range}`;
+    let resp;
+    try {
+      resp = await fetch(gcUrl, { headers: { Authorization: `Bearer ${env.GOATCOUNTER_TOKEN}` } });
+    } catch (err) {
+      return json({ error: `fetch failed: ${err.message}` }, 502);
+    }
+    const text = await resp.text();
+    let data;
+    try { data = JSON.parse(text); } catch {
+      return json({ error: 'no JSON', raw: text.slice(0, 300) }, 502);
+    }
+    if (!resp.ok) return json({ error: `GoatCounter ${resp.status}`, detail: data?.error || data }, resp.status);
+    const total = (data?.hits || []).reduce((s, h) => s + (h.count || 0), 0);
+    return json({ total, total_events: 0 });
+  }
+
   const gcUrl = `${GC_BASE}/stats/${metric}?limit=${limit}&${range}`;
 
   let resp;
