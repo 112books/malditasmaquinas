@@ -290,13 +290,17 @@ async function loadAll() {
     if (el) { el.textContent = '—'; el.classList.add('loading'); }
   });
 
+  // GoatCounter limita rate: escalonem 200ms entre peticions per evitar 429
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+  async function fetchDelayed(metric, ms) { await delay(ms); return fetchStat(metric); }
+
   const [total, hits, browsers, systems, sizes, locations] = await Promise.allSettled([
-    fetchStat('total'),
-    fetchStat('hits'),
-    fetchStat('browsers'),
-    fetchStat('systems'),
-    fetchStat('sizes'),
-    fetchStat('locations'),
+    fetchDelayed('total',     0),
+    fetchDelayed('hits',    200),
+    fetchDelayed('browsers',400),
+    fetchDelayed('systems', 600),
+    fetchDelayed('sizes',   800),
+    fetchDelayed('locations',1000),
   ]);
 
   // Totals
