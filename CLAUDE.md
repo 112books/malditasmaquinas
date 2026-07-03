@@ -291,6 +291,22 @@ Gestió: `wrangler secret put NOM`
 
 ## Historial de tasques fetes
 
+### 2026-07-03
+
+**Pla de visibilitat i SEO**
+- `docs/pla-visibilitat.md`: creat document de treball amb pla integral (SEO tècnic, Google Business Profile, contingut, autoritat, monitoratge) amb tasques marcables
+- Joan ja ha completat: GSC creat + sitemap enviat + domini verificat + GBP creat i completat bàsicament
+
+**Contingut SEO — Allibera't del WordPress**
+- `content/ca/serveis/allibera-del-wordpress.md`: ampliat de ~200 a ~700 paraules
+- `content/es/servicios/liberate-del-wordpress.md`: ídem en castellà
+- Afegit: dolor points ampliats, secció "quina és l'alternativa", resposta a "afecta al SEO?", FAQ al final, keywords naturals (alternativa WordPress, migrar de WordPress, web estàtica Barcelona)
+
+**FAQ — secció tècnica per a SEO**
+- `content/ca/faq/_index.md`: afegida secció "Preguntes tècniques" amb 8 preguntes/respostes de 100-200 paraules cadascuna
+- `content/es/faq/_index.md`: ídem en castellà (el fitxer ja existia, s'hi ha afegit la mateixa secció)
+- Preguntes: cost consulta Barcelona, triar ordinador fotografia, programari vídeo gratuït (Kdenlive/DaVinci), correu professional domini propi, Linux Apple Silicon, WordPress hackejat, Inkscape vs Illustrator, còpies de seguretat econòmiques
+
 ### 2026-04-18
 
 **Traducció completa al castellà (i18n)**
@@ -403,6 +419,7 @@ Gestió: `wrangler secret put NOM`
 
 ## Pendent / deute tècnic
 
+- **SEO contingut** — pendent: ampliar pàgines consultoria-tecnologica, webs-i-servidors, mac-i-linux; afegir "Barcelona" als textos; primer article de blog; directoris externs (Bing, Páginas Amarillas)
 - **Telegram** — error "chat not found": token i CHAT_ID (380684) pujats, però el bot del token i el que Joan ha provat probablement no coincideixen. Cal: Cloudflare → Workers → malditasmaquinas-api → Settings → copiar `TELEGRAM_BOT_TOKEN` → `curl .../getMe` → buscar aquell bot a Telegram → `/start` → re-provar
 - **R2 adjunts** — quan s'activi R2 al dashboard Cloudflare: `wrangler r2 bucket create malditasmaquinas-files` → descomentar `[[r2_buckets]]` a `wrangler.toml` → `wrangler deploy`
 - **Stripe confirmation page** — la pàgina post-pagament és en anglès; cal configurar URL de redirecció als Payment Links
