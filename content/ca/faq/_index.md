@@ -134,3 +134,77 @@ layout = "list"
 <p>Sí. En casos de comportament abusiu, intimidació o incompliment de les condicions del servei, podem cancel·lar el compte i retornar el saldo d'hores no usat. No és quelcom que fem de manera lleugera, però ens reservem el dret.</p>
 </div>
 </details>
+
+## Preguntes tècniques
+
+<details>
+<summary>Quant val una consulta informàtica a Barcelona?</summary>
+<div class="faq-answer">
+<p>Els serveis tècnics presencials a Barcelona poden costar entre 60 i 120 €/hora, sovint amb desplaçament a part. A MalditasMaquinas treballem de manera diferent: pagues un paquet d'hores prepagades que comencem des de 35 € per mitja hora, i les uses a mesura que en tens necessitat.</p>
+<p>El mínim per consulta és 15 minuts (descomptats automàticament). Si la resposta és ràpida, pagues poc. Si el problema és complex, t'avisem abans de consumir més hores. Sense sorpreses, sense desplaçaments, sense esperar visita.</p>
+<p>Per a projectes tancats (una migració, un web nou), fem pressupost fix sense consum d'hores del paquet.</p>
+</div>
+</details>
+
+<details>
+<summary>Com trio un ordinador per a fotografia professional?</summary>
+<div class="faq-answer">
+<p>Depèn de tres factors: el programari que uses (o vols usar), si treballes en RAW o JPG majoritàriament, i si necessites portabilitat o prefereixes sobretaula.</p>
+<p>Per a fotografia professional amb Darktable o RawTherapee (programari lliure), qualsevol màquina amb 16 GB de RAM i una GPU discreta decent funciona bé. Per a Lightroom o Capture One, Apple Silicon (M2 o M3) és l'opció que millor rendiment dona per euro avui dia.</p>
+<p>El que <strong>no</strong> has de fer: comprar per especificacions de paper sense entendre el flux de treball. Una consulta de 15-30 minuts et pot estalviar un error de 500-2.000 €.</p>
+</div>
+</details>
+
+<details>
+<summary>Quin programari d'edició de vídeo gratuït existeix per a Mac i Linux?</summary>
+<div class="faq-answer">
+<p>Per a Mac i Linux, <strong>Kdenlive</strong> és la millor opció gratuïta i de codi obert per a edició professional: multicàmera, correcció de color, efectes, exportació a qualsevol format. Funciona molt bé amb Apple Silicon des de la versió 23+.</p>
+<p><strong>DaVinci Resolve</strong> (versió gratuïta) és una altra opció molt potent, especialment per a coloració. Té una corba d'aprenentatge més alta però les capacitats professionals. Per a Mac intel·ligent (M1/M2/M3), el rendiment és excel·lent.</p>
+<p>Si vens d'Adobe Premiere i vols la transició menys dolorosa possible, Resolve és el més semblant. Si comences de zero, Kdenlive és més accessible. Et podem assessorar sobre quin s'adapta millor al teu flux de treball.</p>
+</div>
+</details>
+
+<details>
+<summary>Com configuro el correu professional amb el meu domini propi?</summary>
+<div class="faq-answer">
+<p>Tens dues opcions principals. La més econòmica: usar el correu que inclou el teu proveïdor de domini (Dinahosting, OVH, etc.) i configurar-lo amb un client de correu com Thunderbird. Cost: 0 € addicionals.</p>
+<p>L'opció més professional: Fastmail (5 €/mes), Migadu (19 €/any per a dominis il·limitats) o Proton Mail (4 €/mes amb focus en privacitat). Cap d'elles és Google Workspace o Microsoft 365 — tens el correu professional sense donar les teves dades a les grans plataformes.</p>
+<p>El que cal configurar sempre: registres MX, SPF, DKIM i DMARC al DNS per evitar que els teus correus acabin a spam. Això és tècnic però no complex si algú t'ho explica bé.</p>
+</div>
+</details>
+
+<details>
+<summary>Val la pena tenir Linux al Mac amb Apple Silicon?</summary>
+<div class="faq-answer">
+<p>Depèn molt del que vulguis fer. El suport de Linux per a Apple Silicon (M1/M2/M3) ha millorat molt els últims anys gràcies al projecte Asahi Linux, però encara hi ha limitacions: la GPU no té suport complet, la suspensió funciona parcialment, i alguns perifèrers específics de Mac no estan suportats.</p>
+<p>Si el teu objectiu és aprendre Linux, tenir un entorn de desenvolupament Unix o escapar-te de macOS per motius filosòfics, <strong>avui ja és viable</strong> amb Fedora Asahi. Si necessites tot el maquinari funcionant al 100% (àudio professional, GPU per a edició de vídeo), espera un any més o usa un PC.</p>
+<p>Per a Mac Intel, Linux funciona perfectament. Si tens un Mac Intel que macOS ja no suporta, Linux el ressuscita sense problemes.</p>
+</div>
+</details>
+
+<details>
+<summary>Com sé si el meu web de WordPress ha estat hackejat?</summary>
+<div class="faq-answer">
+<p>Els símptomes més comuns: el web carrega molt lent de sobte sense raó aparent, Google mostra pàgines estranyes als resultats (spam farmacèutic, links a webs asiàtics), el hosting t'ha enviat un avís o suspès el compte, o reps avisos de Google Search Console sobre "contingut enganyós".</p>
+<p>Eines de diagnosi ràpida: <a href="https://sitecheck.sucuri.net" rel="noopener">Sucuri SiteCheck</a> (gratuït, escaneig extern) i Google Safe Browsing. Si el resultat és positiu, la solució no és "netejar el malware" — acostuma a ser necessari restaurar des d'una còpia de seguretat neta i actualitzar tot immediatament.</p>
+<p>Si no tens còpies de seguretat recents, la feina es complica molt. Podem ajudar-te a diagnosticar i a plantejar la recuperació, i aprofitar per migrar a una web estàtica que no pot ser hackejada.</p>
+</div>
+</details>
+
+<details>
+<summary>Inkscape o Illustrator: quina tria per a un autònom?</summary>
+<div class="faq-answer">
+<p>Si ets autònom i no tens clients que et demanin fitxers .ai natius, <strong>Inkscape</strong> cobreix el 95% del que fa Illustrator sense pagar 30 €/mes de subscripció. Exporta a SVG, PDF, EPS i PNG sense problemes. La interfície és menys polida però el motor vectorial és excel·lent.</p>
+<p>On Illustrator guanya clarament: integració amb l'ecosistema Adobe (si el client o la impressora treballa amb InDesign o Photoshop i demana fitxers natius), i eines de tipografia avançada. Si treballes molt amb text complex, Affinity Designer (pagament únic, sense subscripció) és una alternativa millor que Inkscape en aquest aspecte.</p>
+<p>La nostra recomanació per defecte: comença amb Inkscape. Si trobes un límit real que t'impedeix treballar, llavors valorem alternatives.</p>
+</div>
+</details>
+
+<details>
+<summary>Com faig còpies de seguretat sense pagar molt?</summary>
+<div class="faq-answer">
+<p>La regla 3-2-1: tres còpies, en dos suports diferents, una fora de casa. En pràctic: disc dur extern + núvol.</p>
+<p>Per a núvol econòmic i respectuós amb la privacitat: <strong>Backblaze B2</strong> (0,006 $/GB/mes, o sigui 6 € per terabyte al mes) amb <strong>Rclone</strong> per sincronitzar. Gratuït per a fins a 10 GB. Per a Mac, <strong>Time Machine</strong> amb un disc extern és la base que tothom hauria de tenir.</p>
+<p>El que no funciona com a còpia de seguretat: Google Drive o iCloud sincronitzats — si esborres un fitxer per error, s'esborra a tots els dispositius. Una còpia real és una còpia <em>independent</em>, no sincronitzada.</p>
+</div>
+</details>
